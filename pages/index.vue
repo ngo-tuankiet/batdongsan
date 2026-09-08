@@ -157,11 +157,11 @@ const searchCountText = ref('');
 const loadingProps = ref(false);
 
 // Load data từ Backend SQLite qua Nitro API
-const { data: propertiesData, refresh: refreshProps } = await useFetch('/api/properties', {
+const { data: propertiesData, refresh: refreshProps } = useFetch('/api/properties', {
   query: filters,
 });
 
-const { data: agentsData } = await useFetch('/api/agents');
+const { data: agentsData } = useFetch('/api/agents');
 
 const properties = computed(() => propertiesData.value || []);
 const agents = computed(() => agentsData.value || []);

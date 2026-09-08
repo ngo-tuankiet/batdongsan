@@ -102,7 +102,7 @@ const { showToast } = useToast();
 
 const selectedProperty = ref<any>(null);
 
-const { data: agent, pending } = await useFetch(`/api/agents/${id}`);
+const { data: agent, pending } = useFetch<any>(`/api/agents/${id}`);
 
 const copyShareLink = () => {
   if (import.meta.client) {
@@ -112,9 +112,9 @@ const copyShareLink = () => {
 };
 
 useHead({
-  title: agent.value ? `${agent.value.name} - ${agent.value.role} | BĐS Bến Thành` : 'Chuyên Viên Tư Vấn BĐS Bến Thành',
+  title: computed(() => agent.value ? `${agent.value.name} - ${agent.value.role} | BĐS Bến Thành` : 'Chuyên Viên Tư Vấn BĐS Bến Thành'),
   meta: [
-    { name: 'description', content: agent.value?.bio || 'Chuyên viên tư vấn BĐS cao cấp Bến Thành - Quận 1.' },
+    { name: 'description', content: computed(() => agent.value?.bio || 'Chuyên viên tư vấn BĐS cao cấp Bến Thành - Quận 1.') },
   ],
 });
 </script>
