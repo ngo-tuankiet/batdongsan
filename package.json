@@ -1,0 +1,23 @@
+{
+  "name": "web-bds-benthanh",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --port 3000",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "prisma:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.14.0",
+    "nuxt": "3.11.2",
+    "vue": "^3.4.29",
+    "vue-router": "^4.3.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.14.0"
+  }
+}

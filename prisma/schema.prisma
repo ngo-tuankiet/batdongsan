@@ -1,0 +1,85 @@
+// Prisma Schema cho SQLite Database
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Agent {
+  id           String     @id
+  name         String
+  role         String
+  phone        String
+  phoneDisplay String?
+  zalo         String?
+  avatar       String
+  exp          String
+  deals        String
+  slogan       String?
+  bio          String?
+  tag          String?    @default("Chuyên Viên")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  properties   Property[]
+  leads        Lead[]
+}
+
+model Category {
+  id          String     @id
+  name        String
+  description String?
+  properties  Property[]
+}
+
+model Property {
+  id          String    @id
+  agentId     String?
+  categoryId  String?
+  title       String
+  location    String
+  price       String
+  priceRaw    Float
+  area        String
+  dimensions  String?
+  structure   String?
+  bedrooms    Int?      @default(0)
+  bathrooms   Int?      @default(0)
+  direction   String?
+  legal       String?
+  rentIncome  String?
+  badge       String?   @default("Đang Bán")
+  image       String
+  features    String?   // JSON String
+  description String?
+  status      String?   @default("available")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  agent       Agent?    @relation(fields: [agentId], references: [id], onDelete: SetNull)
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+}
+
+model Lead {
+  id               Int      @id @default(autoincrement())
+  agentId          String?
+  name             String
+  phone            String
+  demand           String?
+  budget           String?
+  propertyInterest String?
+  note             String?
+  createdAt        DateTime @default(now())
+
+  agent            Agent?   @relation(fields: [agentId], references: [id], onDelete: SetNull)
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+}
