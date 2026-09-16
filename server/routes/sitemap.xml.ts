@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
   for (const p of properties) {
     const lastmod = p.updatedAt ? new Date(p.updatedAt).toISOString() : now;
     xml += `  <url>\n`;
-    xml += `    <loc>${baseUrl}/bat-dong-san/${p.id}</loc>\n`;
+    xml += `    <loc>${baseUrl}/bat-dong-san/${encodeURIComponent(p.id)}</loc>\n`;
     xml += `    <lastmod>${lastmod}</lastmod>\n`;
     xml += `    <changefreq>weekly</changefreq>\n`;
     xml += `    <priority>0.8</priority>\n`;
@@ -63,9 +63,9 @@ export default defineEventHandler(async (event) => {
   // Dynamic articles
   for (const a of articles) {
     const lastmod = a.updatedAt ? new Date(a.updatedAt).toISOString() : now;
-    const path = a.slug ? `/tin-tuc/${a.slug}` : `/tin-tuc/${a.id}`;
+    const rawPath = a.slug ? `/tin-tuc/${a.slug}` : `/tin-tuc/${a.id}`;
     xml += `  <url>\n`;
-    xml += `    <loc>${baseUrl}${path}</loc>\n`;
+    xml += `    <loc>${baseUrl}${encodeURI(rawPath)}</loc>\n`;
     xml += `    <lastmod>${lastmod}</lastmod>\n`;
     xml += `    <changefreq>weekly</changefreq>\n`;
     xml += `    <priority>0.7</priority>\n`;
