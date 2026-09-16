@@ -74,9 +74,29 @@ export const AgentController = {
 
   // DELETE /api/agents/:id
   async deleteAgent(id: string) {
-    return await prisma.agent.delete({
-      where: { id },
-    });
+    try {
+      const decodedId = decodeURIComponent(id);
+      // 1. Unlink any properties assigned to this agent
+      await prisma.property.updateMany({
+        where: { agentId: decodedId },
+        data: { agentId: null },
+      });
+      // 2. Unlink any leads assigned to this agent
+      await prisma.lead.updateMany({
+        where: { agentId: decodedId },
+        data: { agentId: null },
+      });
+      // 3. Delete agent safely
+      const res = await prisma.agent.deleteMany({
+        where: { id: decodedId },
+      });
+      return { success: true, count: res.count, message: 'Đã xóa nhân viên thành công' };
+    } catch (err: any) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Lỗi khi xóa nhân viên: ' + (err.message || 'Lỗi server'),
+      });
+    }
   },
 
   // POST /api/agents/:id/assign (Phân công dự án / BĐS cho nhân viên)

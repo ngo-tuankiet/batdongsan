@@ -2,11 +2,19 @@ import { prisma } from '../utils/prisma';
 
 export const PropertyController = {
   // GET /api/properties
-  async getProperties(query: { category?: string; keyword?: string; priceRange?: string; agentId?: string }) {
+  async getProperties(query: { category?: string; province?: string; ward?: string; keyword?: string; priceRange?: string; agentId?: string }) {
     const where: any = {};
 
     if (query.category && query.category !== 'all') {
       where.categoryId = query.category;
+    }
+
+    if (query.province && query.province !== 'all') {
+      where.province = query.province;
+    }
+
+    if (query.ward && query.ward !== 'all') {
+      where.ward = query.ward;
     }
 
     if (query.agentId) {
@@ -18,6 +26,8 @@ export const PropertyController = {
       where.OR = [
         { title: { contains: kw } },
         { location: { contains: kw } },
+        { province: { contains: kw } },
+        { ward: { contains: kw } },
         { description: { contains: kw } },
       ];
     }
@@ -57,6 +67,8 @@ export const PropertyController = {
         id,
         title: data.title,
         categoryId: data.categoryId || data.category,
+        province: data.province || 'TP. Hồ Chí Minh',
+        ward: data.ward || null,
         price: data.price,
         priceRaw: parseFloat(data.priceRaw) || 0,
         area: data.area,
@@ -70,6 +82,8 @@ export const PropertyController = {
         rentIncome: data.rentIncome,
         badge: data.badge || 'Đang Bán',
         image: data.image,
+        images: typeof data.images === 'string' ? data.images : (Array.isArray(data.images) ? JSON.stringify(data.images) : null),
+        mapUrl: data.mapUrl || null,
         features: typeof data.features === 'string' ? data.features : JSON.stringify(data.features || []),
         description: data.description,
         agentId: data.agentId || null,
@@ -85,6 +99,8 @@ export const PropertyController = {
       data: {
         title: data.title,
         categoryId: data.categoryId || data.category,
+        province: data.province !== undefined ? data.province : undefined,
+        ward: data.ward !== undefined ? data.ward : undefined,
         price: data.price,
         priceRaw: parseFloat(data.priceRaw) || 0,
         area: data.area,
@@ -98,6 +114,8 @@ export const PropertyController = {
         rentIncome: data.rentIncome,
         badge: data.badge,
         image: data.image,
+        images: data.images !== undefined ? (typeof data.images === 'string' ? data.images : JSON.stringify(data.images)) : undefined,
+        mapUrl: data.mapUrl !== undefined ? data.mapUrl : undefined,
         features: typeof data.features === 'string' ? data.features : JSON.stringify(data.features || []),
         description: data.description,
         agentId: data.agentId || null,
@@ -108,8 +126,17 @@ export const PropertyController = {
 
   // DELETE /api/properties/:id
   async deleteProperty(id: string) {
-    return await prisma.property.delete({
-      where: { id },
-    });
+    try {
+      const decodedId = decodeURIComponent(id);
+      const res = await prisma.property.deleteMany({
+        where: { id: decodedId },
+      });
+      return { success: true, count: res.count, message: 'Đã xóa bất động sản thành công' };
+    } catch (err: any) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Lỗi khi xóa bất động sản: ' + (err.message || 'Lỗi server'),
+      });
+    }
   },
 };

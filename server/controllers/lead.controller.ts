@@ -18,6 +18,7 @@ export const LeadController = {
         demand: data.demand,
         budget: data.budget,
         propertyInterest: data.propertyInterest,
+        images: data.images ? (typeof data.images === 'string' ? data.images : JSON.stringify(data.images)) : null,
         note: data.note,
         agentId: data.agentId || null,
       },

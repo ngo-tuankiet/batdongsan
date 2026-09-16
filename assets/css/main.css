@@ -231,6 +231,33 @@ img {
   white-space: nowrap;
 }
 
+.logo-img-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  height: 44px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.brand-logo:hover .logo-img-wrapper {
+  transform: scale(1.04);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+
+.header-brand-img {
+  height: 34px;
+  width: auto;
+  max-width: 110px;
+  object-fit: contain;
+  display: block;
+}
+
 .logo-icon {
   width: 42px;
   height: 42px;
@@ -246,19 +273,24 @@ img {
 }
 
 .logo-words h1 {
-  font-size: 1.12rem;
+  font-size: 1.15rem;
   letter-spacing: 0.5px;
   font-family: var(--font-heading);
   white-space: nowrap;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.logo-words span {
-  font-size: 0.7rem;
-  color: var(--gold-primary);
-  letter-spacing: 1.2px;
+.logo-words h1 .gold-text {
+  display: inline-block;
+}
+
+.logo-words span.gold-text {
+  font-size: inherit;
+  letter-spacing: normal;
   text-transform: uppercase;
-  display: block;
 }
 
 .main-nav {
@@ -337,20 +369,40 @@ img {
   background: var(--bg-card);
   border: 1px solid var(--border-gold);
   border-radius: var(--radius-lg);
-  padding: 22px;
-  max-width: 980px;
+  padding: 16px 20px;
+  max-width: 1220px;
+  width: 100%;
   margin: 0 auto;
   box-shadow: var(--shadow-md);
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) and (max-width: 1023px) {
   .search-filter-box {
-    grid-template-columns: 1.6fr 1.1fr 1.1fr auto;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .search-filter-box {
+    grid-template-columns: 1.8fr 1.05fr 1.05fr 1.05fr 1.05fr auto;
     align-items: center;
   }
+}
+
+.filter-search-btn {
+  height: 100%;
+  min-height: 45px;
+  white-space: nowrap;
+  padding: 0 24px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--radius-sm) !important;
 }
 
 .filter-input, .filter-select {

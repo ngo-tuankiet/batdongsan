@@ -38,6 +38,8 @@ model Property {
   id          String    @id
   agentId     String?
   categoryId  String?
+  province    String?   @default("TP. Hồ Chí Minh") // Tỉnh / Thành phố (VD: TP. Hồ Chí Minh, Đồng Nai, Bình Dương...)
+  ward        String?   // Quận / Huyện / Phường / Xã
   title       String
   location    String
   price       String
@@ -52,6 +54,8 @@ model Property {
   rentIncome  String?
   badge       String?   @default("Đang Bán")
   image       String
+  images      String?   // JSON String: danh sách ảnh album ["url1", "url2", ...]
+  mapUrl      String?   // Tùy chỉnh link Google Maps hoặc tọa độ
   features    String?   // JSON String
   description String?
   status      String?   @default("available")
@@ -70,6 +74,7 @@ model Lead {
   demand           String?
   budget           String?
   propertyInterest String?
+  images           String?  // JSON array chứa URL các ảnh ký gửi
   note             String?
   createdAt        DateTime @default(now())
 
@@ -82,4 +87,38 @@ model User {
   password  String
   role      String   @default("admin")
   createdAt DateTime @default(now())
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String
+  image       String
+  category    String   // "Kinh nghiệm thực chiến", "Pháp lý an toàn", "Đòn bẩy tài chính", "Phân tích chu kỳ", "Bài học đắt giá"
+  author      String   @default("Ban Chuyên Gia Bến Thành")
+  readTime    String   @default("5 phút đọc")
+  views       Int      @default(150)
+  isPublished Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  source      String?  @default("BĐS Bến Thành")
+  sourceUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Banner {
+  id          String   @id // "nha-pho", "du-an", etc.
+  name        String   // Tên gợi nhớ trong admin, VD: "Banner Nhà Phố", "Banner Dự Án"
+  title       String   // Tiêu đề trên banner
+  badge       String?  @default("TIÊU BIỂU")
+  badgeIcon   String?  @default("fa-crown")
+  imageUrl    String
+  linkUrl     String?  @default("/#properties")
+  btnText     String?  @default("Xem Chi Tiết")
+  isActive    Boolean  @default(true)
+  page        String?  @default("nha-pho") // "nha-pho", "du-an", "all"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
