@@ -1,24 +1,56 @@
-// Danh mục Tỉnh / Thành Phố và Phường / Xã / Thị Trấn theo thông tin sáp nhập đơn vị hành chính mới nhất
+// Danh mục đầy đủ 34 Tỉnh / Thành Phố và Phường / Xã / Thị Trấn theo Nghị quyết 202/2025/QH15 sắp xếp mới nhất
 
 export const PROVINCE_OPTIONS = [
+  // 6 Thành phố trực thuộc Trung ương
   'TP. Hồ Chí Minh',
-  'Long An',
+  'TP. Hà Nội',
+  'TP. Đà Nẵng',
+  'TP. Hải Phòng',
+  'TP. Cần Thơ',
+  'TP. Huế',
+
+  // 28 Tỉnh theo sắp xếp chính thức
+  'An Giang',
+  'Bắc Kạn',
+  'Bắc Ninh',
+  'Cà Mau',
+  'Cao Bằng',
+  'Đắk Lắk',
+  'Điện Biên',
   'Đồng Nai',
+  'Đồng Tháp',
+  'Gia Lai',
+  'Hà Tĩnh',
+  'Hưng Yên',
+  'Khánh Hòa',
+  'Lai Châu',
+  'Lạng Sơn',
+  'Lào Cai',
+  'Lâm Đồng',
+  'Nghệ An',
+  'Ninh Bình',
+  'Phú Thọ',
+  'Quảng Ngãi',
+  'Quảng Ninh',
+  'Quảng Trị',
+  'Sơn La',
+  'Tây Ninh',
+  'Thanh Hóa',
+  'Tuyên Quang',
+  'Vĩnh Long',
+
+  // Các tỉnh / thị trường BĐS trọng điểm phụ trợ truyền thống
+  'Long An',
   'Bình Dương',
   'Bà Rịa - Vũng Tàu',
-  'Hà Nội',
-  'Đà Nẵng',
-  'Khánh Hòa',
-  'Lâm Đồng',
   'Kiên Giang',
-  'Cần Thơ',
   'Bình Thuận',
   'Tỉnh thành khác',
 ];
 
 export const PROVINCE_DISTRICTS: Record<string, string[]> = {
   'TP. Hồ Chí Minh': [
-    // Quận 1 (Phường theo sắp xếp mới nhất)
+    // Quận 1
     'P. Bến Thành, Quận 1',
     'P. Bến Nghé, Quận 1',
     'P. Đa Kao, Quận 1',
@@ -30,7 +62,7 @@ export const PROVINCE_DISTRICTS: Record<string, string[]> = {
     'P. Cô Giang, Quận 1',
     'P. Nguyễn Cư Trinh, Quận 1',
 
-    // Quận 3 (Gộp P.6, P.7, P.8 thành P. Võ Thị Sáu)
+    // Quận 3 (Võ Thị Sáu)
     'P. Võ Thị Sáu, Quận 3',
     'P. 1, Quận 3',
     'P. 2, Quận 3',
@@ -43,7 +75,7 @@ export const PROVINCE_DISTRICTS: Record<string, string[]> = {
     'P. 12, Quận 3',
     'P. 14, Quận 3',
 
-    // TP. Thủ Đức (Các phường trọng điểm)
+    // TP. Thủ Đức
     'P. Thảo Điền, TP. Thủ Đức',
     'P. An Phú, TP. Thủ Đức',
     'P. Thủ Thiêm, TP. Thủ Đức',
@@ -61,7 +93,7 @@ export const PROVINCE_DISTRICTS: Record<string, string[]> = {
     'P. Phước Long B, TP. Thủ Đức',
     'P. Tăng Nhơn Phú A, TP. Thủ Đức',
     'P. Tăng Nhơn Phú B, TP. Thủ Đức',
-    'P. Long Thạnh Mỹ, TP. Thủ Đức',
+    'P. Long Thạnh Mỹ, TP. Thủ Đức (Vinhomes Grand Park)',
     'P. Long Bình, TP. Thủ Đức',
 
     // Quận 7
@@ -72,310 +104,48 @@ export const PROVINCE_DISTRICTS: Record<string, string[]> = {
     'P. Tân Quy, Quận 7',
     'P. Tân Kiểng, Quận 7',
     'P. Tân Hưng, Quận 7',
-    'P. Tân Thuận Đông, Quận 7',
-    'P. Tân Thuận Tây, Quận 7',
     'P. Bình Thuận, Quận 7',
 
-    // Bình Thạnh
+    // Bình Thạnh & Phú Nhuận
     'P. 19, Bình Thạnh (Thị Nghè)',
-    'P. 21, Bình Thạnh',
     'P. 22, Bình Thạnh (Vinhomes Central Park)',
     'P. 25, Bình Thạnh (Hàng Xanh)',
-    'P. 26, Bình Thạnh',
     'P. 27, Bình Thạnh (Thanh Đa)',
     'P. 28, Bình Thạnh (Bình Quới)',
-    'P. 2, Bình Thạnh',
-    'P. 3, Bình Thạnh',
-    'P. 11, Bình Thạnh',
-    'P. 14, Bình Thạnh',
-
-    // Phú Nhuận
+    'P. 7, Phú Nhuận (Phan Xích Long)',
     'P. 1, Phú Nhuận',
     'P. 2, Phú Nhuận',
-    'P. 7, Phú Nhuận (Phan Xích Long)',
-    'P. 8, Phú Nhuận',
     'P. 9, Phú Nhuận',
-    'P. 10, Phú Nhuận',
-    'P. 15, Phú Nhuận',
-    'P. 17, Phú Nhuận',
 
-    // Tân Bình
-    'P. 2, Tân Bình (Khu Sân Bay)',
-    'P. 4, Tân Bình',
-    'P. 12, Tân Bình',
-    'P. 13, Tân Bình',
-    'P. 14, Tân Bình',
-    'P. 15, Tân Bình',
+    // Quận 10 & Quận 11
+    'P. 12, Quận 10 (Kỳ Hòa)',
+    'P. 14, Quận 10 (Bắc Hải)',
+    'P. 15, Quận 11 (Đầm Sen)',
+    'P. 1, Quận 11',
+    'P. 3, Quận 11',
+    'P. 5, Quận 11',
+    'P. Bình Thới, Quận 11',
 
-    // Quận 10
-    'P. 1, Quận 10',
-    'P. 2, Quận 10',
-    'P. 4, Quận 10',
-    'P. 10, Quận 10',
-    'P. 12, Quận 10 (Hà Đô Centrosa)',
-    'P. 14, Quận 10',
-    'P. 15, Quận 10',
+    // Hóc Môn & Cần Giờ (Các dự án trọng điểm)
+    'Xã Tân Thới Nhì, Huyện Hóc Môn (Khu đô thị sinh thái)',
+    'Xã Xuân Thới Thượng, Huyện Hóc Môn',
+    'Xã Bà Điểm, Huyện Hóc Môn',
+    'TT. Cần Thạnh, Huyện Cần Giờ (Đại đô thị lấn biển Vinhomes)',
+    'Xã Long Hòa, Huyện Cần Giờ',
+    'Xã Bình Khánh, Huyện Cần Giờ',
 
-    // Quận 4 (sáp nhập các phường)
-    'P. 1, Quận 4',
-    'P. 2, Quận 4',
-    'P. 3, Quận 4',
-    'P. 4, Quận 4',
-    'P. 6, Quận 4',
-    'P. 8, Quận 4',
-    'P. 9, Quận 4',
-    'P. 13, Quận 4',
-    'P. 14, Quận 4',
-    'P. 18, Quận 4',
-
-    // Quận 5
-    'P. 1, Quận 5',
-    'P. 2, Quận 5',
-    'P. 5, Quận 5 (Chợ Lớn)',
-    'P. 6, Quận 5',
-    'P. 7, Quận 5',
-    'P. 11, Quận 5',
-
-    // Nhà Bè & Bình Chánh
-    'Xã Phước Kiển, Nhà Bè',
-    'Xã Nhơn Đức, Nhà Bè',
-    'Xã Phú Xuân, Nhà Bè',
-    'Xã Hiệp Phước, Nhà Bè',
-    'TT. Nhà Bè',
-    'Xã Bình Hưng, Bình Chánh (KDC Trung Sơn)',
-    'Xã Phong Phú, Bình Chánh',
-    'Xã Vĩnh Lộc A, Bình Chánh',
-    'Xã Vĩnh Lộc B, Bình Chánh',
-    'TT. Tân Túc, Bình Chánh',
+    // Huyện Bình Chánh & Nhà Bè
+    'Xã Bình Hưng, Huyện Bình Chánh (Khu Trung Sơn)',
+    'Xã Phong Phú, Huyện Bình Chánh',
+    'Xã Phước Kiển, Huyện Nhà Bè',
+    'Xã Phú Xuân, Huyện Nhà Bè',
   ],
 
-  'Long An': [
-    // TP. Tân An (Đầy đủ phường/xã)
-    'P. 1, TP. Tân An',
-    'P. 2, TP. Tân An',
-    'P. 3, TP. Tân An',
-    'P. 4, TP. Tân An',
-    'P. 5, TP. Tân An',
-    'P. 6, TP. Tân An',
-    'P. 7, TP. Tân An',
-    'P. Khánh Hậu, TP. Tân An',
-    'P. Tân Khánh, TP. Tân An',
-    'Xã Bình Tâm, TP. Tân An',
-    'Xã Lợi Bình Nhơn, TP. Tân An',
-    'Xã Hướng Thọ Phú, TP. Tân An',
-    'Xã An Vĩnh Ngãi, TP. Tân An',
-
-    // Huyện Bến Lức
-    'TT. Bến Lức, Huyện Bến Lức',
-    'Xã An Thạnh, Huyện Bến Lức (KĐT Waterpoint)',
-    'Xã Thạnh Đức, Huyện Bến Lức',
-    'Xã Lương Hòa, Huyện Bến Lức',
-    'Xã Lương Bình, Huyện Bến Lức',
-    'Xã Mỹ Yên, Huyện Bến Lức',
-    'Xã Nhựt Chánh, Huyện Bến Lức',
-    'Xã Tân Bửu, Huyện Bến Lức',
-    'Xã Tân Hòa, Huyện Bến Lức',
-    'Xã Thạnh Hòa, Huyện Bến Lức',
-    'Xã Thạnh Lợi, Huyện Bến Lức',
-    'Xã Thạnh Phú, Huyện Bến Lức',
-    'Xã Bình Đức, Huyện Bến Lức',
-
-    // Huyện Cần Giuộc
-    'TT. Cần Giuộc, Huyện Cần Giuộc',
-    'Xã Long Hậu, Huyện Cần Giuộc (KCN & KĐT Long Hậu)',
-    'Xã Phước Lại, Huyện Cần Giuộc',
-    'Xã Phước Vĩnh Tây, Huyện Cần Giuộc',
-    'Xã Phước Vĩnh Đông, Huyện Cần Giuộc',
-    'Xã Mỹ Lộc, Huyện Cần Giuộc',
-    'Xã Long Phụng, Huyện Cần Giuộc',
-    'Xã Đông Thạnh, Huyện Cần Giuộc',
-    'Xã Tân Kim, Huyện Cần Giuộc',
-    'Xã Tân Tập, Huyện Cần Giuộc (Cảng Quốc Tế Long An)',
-    'Xã Long An, Huyện Cần Giuộc',
-    'Xã Thuận Thành, Huyện Cần Giuộc',
-
-    // Huyện Đức Hòa
-    'TT. Đức Hòa, Huyện Đức Hòa',
-    'TT. Hậu Nghĩa, Huyện Đức Hòa',
-    'TT. Hiệp Hòa, Huyện Đức Hòa',
-    'Xã Đức Hòa Hạ, Huyện Đức Hòa',
-    'Xã Đức Hòa Đông, Huyện Đức Hòa',
-    'Xã Đức Hòa Thượng, Huyện Đức Hòa',
-    'Xã Mỹ Hạnh Nam, Huyện Đức Hòa',
-    'Xã Mỹ Hạnh Bắc, Huyện Đức Hòa',
-    'Xã Hựu Thạnh, Huyện Đức Hòa',
-    'Xã An Ninh Tây, Huyện Đức Hòa',
-    'Xã An Ninh Đông, Huyện Đức Hòa',
-    'Xã Lộc Giang, Huyện Đức Hòa',
-
-    // Huyện Cần Đước
-    'TT. Cần Đước, Huyện Cần Đước',
-    'Xã Long Cang, Huyện Cần Đước',
-    'Xã Long Định, Huyện Cần Đước',
-    'Xã Long Trạch, Huyện Cần Đước',
-    'Xã Long Khê, Huyện Cần Đước',
-    'Xã Phước Đông, Huyện Cần Đước',
-    'Xã Tân Lân, Huyện Cần Đước',
-    'Xã Tân Trạch, Huyện Cần Đước',
-    'Xã Long Hựu Đông, Huyện Cần Đước',
-    'Xã Long Hựu Tây, Huyện Cần Đước',
-
-    // TX. Kiến Tường & Huyện khác
-    'P. 1, TX. Kiến Tường',
-    'P. 2, TX. Kiến Tường',
-    'TT. Thủ Thừa, Huyện Thủ Thừa',
-    'TT. Tầm Vu, Huyện Châu Thành',
-  ],
-
-  'Đồng Nai': [
-    // TP. Biên Hòa
-    'P. Trảng Dài, TP. Biên Hòa',
-    'P. Tân Phong, TP. Biên Hòa',
-    'P. Hố Nai, TP. Biên Hòa',
-    'P. Tân Hòa, TP. Biên Hòa',
-    'P. Tam Hiệp, TP. Biên Hòa',
-    'P. Thống Nhất, TP. Biên Hòa',
-    'P. Quyết Thắng, TP. Biên Hòa',
-    'P. Bửu Long, TP. Biên Hòa',
-    'P. Bửu Hòa, TP. Biên Hòa',
-    'P. Hiệp Hòa (Cù Lao Phố), TP. Biên Hòa',
-    'P. Long Bình Tân, TP. Biên Hòa',
-    'P. Long Bình, TP. Biên Hòa',
-    'P. An Bình, TP. Biên Hòa',
-    'P. Tân Hiệp, TP. Biên Hòa',
-    'P. Tân Tiến, TP. Biên Hòa',
-    'P. Tân Hạnh, TP. Biên Hòa',
-    'P. Hóa An, TP. Biên Hòa',
-    'Xã Long Hưng, TP. Biên Hòa (Aqua City)',
-
-    // Huyện Vĩnh Cửu
-    'TT. Vĩnh An, Huyện Vĩnh Cửu',
-    'Xã Mã Đà, Huyện Vĩnh Cửu (Hồ Trị An)',
-    'Xã Phú Lý, Huyện Vĩnh Cửu',
-    'Xã Trị An, Huyện Vĩnh Cửu',
-    'Xã Vĩnh Tân, Huyện Vĩnh Cửu',
-    'Xã Tân Bình, Huyện Vĩnh Cửu',
-    'Xã Bình Lợi, Huyện Vĩnh Cửu',
-    'Xã Thiện Tân, Huyện Vĩnh Cửu',
-    'Xã Thạnh Phú, Huyện Vĩnh Cửu',
-
-    // Huyện Long Thành
-    'TT. Long Thành, Huyện Long Thành',
-    'Xã Bình Sơn, Huyện Long Thành (Sân Bay Long Thành)',
-    'Xã Lộc An, Huyện Long Thành',
-    'Xã Long Đức, Huyện Long Thành',
-    'Xã An Phước, Huyện Long Thành',
-    'Xã Phước Thái, Huyện Long Thành',
-    'Xã Tam An, Huyện Long Thành',
-    'Xã Phước Bình, Huyện Long Thành',
-
-    // Huyện Nhơn Trạch
-    'TT. Hiệp Phước, Huyện Nhơn Trạch',
-    'Xã Đại Phước, Huyện Nhơn Trạch (SwanBay)',
-    'Xã Phú Hội, Huyện Nhơn Trạch',
-    'Xã Phú Đông, Huyện Nhơn Trạch',
-    'Xã Phú Thạnh, Huyện Nhơn Trạch',
-    'Xã Long Tân, Huyện Nhơn Trạch',
-    'Xã Phước Khánh, Huyện Nhơn Trạch',
-    'Xã Phước An, Huyện Nhơn Trạch',
-
-    // TP. Long Khánh & Trảng Bom
-    'P. Xuân An, TP. Long Khánh',
-    'P. Xuân Bình, TP. Long Khánh',
-    'P. Suối Tre, TP. Long Khánh',
-    'TT. Trảng Bom, Huyện Trảng Bom',
-    'Xã Hố Nai 3, Huyện Trảng Bom',
-    'Xã Giang Điền, Huyện Trảng Bom',
-  ],
-
-  'Bình Dương': [
-    // TP. Thủ Dầu Một
-    'P. Phú Cường, TP. Thủ Dầu Một',
-    'P. Hiệp Thành, TP. Thủ Dầu Một',
-    'P. Chánh Nghĩa, TP. Thủ Dầu Một',
-    'P. Phú Hòa, TP. Thủ Dầu Một',
-    'P. Phú Lợi, TP. Thủ Dầu Một',
-    'P. Định Hòa, TP. Thủ Dầu Một',
-    'P. Tân An, TP. Thủ Dầu Một',
-    'P. Hòa Phú (Thành Phố Mới), TP. Thủ Dầu Một',
-
-    // TP. Thuận An
-    'P. Lái Thiêu, TP. Thuận An',
-    'P. An Phú, TP. Thuận An',
-    'P. Thuận Giao, TP. Thuận An',
-    'P. Bình Hòa, TP. Thuận An',
-    'P. Bình Chuẩn, TP. Thuận An',
-    'P. Vĩnh Phú, TP. Thuận An',
-    'P. An Thạnh, TP. Thuận An',
-
-    // TP. Dĩ An
-    'P. Dĩ An, TP. Dĩ An',
-    'P. Tân Đông Hiệp, TP. Dĩ An',
-    'P. An Bình, TP. Dĩ An',
-    'P. Đông Hòa, TP. Dĩ An',
-    'P. Bình An, TP. Dĩ An',
-    'P. Bình Thắng, TP. Dĩ An',
-    'P. Tân Bình, TP. Dĩ An',
-
-    // TP. Bến Cát
-    'P. Mỹ Phước, TP. Bến Cát',
-    'P. Thới Hòa, TP. Bến Cát',
-    'P. Tân Định, TP. Bến Cát',
-    'P. Hòa Lợi, TP. Bến Cát',
-    'P. Chánh Phú Hòa, TP. Bến Cát',
-
-    // TP. Tân Uyên & Bàu Bàng
-    'P. Uyên Hưng, TP. Tân Uyên',
-    'P. Tân Phước Khánh, TP. Tân Uyên',
-    'P. Thái Hòa, TP. Tân Uyên',
-    'TT. Lai Uyên, Huyện Bàu Bàng',
-  ],
-
-  'Bà Rịa - Vũng Tàu': [
-    // TP. Vũng Tàu
-    'P. 1, TP. Vũng Tàu',
-    'P. 2, TP. Vũng Tàu (Bãi Trước)',
-    'P. 3, TP. Vũng Tàu',
-    'P. 4, TP. Vũng Tàu',
-    'P. 7, TP. Vũng Tàu',
-    'P. 8, TP. Vũng Tàu',
-    'P. 9, TP. Vũng Tàu',
-    'P. Thắng Nhất, TP. Vũng Tàu',
-    'P. Thắng Nhì, TP. Vũng Tàu',
-    'P. Thắng Tam (Bãi Sau), TP. Vũng Tàu',
-    'P. Nguyễn An Ninh, TP. Vũng Tàu',
-    'P. Rạch Dừa, TP. Vũng Tàu',
-    'Xã Long Sơn, TP. Vũng Tàu',
-
-    // TX. Phú Mỹ (Thành phố cảng tương lai)
-    'P. Phú Mỹ, TX. Phú Mỹ',
-    'P. Mỹ Xuân, TX. Phú Mỹ',
-    'P. Hắc Dịch, TX. Phú Mỹ',
-    'P. Tân Phước, TX. Phú Mỹ',
-    'P. Phước Hòa, TX. Phú Mỹ',
-    'Xã Tóc Tiên, TX. Phú Mỹ',
-    'Xã Châu Pha, TX. Phú Mỹ',
-
-    // Huyện Xuyên Mộc (Hồ Tràm - Bình Châu)
-    'Xã Phước Thuận (Hồ Tràm), Huyện Xuyên Mộc',
-    'Xã Bình Châu (Suối Nước Nóng), Huyện Xuyên Mộc',
-    'TT. Phước Bửu, Huyện Xuyên Mộc',
-    'Xã Bông Trang, Huyện Xuyên Mộc',
-
-    // TP. Bà Rịa & Huyện Long Điền
-    'P. Phước Trung, TP. Bà Rịa',
-    'P. Phước Hiệp, TP. Bà Rịa',
-    'P. Long Toàn, TP. Bà Rịa',
-    'TT. Long Hải, Huyện Long Điền',
-    'Huyện Côn Đảo',
-  ],
-
-  'Hà Nội': [
-    'P. Hàng Bạc, Quận Hoàn Kiếm',
-    'P. Hàng Bồ, Quận Hoàn Kiếm',
-    'P. Hàng Gai, Quận Hoàn Kiếm',
+  'TP. Hà Nội': [
     'P. Tràng Tiền, Quận Hoàn Kiếm',
+    'P. Hàng Bạc, Quận Hoàn Kiếm',
     'P. Lý Thái Tổ, Quận Hoàn Kiếm',
+    'P. Hàng Gai, Quận Hoàn Kiếm',
     'P. Điện Biên, Quận Ba Đình',
     'P. Đội Cấn, Quận Ba Đình',
     'P. Giảng Võ, Quận Ba Đình',
@@ -392,9 +162,11 @@ export const PROVINCE_DISTRICTS: Record<string, string[]> = {
     'P. Mỹ Đình 1, Quận Nam Từ Liêm',
     'P. Mỹ Đình 2, Quận Nam Từ Liêm',
     'P. Mễ Trì, Quận Nam Từ Liêm',
+    'P. Phú Diễn, Quận Bắc Từ Liêm',
+    'P. Cổ Nhuế 1, Quận Bắc Từ Liêm',
   ],
 
-  'Đà Nẵng': [
+  'TP. Đà Nẵng': [
     'P. Hải Châu I, Quận Hải Châu',
     'P. Hải Châu II, Quận Hải Châu',
     'P. Thạch Thang, Quận Hải Châu',
@@ -405,6 +177,130 @@ export const PROVINCE_DISTRICTS: Record<string, string[]> = {
     'P. Phước Mỹ, Quận Sơn Trà (Biển Mỹ Khê)',
     'P. Mỹ An, Quận Ngũ Hành Sơn',
     'P. Khuê Mỹ, Quận Ngũ Hành Sơn',
+    'P. Hòa Khánh Bắc, Quận Liên Chiểu',
+    'P. Khuê Trung, Quận Cẩm Lệ',
+  ],
+
+  'TP. Hải Phòng': [
+    'P. Minh Khai, Quận Hồng Bàng',
+    'P. Hoàng Văn Thụ, Quận Hồng Bàng',
+    'P. Cầu Đất, Quận Ngô Quyền',
+    'P. Lạc Viên, Quận Ngô Quyền',
+    'P. An Biên, Quận Lê Chân',
+    'P. Đằng Hải, Quận Hải An',
+    'P. Đằng Lâm, Quận Hải An',
+    'P. Vạn Hương, Quận Đồ Sơn (Khu du lịch Đồ Sơn)',
+    'TT. Núi Đèo, Huyện Thủy Nguyên',
+    'TT. Cát Bà, Huyện Cát Hải',
+  ],
+
+  'TP. Cần Thơ': [
+    'P. Tân An, Quận Ninh Kiều (Bến Ninh Kiều)',
+    'P. An Cư, Quận Ninh Kiều',
+    'P. An Hòa, Quận Ninh Kiều',
+    'P. Cái Khế, Quận Ninh Kiều',
+    'P. Xuân Khánh, Quận Ninh Kiều',
+    'P. Hưng Phú, Quận Cái Răng',
+    'P. Lê Bình, Quận Cái Răng',
+    'P. Trà An, Quận Bình Thủy',
+    'P. Châu Văn Liêm, Quận Ô Môn',
+    'P. Thốt Nốt, Quận Thốt Nốt',
+  ],
+
+  'TP. Huế': [
+    'P. Phú Hội, TP. Huế (Phố Tây Huế)',
+    'P. Vĩnh Ninh, TP. Huế',
+    'P. Thuận Hòa, TP. Huế',
+    'P. Tây Lộc, TP. Huế',
+    'P. Kim Long, TP. Huế',
+    'P. Vỹ Dạ, TP. Huế',
+    'P. Thủy Xuân, TP. Huế',
+    'P. An Đông, TP. Huế',
+    'P. Phú Bài, TX. Hương Thủy',
+    'TT. Lăng Cô, Huyện Phú Lộc',
+  ],
+
+  'Đồng Nai': [
+    'P. Trảng Dài, TP. Biên Hòa',
+    'P. Tân Phong, TP. Biên Hòa',
+    'P. Hố Nai, TP. Biên Hòa',
+    'P. Tân Hòa, TP. Biên Hòa',
+    'P. Tam Hiệp, TP. Biên Hòa',
+    'P. Thống Nhất, TP. Biên Hòa',
+    'P. Quyết Thắng, TP. Biên Hòa',
+    'P. Bửu Long, TP. Biên Hòa',
+    'P. Bửu Hòa, TP. Biên Hòa',
+    'P. Hiệp Hòa (Cù Lao Phố), TP. Biên Hòa',
+    'P. Long Bình Tân, TP. Biên Hòa',
+    'P. Long Bình, TP. Biên Hòa',
+    'P. An Bình, TP. Biên Hòa',
+    'Xã Long Hưng, TP. Biên Hòa (Aqua City)',
+    'TT. Vĩnh An, Huyện Vĩnh Cửu',
+    'Xã Mã Đà, Huyện Vĩnh Cửu (Hồ Trị An)',
+    'Xã Trị An, Huyện Vĩnh Cửu',
+    'TT. Long Thành, Huyện Long Thành',
+    'Xã Bình Sơn, Huyện Long Thành (Sân Bay Long Thành)',
+    'Xã Lộc An, Huyện Long Thành',
+    'TT. Hiệp Phước, Huyện Nhơn Trạch',
+    'Xã Đại Phước, Huyện Nhơn Trạch (SwanBay)',
+    'Xã Phú Hội, Huyện Nhơn Trạch',
+    'P. Xuân An, TP. Long Khánh',
+    'TT. Trảng Bom, Huyện Trảng Bom',
+  ],
+
+  'Long An': [
+    'P. 1, TP. Tân An',
+    'P. 2, TP. Tân An',
+    'P. 3, TP. Tân An',
+    'P. 4, TP. Tân An',
+    'P. 5, TP. Tân An',
+    'P. 6, TP. Tân An',
+    'P. 7, TP. Tân An',
+    'TT. Bến Lức, Huyện Bến Lức',
+    'Xã An Thạnh, Huyện Bến Lức (Waterpoint Nam Long)',
+    'Xã Thạnh Đức, Huyện Bến Lức',
+    'Xã Lương Hòa, Huyện Bến Lức',
+    'TT. Cần Giuộc, Huyện Cần Giuộc',
+    'Xã Long Hậu, Huyện Cần Giuộc',
+    'Xã Phước Lý, Huyện Cần Giuộc',
+    'TT. Hậu Nghĩa, Huyện Đức Hòa',
+    'TT. Đức Hòa, Huyện Đức Hòa',
+    'Xã Mỹ Hạnh Nam, Huyện Đức Hòa',
+    'Xã Đức Hòa Hạ, Huyện Đức Hòa',
+    'TT. Cần Đước, Huyện Cần Đước',
+    'Xã Long Cang, Huyện Cần Đước',
+    'TT. Thủ Thừa, Huyện Thủ Thừa',
+  ],
+
+  'Bình Dương': [
+    'P. Phú Cường, TP. Thủ Dầu Một',
+    'P. Hiệp Thành, TP. Thủ Dầu Một',
+    'P. Chánh Nghĩa, TP. Thủ Dầu Một',
+    'P. Phú Hòa, TP. Thủ Dầu Một',
+    'P. Hòa Phú (Thành Phố Mới), TP. Thủ Dầu Một',
+    'P. Dĩ An, TP. Dĩ An',
+    'P. Đông Hòa, TP. Dĩ An',
+    'P. Tân Đông Hiệp, TP. Dĩ An',
+    'P. Lái Thiêu, TP. Thuận An',
+    'P. An Phú, TP. Thuận An',
+    'P. Mỹ Phước, TP. Bến Cát',
+    'P. Uyên Hưng, TP. Tân Uyên',
+    'TT. Lai Uyên, Huyện Bàu Bàng',
+  ],
+
+  'Bà Rịa - Vũng Tàu': [
+    'P. 1, TP. Vũng Tàu (Bãi Trước)',
+    'P. 2, TP. Vũng Tàu (Bãi Sau)',
+    'P. 7, TP. Vũng Tàu',
+    'P. 8, TP. Vũng Tàu',
+    'P. Thắng Tam, TP. Vũng Tàu (Bãi Thùy Vân)',
+    'P. Nguyễn An Ninh, TP. Vũng Tàu',
+    'Xã Bình Châu, Huyện Xuyên Mộc (Suối Khoáng Nóng)',
+    'Xã Phước Thuận, Huyện Xuyên Mộc (Hồ Tràm Strip)',
+    'P. Phú Mỹ, TX. Phú Mỹ',
+    'P. Tân Phước, TX. Phú Mỹ (Cảng Cái Mép)',
+    'P. Phước Trung, TP. Bà Rịa',
+    'TT. Long Hải, Huyện Long Điền',
   ],
 
   'Khánh Hòa': [
@@ -416,6 +312,7 @@ export const PROVINCE_DISTRICTS: Record<string, string[]> = {
     'P. Phước Long, TP. Nha Trang',
     'Xã Cam Hải Đông, Huyện Cam Lâm (Bãi Dài)',
     'P. Cam Nghĩa, TP. Cam Ranh',
+    'Xã Vạn Thạnh, Huyện Vạn Ninh (Bắc Vân Phong)',
   ],
 
   'Lâm Đồng': [
@@ -435,30 +332,225 @@ export const PROVINCE_DISTRICTS: Record<string, string[]> = {
     'P. Dương Đông, TP. Phú Quốc',
     'P. An Thới, TP. Phú Quốc (Nam Đảo)',
     'Xã Hàm Ninh, TP. Phú Quốc',
-    'Xã Cửa Cạn, TP. Phú Quốc',
-    'Xã Cửa Dương, TP. Phú Quốc',
-    'Xã Gành Dầu, TP. Phú Quốc (Bắc Đảo)',
+    'Xã Gành Dầu, TP. Phú Quốc (Grand World)',
     'Xã Dương Tơ, TP. Phú Quốc (Bãi Trường)',
     'P. Vĩnh Thanh Vân, TP. Rạch Giá',
-  ],
-
-  'Cần Thơ': [
-    'P. Tân An, Quận Ninh Kiều (Bến Ninh Kiều)',
-    'P. An Cư, Quận Ninh Kiều',
-    'P. An Hòa, Quận Ninh Kiều',
-    'P. Cái Khế, Quận Ninh Kiều',
-    'P. Xuân Khánh, Quận Ninh Kiều',
-    'P. Hưng Phú, Quận Cái Răng',
-    'P. Lê Bình, Quận Cái Răng',
-    'P. Trà An, Quận Bình Thủy',
+    'P. Pháo Đài, TP. Hà Tiên',
   ],
 
   'Bình Thuận': [
     'P. Hàm Tiến, TP. Phan Thiết (Mũi Né)',
     'P. Mũi Né, TP. Phan Thiết',
     'P. Phú Thủy, TP. Phan Thiết',
-    'P. Thanh Hải, TP. Phan Thiết',
     'Xã Tiến Thành, TP. Phan Thiết (NovaWorld Phan Thiết)',
     'P. Phước Hội, TX. La Gi',
+    'Xã Tân Thành, Huyện Hàm Thuận Nam (Mũi Kê Gà)',
+  ],
+
+  'Bắc Ninh': [
+    'P. Suối Hoa, TP. Bắc Ninh',
+    'P. Tiền An, TP. Bắc Ninh',
+    'P. Đại Phúc, TP. Bắc Ninh',
+    'P. Đồng Kỵ, TP. Từ Sơn',
+    'P. Trang Hạ, TP. Từ Sơn',
+    'TT. Chờ, Huyện Yên Phong',
+    'P. Hồ, TX. Thuận Thành',
+  ],
+
+  'Hưng Yên': [
+    'P. Hiến Nam, TP. Hưng Yên',
+    'P. An Tảo, TP. Hưng Yên',
+    'Xã Xuân Quan, Huyện Văn Giang (Ecopark)',
+    'Xã Phụng Công, Huyện Văn Giang',
+    'P. Bần Yên Nhân, TX. Mỹ Hào',
+    'TT. Yên Mỹ, Huyện Yên Mỹ',
+  ],
+
+  'Quảng Ninh': [
+    'P. Bãi Cháy, TP. Hạ Long (Khu du lịch Sun World)',
+    'P. Hòn Gai, TP. Hạ Long',
+    'P. Tuần Châu, TP. Hạ Long',
+    'P. Hồng Gai, TP. Hạ Long',
+    'P. Cẩm Trung, TP. Cẩm Phả',
+    'P. Trần Phú, TP. Móng Cái',
+    'TT. Cái Rồng, Huyện Vân Đồn',
+  ],
+
+  'Thanh Hóa': [
+    'P. Điện Biên, TP. Thanh Hóa',
+    'P. Lam Sơn, TP. Thanh Hóa',
+    'P. Đông Thọ, TP. Thanh Hóa',
+    'P. Trường Sơn, TP. Sầm Sơn',
+    'P. Bắc Sơn, TP. Sầm Sơn (FLC Sầm Sơn)',
+    'P. Hải Hòa, TX. Nghi Sơn',
+  ],
+
+  'Nghệ An': [
+    'P. Trường Thi, TP. Vinh',
+    'P. Lê Lợi, TP. Vinh',
+    'P. Hưng Dũng, TP. Vinh',
+    'P. Thu Thủy, TX. Cửa Lò',
+    'P. Nghi Hương, TX. Cửa Lò',
+    'TT. Diễn Châu, Huyện Diễn Châu',
+  ],
+
+  'Hà Tĩnh': [
+    'P. Trần Phú, TP. Hà Tĩnh',
+    'P. Bắc Hà, TP. Hà Tĩnh',
+    'P. Nam Hà, TP. Hà Tĩnh',
+    'P. Bắc Hồng, TX. Hồng Lĩnh',
+    'P. Sông Trí, TX. Kỳ Anh',
+    'TT. Xuân An, Huyện Nghi Xuân',
+  ],
+
+  'Quảng Trị': [
+    'P. 1, TP. Đông Hà',
+    'P. 2, TP. Đông Hà',
+    'P. 5, TP. Đông Hà',
+    'P. 1, TX. Quảng Trị',
+    'P. 2, TX. Quảng Trị',
+    'TT. Cửa Tùng, Huyện Vĩnh Linh',
+  ],
+
+  'Quảng Ngãi': [
+    'P. Trần Phú, TP. Quảng Ngãi',
+    'P. Lê Hồng Phong, TP. Quảng Ngãi',
+    'P. Nghĩa Chánh, TP. Quảng Ngãi',
+    'TT. Châu Ổ, Huyện Bình Sơn (KKT Dung Quất)',
+    'Huyện Đảo Lý Sơn',
+  ],
+
+  'Ninh Bình': [
+    'P. Vân Giang, TP. Ninh Bình',
+    'P. Ninh Khánh, TP. Ninh Bình',
+    'P. Nam Thành, TP. Ninh Bình',
+    'P. Bắc Sơn, TP. Tam Điệp',
+    'Xã Ninh Hải, Huyện Hoa Lư (Tam Cốc - Bích Động)',
+    'TT. Phát Diệm, Huyện Kim Sơn',
+  ],
+
+  'Phú Thọ': [
+    'P. Gia Cẩm, TP. Việt Trì',
+    'P. Tiên Cát, TP. Việt Trì',
+    'P. Nông Trang, TP. Việt Trì',
+    'Xã Hy Cương, TP. Việt Trì (Đền Hùng)',
+    'TT. Thanh Thủy, Huyện Thanh Thủy (Khoáng nóng)',
+  ],
+
+  'Tây Ninh': [
+    'P. 1, TP. Tây Ninh',
+    'P. 2, TP. Tây Ninh',
+    'P. 3, TP. Tây Ninh',
+    'P. Trảng Bàng, TX. Trảng Bàng',
+    'P. Long Hoa, TX. Hòa Thành (Tòa Thánh Tây Ninh)',
+    'TT. Gò Dầu, Huyện Gò Dầu',
+  ],
+
+  'An Giang': [
+    'P. Mỹ Long, TP. Long Xuyên',
+    'P. Mỹ Bình, TP. Long Xuyên',
+    'P. Châu Phú A, TP. Châu Đốc (Miếu Bà Chúa Xứ)',
+    'P. Châu Phú B, TP. Châu Đốc',
+    'P. Long Thạnh, TX. Tân Châu',
+  ],
+
+  'Đồng Tháp': [
+    'P. 1, TP. Cao Lãnh',
+    'P. 2, TP. Cao Lãnh',
+    'P. 1, TP. Sa Đéc (Làng Hoa Sa Đéc)',
+    'P. An Thạnh, TP. Hồng Ngự',
+    'TT. Lai Vung, Huyện Lai Vung',
+  ],
+
+  'Vĩnh Long': [
+    'P. 1, TP. Vĩnh Long',
+    'P. 2, TP. Vĩnh Long',
+    'P. 4, TP. Vĩnh Long',
+    'P. Cái Vồn, TX. Bình Minh',
+    'TT. Long Hồ, Huyện Long Hồ',
+  ],
+
+  'Cà Mau': [
+    'P. 1, TP. Cà Mau',
+    'P. 2, TP. Cà Mau',
+    'P. 5, TP. Cà Mau',
+    'P. 9, TP. Cà Mau',
+    'TT. Năm Căn, Huyện Năm Căn',
+    'Xã Đất Mũi, Huyện Ngọc Hiển',
+  ],
+
+  'Đắk Lắk': [
+    'P. Thắng Lợi, TP. Buôn Ma Thuột',
+    'P. Tân Lập, TP. Buôn Ma Thuột',
+    'P. Tân An, TP. Buôn Ma Thuột (EcoCity Premia)',
+    'P. Tự An, TP. Buôn Ma Thuột',
+    'P. Đoàn Kết, TX. Buôn Hồ',
+  ],
+
+  'Gia Lai': [
+    'P. Diên Hồng, TP. Pleiku',
+    'P. Hội Thương, TP. Pleiku',
+    'P. Hoa Lư, TP. Pleiku',
+    'P. Tây Sơn, TP. Pleiku',
+    'P. An Bình, TX. An Khê',
+  ],
+
+  'Lào Cai': [
+    'P. Cốc Lếu, TP. Lào Cai',
+    'P. Kim Tân, TP. Lào Cai',
+    'P. Sa Pa, TX. Sa Pa',
+    'P. Hàm Rồng, TX. Sa Pa',
+    'P. Phan Si Păng, TX. Sa Pa',
+  ],
+
+  'Lạng Sơn': [
+    'P. Vĩnh Trại, TP. Lạng Sơn',
+    'P. Tam Thanh, TP. Lạng Sơn',
+    'P. Hoàng Văn Thụ, TP. Lạng Sơn',
+    'TT. Đồng Đăng, Huyện Cao Lộc',
+    'TT. Hữu Lũng, Huyện Hữu Lũng',
+  ],
+
+  'Sơn La': [
+    'P. Chiềng Lề, TP. Sơn La',
+    'P. Tô Hiệu, TP. Sơn La',
+    'P. Quyết Thắng, TP. Sơn La',
+    'TT. Mộc Châu, Huyện Mộc Châu',
+    'TT. Nông Trường Mộc Châu, Huyện Mộc Châu',
+  ],
+
+  'Điện Biên': [
+    'P. Mường Thanh, TP. Điện Biên Phủ',
+    'P. Nam Thanh, TP. Điện Biên Phủ',
+    'P. Thanh Bình, TP. Điện Biên Phủ',
+    'TT. Mường Nhé, Huyện Mường Nhé',
+  ],
+
+  'Lai Châu': [
+    'P. Đoàn Kết, TP. Lai Châu',
+    'P. Tân Phong, TP. Lai Châu',
+    'P. Đông Phong, TP. Lai Châu',
+    'TT. Tam Đường, Huyện Tam Đường',
+  ],
+
+  'Cao Bằng': [
+    'P. Hợp Giang, TP. Cao Bằng',
+    'P. Sông Hiến, TP. Cao Bằng',
+    'P. Đề Thám, TP. Cao Bằng',
+    'TT. Trùng Khánh, Huyện Trùng Khánh (Thác Bản Giốc)',
+  ],
+
+  'Tuyên Quang': [
+    'P. Phan Thiết, TP. Tuyên Quang',
+    'P. Tân Quang, TP. Tuyên Quang',
+    'P. Minh Xuân, TP. Tuyên Quang',
+    'TT. Sơn Dương, Huyện Sơn Dương',
+  ],
+
+  'Bắc Kạn': [
+    'P. Đức Xuân, TP. Bắc Kạn',
+    'P. Sông Cầu, TP. Bắc Kạn',
+    'P. Phùng Chí Kiên, TP. Bắc Kạn',
+    'TT. Chợ Rã, Huyện Ba Bể (Hồ Ba Bể)',
   ],
 };
