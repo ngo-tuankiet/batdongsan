@@ -1765,13 +1765,22 @@ const viewLeadImage = (url: string) => {
 };
 const parseLeadImages = (raw: any): string[] => {
   if (!raw) return [];
-  if (Array.isArray(raw)) return raw;
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [raw];
-  } catch {
-    return [raw];
+  let list: string[] = [];
+  if (Array.isArray(raw)) list = raw;
+  else {
+    try {
+      const parsed = JSON.parse(raw);
+      list = Array.isArray(parsed) ? parsed : [raw];
+    } catch {
+      list = [raw];
+    }
   }
+  return list.map(img => {
+    if (typeof img === 'string' && img.startsWith('/uploads/') && !img.includes('?')) {
+      return `${img}?v=2`;
+    }
+    return img;
+  });
 };
 
 // Danh sách Tỉnh thành thực tế có trong BĐS
