@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/leads
+Disallow: /api/auth
+
+Sitemap: https://benthanhland.com/sitemap.xml
