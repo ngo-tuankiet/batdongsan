@@ -731,16 +731,23 @@
                       </div>
                     </td>
                     <td>
-                      <div v-if="parseLeadImages(lead.images).length > 0" style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
-                        <img 
+                      <div v-if="parseLeadImages(lead.images).length > 0" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                        <a 
                           v-for="(img, i) in parseLeadImages(lead.images)" 
-                          :key="i" 
-                          :src="img" 
-                          style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-gold); cursor: pointer; transition: transform 0.2s;" 
-                          @click="viewLeadImage(img)"
+                          :key="i"
+                          :href="img"
+                          target="_blank"
+                          @click.prevent="viewLeadImage(img)"
                           title="Bấm để xem ảnh gốc"
-                          class="lead-thumb-preview"
-                        />
+                          style="display: inline-block; position: relative;"
+                        >
+                          <img 
+                            :src="img" 
+                            style="width: 46px; height: 46px; object-fit: cover; border-radius: 6px; border: 1.5px solid var(--border-gold); cursor: pointer; transition: all 0.2s; background: rgba(255,255,255,0.05);" 
+                            class="lead-thumb-preview"
+                            @error="(e: any) => { e.target.style.opacity = '0.6'; }"
+                          />
+                        </a>
                       </div>
                       <span v-else style="color: var(--text-muted); font-size: 0.8rem; font-style: italic;">Không có ảnh</span>
                     </td>
@@ -1726,11 +1733,18 @@ const agentForm = reactive({
   tag: 'Chuyên Viên',
 });
 
+const adminTokenCookie = useCookie<string | null>('bds_admin_token');
+
 // Fetch Data từ Backend SQLite
 const { data: propertiesData, refresh: refreshProps } = await useFetch('/api/properties');
 const { data: agentsData, refresh: refreshAgents } = await useFetch('/api/agents');
 const { data: articlesData, refresh: refreshArticles } = await useFetch('/api/articles');
-const { data: leadsData, refresh: refreshLeads } = await useFetch('/api/leads');
+const { data: leadsData, refresh: refreshLeads } = await useFetch('/api/leads', {
+  headers: computed(() => {
+    const token = adminTokenCookie.value || (process.client ? localStorage.getItem('bds_admin_session') : '');
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+  }),
+});
 const { data: bannersData, refresh: refreshBanners } = await useFetch('/api/banners');
 
 const properties = computed(() => propertiesData.value || []);
@@ -1823,8 +1837,12 @@ const filteredAdminArticles = computed(() => {
 });
 
 onMounted(() => {
-  if (localStorage.getItem('bds_admin_session')) {
+  const saved = localStorage.getItem('bds_admin_session');
+  if (saved) {
     isLoggedIn.value = true;
+    if (!adminTokenCookie.value) {
+      adminTokenCookie.value = saved;
+    }
   }
 });
 
@@ -1836,14 +1854,16 @@ const switchTab = (tab: 'properties' | 'agents' | 'articles' | 'leads' | 'banner
 const handleLogin = async () => {
   loginLoading.value = true;
   try {
-    const res = await $fetch('/api/auth/login', {
+    const res: any = await $fetch('/api/auth/login', {
       method: 'POST',
       body: { password: password.value },
     });
     if (res.success) {
       isLoggedIn.value = true;
       localStorage.setItem('bds_admin_session', res.token);
+      adminTokenCookie.value = res.token;
       showToast('Đăng nhập quản trị thành công!');
+      await refreshLeads();
     }
   } catch (err: any) {
     alert(err?.data?.message || 'Mật khẩu không chính xác. Vui lòng thử lại!');
@@ -1855,6 +1875,7 @@ const handleLogin = async () => {
 const handleLogout = () => {
   isLoggedIn.value = false;
   localStorage.removeItem('bds_admin_session');
+  adminTokenCookie.value = null;
   showToast('Đã đăng xuất khỏi hệ thống.');
 };
 

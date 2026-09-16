@@ -1,5 +1,6 @@
 import { prisma } from '../utils/prisma';
 import crypto from 'node:crypto';
+import { generateAdminToken } from '../utils/auth';
 
 const SALT = 'bds_benthanh_secure_salt_2026';
 // Hash PBKDF2 của mật khẩu: Kiet1234@
@@ -56,7 +57,7 @@ export const AuthController = {
         username: user?.username || 'admin',
         role: user?.role || 'admin',
       },
-      token: 'admin-session-token-' + Date.now(),
+      token: generateAdminToken(),
     };
   },
 };
