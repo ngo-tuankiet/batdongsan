@@ -18,6 +18,7 @@ export default defineNuxtConfig({
         { name: 'keywords', content: 'bến thành land, benthanhland, benthanhland.com, bất động sản quận 11, nhà phố quận 11, vinhome cần giờ, vinhome hóc môn, ký gửi nhà đất, mua bán nhà đất quận 11' },
         { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
         { name: 'author', content: 'Bến Thành Land' },
+        { name: 'google-site-verification', content: 'diejq2SNMsrvRmK-_2-v35plw7oRcg9okECJwaZD0zI' },
 
         // OpenGraph / Facebook / Zalo
         { property: 'og:site_name', content: 'Bến Thành Land' },
