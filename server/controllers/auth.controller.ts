@@ -2,6 +2,7 @@ import { prisma } from '../utils/prisma';
 import crypto from 'node:crypto';
 
 const SALT = 'bds_benthanh_secure_salt_2026';
+// Hash PBKDF2 của mật khẩu: Kiet1234@
 const ADMIN_PBKDF2_HASH = 'bc67579b2514a4d4bf4fc3e854a7b5c4c89b4497776c005713013f145361f928540b32be56605fff72ebef9a2d27e66cc984b416cf78615d881228a345fde1e9';
 
 export function hashPassword(pwd: string): string {
@@ -28,19 +29,12 @@ export const AuthController = {
     let isValid = false;
 
     if (user) {
-      if (user.password === inputHash || user.password === ADMIN_PBKDF2_HASH) {
+      if (user.password === inputHash) {
         isValid = true;
-      } else if (user.password === 'Kiet1234@') {
-        // Tự động nâng cấp sang mã hóa hash
-        isValid = true;
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { password: inputHash },
-        });
       }
     }
 
-    // Kiểm tra trực tiếp với hash quản trị chuẩn
+    // Nếu user chưa có trong DB hoặc DB có lỗi, kiểm tra trực tiếp với hash chuẩn của Kiet1234@
     if (!isValid && inputHash === ADMIN_PBKDF2_HASH) {
       isValid = true;
       try {
