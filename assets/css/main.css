@@ -333,15 +333,15 @@ img {
 .master-hero {
   position: relative;
   padding: 160px 0 90px;
-  background: linear-gradient(to bottom, rgba(7, 14, 27, 0.65), rgba(7, 14, 27, 0.88)),
-              url('/images/hero-vinhome.jpg') center/cover no-repeat;
+  background: linear-gradient(to bottom, rgba(7, 14, 27, 0.55), rgba(7, 14, 27, 0.82)),
+              url('/images/hero-vinhome-cangio.jpg') center/cover no-repeat;
   text-align: center;
   color: #fff;
 }
 
 [data-theme="light"] .master-hero {
-  background: linear-gradient(to bottom, rgba(7, 14, 27, 0.6), rgba(7, 14, 27, 0.82)),
-              url('/images/hero-vinhome.jpg') center/cover no-repeat;
+  background: linear-gradient(to bottom, rgba(7, 14, 27, 0.5), rgba(7, 14, 27, 0.78)),
+              url('/images/hero-vinhome-cangio.jpg') center/cover no-repeat;
   color: #fff;
 }
 
