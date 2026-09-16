@@ -2,14 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import path from 'node:path';
 
 function getDatabaseUrl() {
-  const envUrl = process.env.DATABASE_URL;
-  if (!envUrl) {
-    return 'file:./dev.db';
-  }
-  if (envUrl.includes('prisma/dev.db')) {
-    return 'file:./dev.db';
-  }
-  return envUrl;
+  return process.env.DATABASE_URL || 'file:./dev.db';
 }
 
 const dbUrl = getDatabaseUrl();
