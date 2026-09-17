@@ -57,17 +57,24 @@
         </div>
 
         <!-- Grid BĐS 3 Cột Sang Trọng -->
-        <div v-else-if="filteredProperties.length > 0" class="properties-grid-full">
+        <div v-else-if="visibleProperties.length > 0" class="properties-grid-full">
           <PropertyCard
-            v-for="prop in filteredProperties"
+            v-for="prop in visibleProperties"
             :key="prop.id"
             :property="prop"
             @select="selectedProperty = prop"
           />
         </div>
 
+        <!-- Nút Tải Thêm (Load More) Tránh Kéo Mỏi Tay -->
+        <div v-if="hasMore" style="text-align: center; margin: 36px 0;">
+          <button class="btn btn-outline-gold" style="padding: 13px 36px; font-size: 0.95rem; font-weight: 700;" @click="loadMore">
+            <i class="fa-solid fa-plus-circle" style="margin-right: 6px;"></i> Xem Thêm Căn Nhà Phố (Còn {{ filteredProperties.length - displayLimit }} căn)
+          </button>
+        </div>
+
         <!-- Empty State -->
-        <div v-else class="empty-state-box">
+        <div v-else-if="filteredProperties.length === 0" class="empty-state-box">
           <i class="fa-solid fa-house-chimney-crack" style="font-size:2.8rem; color:var(--gold-primary); margin-bottom:12px; display:block;"></i>
           <h4>Không tìm thấy căn nhà phố phù hợp tiêu chí</h4>
           <p>Quý khách vui lòng liên hệ trực tiếp chuyên viên tư vấn để nhận quỹ căn kín chưa công khai trên thị trường.</p>
@@ -144,15 +151,28 @@ const filteredProperties = computed(() => {
   return list;
 });
 
+const displayLimit = ref(6);
+const visibleProperties = computed(() => filteredProperties.value.slice(0, displayLimit.value));
+const hasMore = computed(() => displayLimit.value < filteredProperties.value.length);
+const loadMore = () => {
+  displayLimit.value += 6;
+};
+
+watch([searchKeyword, filterPrice], () => {
+  displayLimit.value = 6;
+});
+
 const resetFilters = () => {
   searchKeyword.value = '';
   filterPrice.value = 'all';
+  displayLimit.value = 6;
 };
 
 useHead({
-  title: 'Giỏ Hàng Nhà Phố Trung Tâm - Bến Thành Land',
+  title: 'Giỏ Hàng Nhà Phố Mặt Tiền & Kinh Doanh Quận 11 | Bến Thành Land',
   meta: [
-    { name: 'description', content: 'Chuyên trang Nhà phố mặt tiền, tòa nhà thương mại trung tâm Quận 1 Sài Gòn. Đội ngũ chuyên gia tư vấn Bến Thành Land.' },
+    { name: 'description', content: 'Chuyên trang Nhà phố mặt tiền, biệt thự và tòa nhà kinh doanh Quận 11, TP.HCM. Pháp lý sổ hồng chuẩn 100%, thương lượng giá trực tiếp gia chủ.' },
+    { property: 'og:title', content: 'Giỏ Hàng Nhà Phố Mặt Tiền & Kinh Doanh Quận 11 | Bến Thành Land' },
   ],
 });
 </script>

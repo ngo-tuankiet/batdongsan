@@ -173,17 +173,24 @@
         </div>
 
         <!-- Grid Cards Dự Án -->
-        <div v-else-if="filteredProperties.length > 0" class="properties-grid">
+        <div v-else-if="visibleProperties.length > 0" class="properties-grid">
           <PropertyCard 
-            v-for="prop in filteredProperties" 
+            v-for="prop in visibleProperties" 
             :key="prop.id" 
             :property="prop" 
             @select="selectedProperty = prop" 
           />
         </div>
 
+        <!-- Nút Tải Thêm (Load More) -->
+        <div v-if="hasMore" style="text-align: center; margin: 36px 0;">
+          <button class="btn btn-outline-gold" style="padding: 13px 36px; font-size: 0.95rem; font-weight: 700;" @click="loadMore">
+            <i class="fa-solid fa-plus-circle" style="margin-right: 6px;"></i> Xem Thêm Dự Án (Còn {{ filteredProperties.length - displayLimit }} dự án)
+          </button>
+        </div>
+
         <!-- Empty State -->
-        <div v-else class="empty-state-box">
+        <div v-else-if="filteredProperties.length === 0" class="empty-state-box">
           <i class="fa-solid fa-building-circle-exclamation" style="font-size: 2.8rem; color: var(--gold-primary); margin-bottom: 12px; display: block;"></i>
           <h4>Không tìm thấy dự án phù hợp tiêu chí</h4>
           <p>Quý khách vui lòng liên hệ trực tiếp chuyên viên để nhận tài liệu dự án mới sắp công bố.</p>
@@ -310,15 +317,28 @@ const filteredProperties = computed(() => {
   return list;
 });
 
+const displayLimit = ref(6);
+const visibleProperties = computed(() => filteredProperties.value.slice(0, displayLimit.value));
+const hasMore = computed(() => displayLimit.value < filteredProperties.value.length);
+const loadMore = () => {
+  displayLimit.value += 6;
+};
+
+watch([searchKeyword, filterPrice], () => {
+  displayLimit.value = 6;
+});
+
 const resetFilters = () => {
   searchKeyword.value = '';
   filterPrice.value = 'all';
+  displayLimit.value = 6;
 };
 
 useHead({
-  title: 'Danh Mục Dự Án Cao Cấp & Căn Hộ Hạng Sang - BĐS Bến Thành',
+  title: 'Danh Mục Đại Dự Án Vinhomes & Căn Hộ Hạng Sang | Bến Thành Land',
   meta: [
-    { name: 'description', content: 'Chuyên trang Dự án căn hộ hạng sang, khu đô thị nghỉ dưỡng cao cấp. Bảng giá & chính sách chiết khấu trực tiếp chủ đầu tư.' },
+    { name: 'description', content: 'Chuyên trang Đại đô thị lấn biển Vinhomes Cần Giờ, Vinhomes Hóc Môn và các dự án căn hộ hàng hiệu trung tâm. Quỹ căn ngoại giao giá gốc chủ đầu tư.' },
+    { property: 'og:title', content: 'Danh Mục Đại Dự Án Vinhomes & Căn Hộ Hạng Sang | Bến Thành Land' },
   ],
 });
 </script>

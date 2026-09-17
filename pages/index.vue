@@ -86,7 +86,7 @@
           <p style="margin-top: 10px; color: var(--text-muted);">Đang tải giỏ hàng bất động sản...</p>
         </div>
 
-        <!-- Grid Cards BĐS -->
+        <!-- Grid Cards BĐS Tiêu Điểm (Top 6) -->
         <div v-else-if="properties.length > 0" class="properties-grid">
           <PropertyCard 
             v-for="prop in properties" 
@@ -101,6 +101,18 @@
           <i class="fa-solid fa-house-chimney-crack" style="font-size: 2.5rem; color: var(--gold-primary); margin-bottom: 12px; display: block;"></i>
           <h4 style="color: var(--text-main); margin-bottom: 6px;">Không tìm thấy bất động sản phù hợp</h4>
           <p style="font-size: 0.9rem;">Quý khách vui lòng liên hệ hotline để nhận quỹ căn kín mới nhất chưa công khai.</p>
+        </div>
+
+        <!-- CTA Chuyển Trang Chuyên Biệt -->
+        <div style="text-align: center; margin-top: 36px; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+          <NuxtLink to="/nha-pho" class="btn btn-gold" style="padding: 13px 28px; font-size: 0.95rem; font-weight: 700;">
+            <i class="fa-solid fa-house-chimney"></i> Khám Phá Toàn Bộ Giỏ Hàng Nhà Phố
+            <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
+          </NuxtLink>
+          <NuxtLink to="/du-an" class="btn btn-outline-gold" style="padding: 13px 28px; font-size: 0.95rem; font-weight: 700;">
+            <i class="fa-solid fa-building"></i> Xem Danh Mục Dự Án Vinhomes
+            <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
+          </NuxtLink>
         </div>
       </div>
     </section>
@@ -183,6 +195,14 @@
             :agent="agent" 
           />
         </div>
+
+        <!-- Nút Xem Tất Cả Chuyên Viên -->
+        <div style="text-align: center; margin-top: 36px;">
+          <NuxtLink to="/doi-ngu-chuyen-vien" class="btn btn-outline-gold" style="padding: 13px 32px; font-size: 0.95rem; font-weight: 700;">
+            <i class="fa-solid fa-users"></i> Xem Toàn Bộ Đội Ngũ Chuyên Viên ({{ totalAgentsCount }}+ Chuyên Gia)
+            <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
+          </NuxtLink>
+        </div>
       </div>
     </section>
 
@@ -259,8 +279,10 @@ const distinctWards = computed(() => {
 const { data: agentsData } = useFetch('/api/agents');
 const { data: articlesData } = useFetch('/api/articles?published=true');
 
-const properties = computed(() => propertiesData.value || []);
-const agents = computed(() => agentsData.value || []);
+const properties = computed(() => (propertiesData.value || []).slice(0, 6));
+const totalPropertiesCount = computed(() => (allPropsData.value || []).length);
+const agents = computed(() => (agentsData.value || []).slice(0, 4));
+const totalAgentsCount = computed(() => (agentsData.value || []).length);
 const homeArticles = computed(() => (articlesData.value || []).slice(0, 3));
 
 const selectCategory = (catId: string) => {

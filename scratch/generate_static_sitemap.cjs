@@ -1,7 +1,11 @@
-import { prisma } from '../utils/prisma';
+const fs = require('fs');
+const path = require('path');
+const { PrismaClient } = require('@prisma/client');
+const p = new PrismaClient();
 
-export default defineEventHandler(async (event) => {
+async function generate() {
   const baseUrl = 'https://benthanhland.com';
+  const now = new Date().toISOString();
 
   const staticPages = [
     { url: '/', changefreq: 'daily', priority: '1.0' },
@@ -13,34 +17,20 @@ export default defineEventHandler(async (event) => {
     { url: '/ve-chung-toi', changefreq: 'monthly', priority: '0.7' },
   ];
 
-  let properties: any[] = [];
-  let articles: any[] = [];
+  const properties = await p.property.findMany({
+    select: { id: true, updatedAt: true },
+    orderBy: { updatedAt: 'desc' },
+  });
 
-  try {
-    properties = await prisma.property.findMany({
-      select: { id: true, updatedAt: true },
-      orderBy: { updatedAt: 'desc' },
-    });
-  } catch (err) {
-    console.error('Sitemap: Failed to load properties', err);
-  }
-
-  try {
-    articles = await prisma.article.findMany({
-      where: { isPublished: true },
-      select: { id: true, slug: true, updatedAt: true },
-      orderBy: { updatedAt: 'desc' },
-    });
-  } catch (err) {
-    console.error('Sitemap: Failed to load articles', err);
-  }
-
-  const now = new Date().toISOString();
+  const articles = await p.article.findMany({
+    where: { isPublished: true },
+    select: { id: true, slug: true, updatedAt: true },
+    orderBy: { updatedAt: 'desc' },
+  });
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
-  // Static pages
   for (const page of staticPages) {
     xml += `  <url>\n`;
     xml += `    <loc>${baseUrl}${page.url}</loc>\n`;
@@ -50,21 +40,19 @@ export default defineEventHandler(async (event) => {
     xml += `  </url>\n`;
   }
 
-  // Dynamic properties
-  for (const p of properties) {
-    const lastmod = p.updatedAt ? new Date(p.updatedAt).toISOString() : now;
+  for (const prop of properties) {
+    const lastmod = prop.updatedAt ? new Date(prop.updatedAt).toISOString() : now;
     xml += `  <url>\n`;
-    xml += `    <loc>${baseUrl}/bat-dong-san/${encodeURIComponent(p.id)}</loc>\n`;
+    xml += `    <loc>${baseUrl}/bat-dong-san/${encodeURIComponent(prop.id)}</loc>\n`;
     xml += `    <lastmod>${lastmod}</lastmod>\n`;
     xml += `    <changefreq>weekly</changefreq>\n`;
     xml += `    <priority>0.8</priority>\n`;
     xml += `  </url>\n`;
   }
 
-  // Dynamic articles
-  for (const a of articles) {
-    const lastmod = a.updatedAt ? new Date(a.updatedAt).toISOString() : now;
-    const rawPath = a.slug ? `/tin-tuc/${a.slug}` : `/tin-tuc/${a.id}`;
+  for (const art of articles) {
+    const lastmod = art.updatedAt ? new Date(art.updatedAt).toISOString() : now;
+    const rawPath = art.slug ? `/tin-tuc/${art.slug}` : `/tin-tuc/${art.id}`;
     xml += `  <url>\n`;
     xml += `    <loc>${baseUrl}${encodeURI(rawPath)}</loc>\n`;
     xml += `    <lastmod>${lastmod}</lastmod>\n`;
@@ -73,10 +61,11 @@ export default defineEventHandler(async (event) => {
     xml += `  </url>\n`;
   }
 
-  xml += `</urlset>`;
+  xml += `</urlset>\n`;
 
-  setHeader(event, 'Content-Type', 'application/xml; charset=utf-8');
-  setHeader(event, 'Cache-Control', 'public, max-age=3600, s-maxage=3600');
+  const targetFile = path.resolve(__dirname, '../public/sitemap.xml');
+  fs.writeFileSync(targetFile, xml, 'utf8');
+  console.log('Successfully generated static sitemap at', targetFile);
+}
 
-  return xml;
-});
+generate().finally(() => p.$disconnect());
