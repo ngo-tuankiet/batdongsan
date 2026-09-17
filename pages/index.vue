@@ -217,6 +217,12 @@
         <p style="color: var(--text-sub); font-size: 1rem; line-height: 1.8; margin-top: 20px;">
           Được thành lập với sứ mệnh kết nối những bất động sản giá trị nhất tại trung tâm Sài Gòn với những chủ nhân xứng tầm. Với mạng lưới chuyên viên thực chiến giàu kinh nghiệm cùng triết lý <strong>"Minh bạch - Bảo mật - Hiệu quả"</strong>, chúng tôi tự hào là đối tác tin cậy của hơn 1.000+ nhà đầu tư trong và ngoài nước.
         </p>
+        <div style="margin-top: 28px;">
+          <NuxtLink to="/ve-chung-toi" class="btn btn-gold" style="padding: 13px 32px; font-size: 0.95rem; font-weight: 700;">
+            <i class="fa-solid fa-circle-info"></i> Xem Chi Tiết Về Bến Thành Land
+            <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
+          </NuxtLink>
+        </div>
       </div>
     </section>
 
