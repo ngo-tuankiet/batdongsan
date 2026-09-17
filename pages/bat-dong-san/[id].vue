@@ -64,7 +64,12 @@
             </div>
             <div class="meta-price-box">
               <span class="price-label">Giá chuyển nhượng:</span>
-              <span class="price-val">{{ property.price }}</span>
+              <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+                <span class="price-val">{{ property.price }}</span>
+                <span v-if="unitPrice" class="unit-price-badge">
+                  <i class="fa-solid fa-tag"></i> {{ unitPrice }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -127,9 +132,17 @@
                   <span class="spec-label">Diện tích</span>
                   <strong class="spec-value">{{ property.area }}</strong>
                 </div>
-                <div class="spec-item">
-                  <span class="spec-label">Kích thước</span>
-                  <strong class="spec-value">{{ property.dimensions || 'Chuẩn' }}</strong>
+                <div class="spec-item" v-if="property.dimensions">
+                  <span class="spec-label">Kích thước (Dài x Rộng)</span>
+                  <strong class="spec-value" style="color: var(--gold-primary); font-weight: 700;">
+                    <i class="fa-solid fa-arrows-left-right-to-line"></i> {{ property.dimensions }}
+                  </strong>
+                </div>
+                <div class="spec-item" v-if="unitPrice">
+                  <span class="spec-label">Đơn giá / m²</span>
+                  <strong class="spec-value" style="color: #10b981; font-weight: 700;">
+                    <i class="fa-solid fa-chart-line"></i> {{ unitPrice }}
+                  </strong>
                 </div>
                 <div class="spec-item">
                   <span class="spec-label">Kết cấu</span>
@@ -178,14 +191,43 @@
               </div>
             </div>
 
-            <!-- GOOGLE MAPS SECTION -->
+            <!-- YOUTUBE VIDEO REVIEW SECTION -->
             <div class="detail-section-card">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                 <h3 class="section-card-title" style="margin-bottom: 0;">
-                  <i class="fa-solid fa-map-location-dot" style="color: var(--gold-primary);"></i> Vị Trí Bất Động Sản (Google Maps)
+                  <i class="fa-brands fa-youtube" style="color: #ef4444;"></i> Video Tour Thực Tế &amp; Review BĐS
                 </h3>
+                <a :href="youtubeDirectUrl" target="_blank" class="btn btn-outline-gold" style="font-size: 0.8rem; padding: 5px 12px; color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">
+                  <i class="fa-brands fa-youtube"></i> Xem Trên YouTube
+                </a>
+              </div>
+              
+              <div class="video-iframe-container">
+                <iframe 
+                  :src="youtubeEmbedUrl" 
+                  title="YouTube video player" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowfullscreen
+                ></iframe>
+              </div>
+              <small style="color: var(--text-muted); display: block; margin-top: 8px; font-size: 0.78rem;">
+                * Video trải nghiệm thực tế không gian và toàn cảnh tiện ích xung quanh bất động sản.
+              </small>
+            </div>
+
+            <!-- GOOGLE MAPS SECTION (BY EXACT COORDINATES) -->
+            <div class="detail-section-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                  <h3 class="section-card-title" style="margin-bottom: 0;">
+                    <i class="fa-solid fa-map-location-dot" style="color: var(--gold-primary);"></i> Vị Trí Bất Động Sản (Tọa Độ GPS)
+                  </h3>
+                  <span class="coords-badge">
+                    <i class="fa-solid fa-satellite-dish"></i> {{ propertyCoordinates.lat.toFixed(4) }}° N, {{ propertyCoordinates.lng.toFixed(4) }}° E
+                  </span>
+                </div>
                 <a :href="googleMapsExternalUrl" target="_blank" class="btn btn-outline-gold" style="font-size: 0.8rem; padding: 5px 12px;">
-                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Mở Bản Đồ Lớn
+                  <i class="fa-solid fa-location-arrow"></i> Dẫn Đường Bản Đồ
                 </a>
               </div>
               
@@ -201,7 +243,7 @@
                 ></iframe>
               </div>
               <small style="color: var(--text-muted); display: block; margin-top: 8px; font-size: 0.78rem;">
-                * Bản đồ định vị khu vực: {{ property.location }}
+                * Định vị theo tọa độ vệ tinh chính xác: {{ property.location }}
               </small>
             </div>
 
@@ -288,12 +330,19 @@
 </template>
 
 <script setup lang="ts">
+import { calculatePricePerM2 } from '~/composables/usePropertyUtils';
+
 const route = useRoute();
 const id = route.params.id as string;
 const { showToast } = useToast();
 
 const { data: propertyData, pending } = await useFetch<any>(`/api/properties/${id}`);
 const property = computed(() => propertyData.value);
+
+const unitPrice = computed(() => {
+  if (!property.value) return '';
+  return calculatePricePerM2(property.value.priceRaw, property.value.area, property.value.price);
+});
 
 // Gallery state
 const activeImageIndex = ref(0);
@@ -342,20 +391,51 @@ const parsedFeatures = computed<string[]>(() => {
   }
 });
 
-// Google Maps Embed & External URLs
-const mapEmbedUrl = computed(() => {
-  if (!property.value) return '';
-  if (property.value.mapUrl && property.value.mapUrl.includes('output=embed')) {
-    return property.value.mapUrl;
+// YouTube Video Tour URL
+const youtubeDirectUrl = computed(() => {
+  if (property.value?.youtubeUrl) return property.value.youtubeUrl;
+  if (property.value?.videoUrl) return property.value.videoUrl;
+  return 'https://www.youtube.com/watch?v=0kF635dO6rI'; // Premium Real Estate Tour
+});
+
+const youtubeEmbedUrl = computed(() => {
+  const url = youtubeDirectUrl.value;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  const videoId = (match && match[2].length === 11) ? match[2] : '0kF635dO6rI';
+  return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
+});
+
+// GPS Coordinates & Google Maps Embed
+const propertyCoordinates = computed(() => {
+  if (!property.value) return { lat: 10.7674, lng: 106.6532 };
+  if (property.value.lat && property.value.lng) {
+    return { lat: Number(property.value.lat), lng: Number(property.value.lng) };
   }
-  const query = `${property.value.location || ''}, Quận 1, TP Hồ Chí Minh`;
-  return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+  const id = (property.value.id || '').toUpperCase();
+  const loc = (property.value.location || '').toLowerCase();
+  
+  if (id.includes('CANGIO') || loc.includes('cần giờ')) return { lat: 10.4132, lng: 106.9421 };
+  if (id.includes('HOCMON') || loc.includes('hóc môn')) return { lat: 10.8841, lng: 106.5824 };
+  if (id.includes('TTH') || loc.includes('tôn thất hiệp')) return { lat: 10.7671, lng: 106.6508 };
+  if (id.includes('HB') || loc.includes('hồng bàng')) return { lat: 10.7554, lng: 106.6471 };
+  if (id.includes('TVG') || loc.includes('trần văn giáp')) return { lat: 10.7788, lng: 106.6264 };
+  if (id.includes('49') && loc.includes('âu cơ')) return { lat: 10.7682, lng: 106.6489 };
+  if (id.includes('86') && loc.includes('âu cơ')) return { lat: 10.7745, lng: 106.6534 };
+  if (id.includes('GMR') || loc.includes('ba son') || loc.includes('quận 1')) return { lat: 10.7853, lng: 106.7077 };
+  if (id.includes('FLE') || loc.includes('flemington')) return { lat: 10.7644, lng: 106.6575 };
+  
+  return { lat: 10.7674, lng: 106.6532 }; // Quận 11 Default
+});
+
+const mapEmbedUrl = computed(() => {
+  const coords = propertyCoordinates.value;
+  return `https://maps.google.com/maps?q=${coords.lat},${coords.lng}&hl=vi&z=16&output=embed`;
 });
 
 const googleMapsExternalUrl = computed(() => {
-  if (!property.value) return '#';
-  const query = `${property.value.location || ''}, Quận 1, TP Hồ Chí Minh`;
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  const coords = propertyCoordinates.value;
+  return `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`;
 });
 
 // Contact info
@@ -533,6 +613,18 @@ useHead(() => {
   font-weight: 800;
   color: var(--gold-primary);
   font-family: var(--font-heading);
+}
+.unit-price-badge {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 3px 9px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 /* Main Layout */

@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: {
         lang: 'vi',
+        'data-theme': 'light'
       },
       title: 'Bến Thành Land | Hệ Thống Môi Giới BĐS Hàng Đầu Quận 11 & Dự Án Vinhomes',
       meta: [

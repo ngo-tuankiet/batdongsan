@@ -14,7 +14,7 @@
     <!-- PANEL CHUYÊN VIÊN BÊN PHẢI (CỐ ĐỊNH ĐỐI XỨNG BANNER TRÁI) -->
     <RightSpecialistFlyer 
       :agents="agents"
-      defaultAgentId="tuankiet"
+      defaultAgentId="agent-nguyen-van-phu"
     />
 
     <div class="container">

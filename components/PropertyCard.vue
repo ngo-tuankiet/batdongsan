@@ -19,18 +19,27 @@
         <h3 class="prop-title" :title="property.title">{{ property.title }}</h3>
       </NuxtLink>
       
+      <!-- LƯỚI THÔNG SỐ: DIỆN TÍCH, KÍCH THƯỚC (DÀI X RỘNG), ĐƠN GIÁ / M2 & KẾT CẤU -->
       <div class="prop-meta-grid">
         <div class="prop-meta-item">
           <span>Diện tích</span>
           <strong>{{ property.area }}</strong>
         </div>
-        <div class="prop-meta-item">
-          <span>Kết cấu</span>
-          <strong>{{ property.structure || property.dimensions || 'Chuẩn' }}</strong>
+        <div class="prop-meta-item" v-if="property.dimensions">
+          <span>Dài x Rộng</span>
+          <strong style="color: var(--gold-primary);">{{ property.dimensions }}</strong>
         </div>
-        <div class="prop-meta-item">
+        <div class="prop-meta-item" v-else>
+          <span>Kết cấu</span>
+          <strong>{{ property.structure || 'Chuẩn' }}</strong>
+        </div>
+        <div class="prop-meta-item" v-if="unitPrice">
+          <span>Đơn giá / m²</span>
+          <strong class="unit-price-highlight">{{ unitPrice }}</strong>
+        </div>
+        <div class="prop-meta-item" v-else>
           <span>Pháp lý</span>
-          <strong>{{ property.legal ? 'Sổ hồng' : 'Chuẩn' }}</strong>
+          <strong style="color: #10b981;">{{ property.legal ? 'Sổ hồng' : 'Chuẩn' }}</strong>
         </div>
       </div>
 
@@ -52,11 +61,18 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue';
+import { calculatePricePerM2 } from '~/composables/usePropertyUtils';
+
+const props = defineProps<{
   property: any;
 }>();
 
 defineEmits(['select']);
+
+const unitPrice = computed(() => {
+  return calculatePricePerM2(props.property.priceRaw, props.property.area, props.property.price);
+});
 </script>
 
 <style scoped>
@@ -77,4 +93,10 @@ defineEmits(['select']);
   color: #60a5fa;
   border: 1px solid rgba(59, 130, 246, 0.35);
 }
+
+.unit-price-highlight {
+  color: #10b981 !important;
+  font-weight: 700;
+}
 </style>
+

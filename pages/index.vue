@@ -1,14 +1,33 @@
 <template>
   <main>
-    <!-- HERO SECTION & SEARCH FILTER -->
+    <!-- BANNER VÈ BÊN TRÁI CHUYỂN ĐỘNG 2.5S / ẢNH (CHỈ HIỆN KHI CUỘN XUỐNG KHU VỰC BĐS) -->
+    <LeftFlyerBanner 
+      :slides="homepageLeftFlyerSlides"
+      reopenLabel="Banner Dự Án Hot"
+      :scrollThreshold="320"
+    />
+
+    <!-- HERO SECTION WITH BACKGROUND SLIDESHOW & SEARCH FILTER -->
     <section id="hero" class="master-hero">
-      <div class="container">
-        <p class="section-subtitle">HỆ THỐNG MÔI GIỚI BĐS HÀNG ĐẦU QUẬN 11</p>
+      <!-- Background Slideshow Layer -->
+      <div class="hero-bg-container">
+        <div 
+          v-for="(slide, sIdx) in heroSlides" 
+          :key="sIdx"
+          class="hero-bg-slide"
+          :class="{ active: sIdx === activeHeroSlideIndex }"
+          :style="{ backgroundImage: `url('${slide.image}')` }"
+        ></div>
+        <div class="hero-bg-overlay"></div>
+      </div>
+
+      <div class="container hero-content-layer">
+        <p class="section-subtitle">HỆ THỐNG MÔI GIỚI BĐS HÀNG ĐẦU QUẬN 11 &amp; ĐẠI LÝ F1 VINHOMES</p>
         <h1 class="hero-main-title">
           Khẳng Định Đẳng Cấp Tại <br><span class="gold-text">Trái Tim Sài Gòn</span>
         </h1>
         <p class="hero-main-sub">
-          Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các dự án Vinhomes Cần Giờ & Vinhomes Hóc Môn.
+          Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các siêu dự án Vinhomes Hóc Môn &amp; Vinhomes Cần Giờ.
         </p>
 
         <!-- Search Box Filter -->
@@ -53,6 +72,19 @@
 
         <div v-if="searchCountText" class="search-results-alert" style="display: block; margin-top: 14px;">
           <i class="fa-solid fa-check-circle"></i> {{ searchCountText }}
+        </div>
+
+        <!-- Hero Slideshow Indicator Pills -->
+        <div class="hero-slide-nav-pills">
+          <button 
+            v-for="(slide, sIdx) in heroSlides" 
+            :key="sIdx"
+            class="hero-pill-btn"
+            :class="{ active: sIdx === activeHeroSlideIndex }"
+            @click="activeHeroSlideIndex = sIdx"
+          >
+            <i :class="slide.icon"></i> {{ slide.title }}
+          </button>
         </div>
       </div>
     </section>
@@ -310,6 +342,104 @@ const selectWard = (w: string) => {
 const handleCategoryChange = () => {
   handleSearch();
 };
+
+// --- HERO BACKGROUND SLIDESHOW ---
+const heroSlides = [
+  {
+    image: '/images/hero-vinhome-hocmon.jpg',
+    title: 'Vinhomes Hóc Môn',
+    icon: 'fa-solid fa-tree-city',
+    sub: 'Đại đô thị sinh thái thông minh phía Tây Bắc TP.HCM'
+  },
+  {
+    image: '/images/hero-vinhome-cangio.jpg',
+    title: 'Vinhomes Cần Giờ',
+    icon: 'fa-solid fa-water',
+    sub: 'Siêu đô thị biển nghỉ dưỡng quốc tế 2.870ha'
+  },
+  {
+    image: '/images/banner-nha-pho.jpg',
+    title: 'Nhà Phố Quận 11',
+    icon: 'fa-solid fa-house-chimney',
+    sub: 'Quỹ căn mặt tiền kinh doanh và hẻm xe hơi VIP'
+  },
+  {
+    image: '/images/hero-vinhome.jpg',
+    title: 'Vinhomes Grand Park',
+    icon: 'fa-solid fa-city',
+    sub: 'Đại đô thị đẳng cấp quốc tế trung tâm TP. Thủ Đức'
+  }
+];
+
+const activeHeroSlideIndex = ref(0);
+let heroSlideTimer: any = null;
+
+const startHeroSlideTimer = () => {
+  if (import.meta.client) {
+    if (heroSlideTimer) clearInterval(heroSlideTimer);
+    heroSlideTimer = setInterval(() => {
+      activeHeroSlideIndex.value = (activeHeroSlideIndex.value + 1) % heroSlides.length;
+    }, 4500);
+  }
+};
+
+// Load Banners quản lý từ Admin CMS
+const { data: homeBannersData } = useFetch('/api/banners?page=home');
+
+// --- BANNER VÈ BÊN TRÁI TRANG CHỦ (Tự động chuyển slide 2.5s / ảnh & Quản lý qua Admin CMS) ---
+const defaultHomeSlides = [
+  {
+    title: 'VINHOMES HÓC MÔN',
+    imageSrc: '/images/hero-vinhome-hocmon.jpg',
+    badgeIcon: 'fa-tree-city',
+    btnText: 'Dự Án Hóc Môn',
+    link: '/du-an'
+  },
+  {
+    title: 'VINHOMES CẦN GIỜ',
+    imageSrc: '/images/hero-vinhome-cangio.jpg',
+    badgeIcon: 'fa-water',
+    btnText: 'Dự Án Cần Giờ',
+    link: '/du-an'
+  },
+  {
+    title: 'NHÀ PHỐ QUẬN 11',
+    imageSrc: '/images/banner-poster-nhapho.jpg',
+    badgeIcon: 'fa-crown',
+    btnText: 'Giỏ Hàng Q.11',
+    link: '/nha-pho'
+  },
+  {
+    title: 'KÝ GỬI NHÀ ĐẤT',
+    imageSrc: '/images/banner-du-an.jpg',
+    badgeIcon: 'fa-handshake',
+    btnText: 'Ký Gửi BĐS VIP',
+    link: '/ky-gui'
+  }
+];
+
+const homepageLeftFlyerSlides = computed(() => {
+  const list = homeBannersData.value || [];
+  const activeList = list.filter((b: any) => b.isActive);
+  if (activeList.length > 0) {
+    return activeList.map((b: any) => ({
+      title: b.title,
+      imageSrc: b.imageUrl,
+      badgeIcon: b.badgeIcon || 'fa-crown',
+      btnText: b.btnText || 'Xem Chi Tiết',
+      link: b.linkUrl || '/du-an'
+    }));
+  }
+  return defaultHomeSlides;
+});
+
+onMounted(() => {
+  startHeroSlideTimer();
+});
+
+onUnmounted(() => {
+  if (heroSlideTimer) clearInterval(heroSlideTimer);
+});
 
 const handleSearch = async () => {
   loadingProps.value = true;

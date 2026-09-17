@@ -1,11 +1,13 @@
 export const useTheme = () => {
-  const theme = useState<'dark' | 'light'>('theme', () => 'dark');
+  const theme = useState<'dark' | 'light'>('theme', () => 'light');
 
   const initTheme = () => {
     if (import.meta.client) {
       const saved = localStorage.getItem('bds_theme') as 'dark' | 'light';
       if (saved) {
         theme.value = saved;
+      } else {
+        theme.value = 'light';
       }
       document.documentElement.setAttribute('data-theme', theme.value);
     }

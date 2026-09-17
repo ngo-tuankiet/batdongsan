@@ -1,17 +1,19 @@
 <template>
   <div class="left-flyer-wrapper">
-    <!-- BANNER VÈ BÊN TRÁI ĐANG MỞ -->
+    <!-- BANNER VÈ BÊN TRÁI ĐANG MỞ (CHỈ HIỆN KHI ĐÃ CUỘN XUỐNG NẾU CÓ scrollThreshold) -->
     <transition name="flyer-fade">
       <aside 
-        v-if="isOpen" 
+        v-if="isOpen && isScrolledPast" 
         class="vertical-left-flyer" 
         role="complementary" 
-        :aria-label="title"
+        :aria-label="currentSlide.title"
+        @mouseenter="pauseRotation"
+        @mouseleave="resumeRotation"
       >
         <!-- THANH TIÊU ĐỀ & NÚT TẮT NỔI BẬT -->
         <div class="flyer-top-bar">
           <span class="flyer-badge-title">
-            <i :class="['fa-solid', badgeIcon]"></i> {{ title }}
+            <i :class="['fa-solid', currentSlide.badgeIcon || 'fa-crown']"></i> {{ currentSlide.title }}
           </span>
           <button 
             type="button"
@@ -25,20 +27,56 @@
           </button>
         </div>
 
-        <!-- THẺ HÌNH ẢNH BANNER POSTER -->
+        <!-- THẺ HÌNH ẢNH BANNER POSTER CÓ HIỆU ỨNG CHUYỂN SLIDE 2.5S -->
         <div class="flyer-card" @click="handleFlyerClick" title="Bấm xem chi tiết">
-          <img 
-            :src="imageSrc" 
-            :alt="title" 
-            class="flyer-img"
-            loading="eager"
-            fetchpriority="high"
-          />
+          <div class="flyer-image-stage">
+            <transition name="flyer-slide-crossfade" mode="out-in">
+              <img 
+                :key="currentSlideIndex"
+                :src="currentSlide.imageSrc" 
+                :alt="currentSlide.title" 
+                class="flyer-img"
+                loading="eager"
+                fetchpriority="high"
+              />
+            </transition>
+
+            <!-- Quick Prev/Next Arrow on hover if multi-slides -->
+            <button 
+              v-if="activeSlides.length > 1" 
+              type="button" 
+              class="flyer-nav-arrow prev" 
+              @click.stop="prevSlide" 
+              title="Slide trước"
+            >
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button 
+              v-if="activeSlides.length > 1" 
+              type="button" 
+              class="flyer-nav-arrow next" 
+              @click.stop="nextSlide" 
+              title="Slide sau"
+            >
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
 
           <div class="flyer-bottom-action">
             <span class="flyer-btn-text">
-              {{ btnText }} <i class="fa-solid fa-circle-arrow-right"></i>
+              {{ currentSlide.btnText || 'Xem Chi Tiết' }} <i class="fa-solid fa-circle-arrow-right"></i>
             </span>
+
+            <!-- Slide Dots Indicator if multi-slide -->
+            <div v-if="activeSlides.length > 1" class="flyer-dots-bar">
+              <span 
+                v-for="(_, idx) in activeSlides" 
+                :key="idx"
+                class="flyer-dot-pill"
+                :class="{ active: idx === currentSlideIndex }"
+                @click.stop="currentSlideIndex = idx"
+              ></span>
+            </div>
           </div>
         </div>
       </aside>
@@ -47,11 +85,11 @@
     <!-- NÚT TAB MỞ LẠI KHI NGƯỜI DÙNG ĐÃ TẮT BANNER -->
     <transition name="tab-slide-left">
       <button 
-        v-if="!isOpen" 
+        v-if="!isOpen && isScrolledPast" 
         type="button"
         class="flyer-reopen-tab" 
         @click="isOpen = true" 
-        :title="'Mở lại ' + title"
+        :title="'Mở lại ' + currentSlide.title"
         aria-label="Mở lại banner"
       >
         <span class="tab-pulse-ring"></span>
@@ -63,7 +101,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+export interface FlyerSlide {
+  title: string;
+  imageSrc: string;
+  badgeIcon?: string;
+  btnText?: string;
+  targetId?: string;
+  link?: string;
+}
+
+const router = useRouter();
 
 const props = withDefaults(defineProps<{
   title?: string;
@@ -72,6 +122,10 @@ const props = withDefaults(defineProps<{
   btnText?: string;
   reopenLabel?: string;
   targetId?: string;
+  link?: string;
+  slides?: FlyerSlide[];
+  intervalMs?: number;
+  scrollThreshold?: number;
 }>(), {
   title: 'NHÀ PHỐ TIÊU BIỂU',
   imageSrc: '/images/banner-poster-nhapho.jpg',
@@ -79,17 +133,80 @@ const props = withDefaults(defineProps<{
   btnText: 'Xem Quỹ Căn',
   reopenLabel: 'Banner Hot',
   targetId: 'properties-list',
+  intervalMs: 2500, // 2.5 seconds per slide
+  scrollThreshold: 0,
 });
 
 const isOpen = ref(true);
+const isScrolledPast = ref(props.scrollThreshold === 0);
+const currentSlideIndex = ref(0);
+let rotationTimer: any = null;
+
+const handleScroll = () => {
+  if (props.scrollThreshold > 0 && import.meta.client) {
+    isScrolledPast.value = window.scrollY >= props.scrollThreshold;
+  }
+};
+
+const activeSlides = computed<FlyerSlide[]>(() => {
+  if (props.slides && props.slides.length > 0) {
+    return props.slides;
+  }
+  return [{
+    title: props.title,
+    imageSrc: props.imageSrc,
+    badgeIcon: props.badgeIcon,
+    btnText: props.btnText,
+    targetId: props.targetId,
+    link: props.link
+  }];
+});
+
+const currentSlide = computed(() => {
+  return activeSlides.value[currentSlideIndex.value] || activeSlides.value[0];
+});
+
+const startRotation = () => {
+  if (import.meta.client && activeSlides.value.length > 1) {
+    if (rotationTimer) clearInterval(rotationTimer);
+    rotationTimer = setInterval(() => {
+      currentSlideIndex.value = (currentSlideIndex.value + 1) % activeSlides.value.length;
+    }, props.intervalMs);
+  }
+};
+
+const pauseRotation = () => {
+  if (rotationTimer) {
+    clearInterval(rotationTimer);
+    rotationTimer = null;
+  }
+};
+
+const resumeRotation = () => {
+  startRotation();
+};
+
+const prevSlide = () => {
+  currentSlideIndex.value = (currentSlideIndex.value - 1 + activeSlides.value.length) % activeSlides.value.length;
+};
+
+const nextSlide = () => {
+  currentSlideIndex.value = (currentSlideIndex.value + 1) % activeSlides.value.length;
+};
 
 const closeBanner = () => {
   isOpen.value = false;
+  pauseRotation();
 };
 
 const handleFlyerClick = () => {
-  if (props.targetId) {
-    const el = document.getElementById(props.targetId);
+  const slide = currentSlide.value;
+  if (slide.link) {
+    router.push(slide.link);
+    return;
+  }
+  if (slide.targetId) {
+    const el = document.getElementById(slide.targetId);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
@@ -97,6 +214,21 @@ const handleFlyerClick = () => {
   }
   window.scrollTo({ top: 350, behavior: 'smooth' });
 };
+
+onMounted(() => {
+  startRotation();
+  if (props.scrollThreshold > 0 && import.meta.client) {
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
+});
+
+onUnmounted(() => {
+  pauseRotation();
+  if (import.meta.client) {
+    window.removeEventListener('scroll', handleScroll);
+  }
+});
 </script>
 
 <style scoped>
@@ -194,18 +326,58 @@ const handleFlyerClick = () => {
   background: #070e1b;
 }
 
-/* KÉO DÀI BANNER RA THEO YÊU CẦU: 620px */
+.flyer-image-stage {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  overflow: hidden;
+  background: #000;
+}
+
 .flyer-img {
   width: 100%;
-  height: 620px;
+  height: 100%;
   object-fit: cover;
   object-position: top center;
   display: block;
-  transition: transform 0.3s ease;
 }
 
-.flyer-card:hover .flyer-img {
-  transform: scale(1.02);
+/* Nav arrows on flyer hover */
+.flyer-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  z-index: 5;
+}
+
+.flyer-card:hover .flyer-nav-arrow {
+  opacity: 1;
+}
+
+.flyer-nav-arrow:hover {
+  background: var(--gold-primary);
+  color: #070e1b;
+}
+
+.flyer-nav-arrow.prev {
+  left: 6px;
+}
+
+.flyer-nav-arrow.next {
+  right: 6px;
 }
 
 .flyer-bottom-action {
@@ -223,6 +395,28 @@ const handleFlyerClick = () => {
   align-items: center;
   gap: 6px;
   letter-spacing: 0.3px;
+}
+
+.flyer-dots-bar {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.flyer-dot-pill {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.flyer-dot-pill.active {
+  width: 16px;
+  border-radius: 4px;
+  background: var(--gold-primary);
 }
 
 /* NÚT TAB MỞ LẠI KHI ĐÃ TẮT BANNER */
@@ -288,6 +482,16 @@ const handleFlyerClick = () => {
   transform: translateX(-40px);
 }
 
+.flyer-slide-crossfade-enter-active,
+.flyer-slide-crossfade-leave-active {
+  transition: opacity 0.45s ease;
+}
+
+.flyer-slide-crossfade-enter-from,
+.flyer-slide-crossfade-leave-to {
+  opacity: 0;
+}
+
 .tab-slide-left-enter-active,
 .tab-slide-left-leave-active {
   transition: transform 0.2s ease, opacity 0.2s ease;
@@ -306,8 +510,8 @@ const handleFlyerClick = () => {
     top: 90px;
     left: 8px;
   }
-  .flyer-img {
-    height: 420px;
+  .flyer-image-stage {
+    height: 380px;
   }
 }
 

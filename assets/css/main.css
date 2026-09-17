@@ -947,6 +947,360 @@ img {
   color: #64748b;
 }
 
+/* --- ANIMATED HERO & BANNER SLIDER & VIDEO TOUR STYLES --- */
+
+/* 1. Smooth Fade-in Blur Image Animation ("kiểu mờ mờ mượt mà") */
+@keyframes blurFadeInImage {
+  0% {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(0.97) translateY(8px);
+  }
+  50% {
+    opacity: 0.7;
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1) translateY(0);
+  }
+}
+
+.fade-in-image,
+.property-img,
+.prop-card-img-wrap img,
+.home-art-thumb img,
+.gallery-main-img,
+.member-img,
+.banner-slide-img,
+.hero-bg-img {
+  animation: blurFadeInImage 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease;
+  will-change: filter, opacity, transform;
+}
+
+/* 2. Hero Background Slideshow */
+.master-hero {
+  position: relative;
+  padding: 160px 0 90px;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+  background: #070e1b;
+}
+
+.hero-bg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.hero-bg-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 1.2s ease-in-out, transform 8s ease-out;
+  pointer-events: none;
+}
+
+.hero-bg-slide.active {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.hero-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(7, 14, 27, 0.6) 0%, rgba(7, 14, 27, 0.85) 100%);
+  z-index: 2;
+}
+
+[data-theme="light"] .hero-bg-overlay {
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.82) 100%);
+}
+
+.hero-content-layer {
+  position: relative;
+  z-index: 3;
+}
+
+.hero-slide-nav-pills {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.hero-pill-btn {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #e2e8f0;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-pill-btn:hover, .hero-pill-btn.active {
+  background: var(--gold-gradient);
+  color: #070e1b;
+  border-color: var(--gold-primary);
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* 3. Auto-Sliding Banner Carousel (2-3s per slide) */
+.home-banner-carousel-section {
+  padding: 30px 0 10px;
+}
+
+.banner-carousel-container {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-gold);
+  background: var(--bg-card);
+}
+
+.banner-slide-wrapper {
+  position: relative;
+  min-height: 220px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .banner-slide-wrapper {
+    height: 320px;
+  }
+}
+
+.banner-slide-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  transform: translateX(30px);
+  display: flex;
+  align-items: center;
+}
+
+.banner-slide-item.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.banner-slide-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.banner-slide-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(7, 14, 27, 0.92) 0%, rgba(7, 14, 27, 0.65) 50%, rgba(7, 14, 27, 0.2) 100%);
+  z-index: 2;
+}
+
+[data-theme="light"] .banner-slide-overlay {
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.55) 50%, rgba(15, 23, 42, 0.15) 100%);
+}
+
+.banner-slide-content {
+  position: relative;
+  z-index: 3;
+  padding: 30px 40px;
+  max-width: 680px;
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .banner-slide-content {
+    padding: 20px;
+  }
+}
+
+.banner-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gold-gradient);
+  color: #070e1b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.banner-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  font-family: var(--font-heading);
+  color: #ffffff;
+}
+
+@media (min-width: 768px) {
+  .banner-title {
+    font-size: 1.95rem;
+  }
+}
+
+.banner-desc {
+  font-size: 0.92rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+/* Banner Nav Controls */
+.banner-arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: var(--transition);
+  backdrop-filter: blur(6px);
+}
+
+.banner-arrow-btn:hover {
+  background: var(--gold-primary);
+  color: #070e1b;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.banner-arrow-btn.prev {
+  left: 16px;
+}
+
+.banner-arrow-btn.next {
+  right: 16px;
+}
+
+.banner-dots-indicators {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.banner-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.35);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 0;
+}
+
+.banner-dot.active {
+  width: 28px;
+  background: var(--gold-primary);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+}
+
+/* 4. YouTube Video Tour Player */
+.video-tour-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.video-iframe-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: #000;
+}
+
+.video-iframe-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* 5. Coordinates Google Maps Badge */
+.coords-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: monospace;
+}
+
 /* --- MOBILE RESPONSIVE TWEAKS --- */
 @media (max-width: 768px) {
   .header-container {
@@ -992,3 +1346,106 @@ img {
     font-size: 1.2rem;
   }
 }
+
+/* ===================================================================
+   6. ANIMATION ON SCROLL (AOS) - APPLE-LIKE SILKY SMOOTH 60FPS
+   =================================================================== */
+[data-aos],
+.aos-fade-up,
+.aos-fade-down,
+.aos-fade-left,
+.aos-fade-right,
+.aos-zoom-in,
+.aos-blur-in {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition-property: transform, opacity;
+  transition-duration: 0.75s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.aos-fade-up {
+  transform: translateY(24px);
+}
+.aos-fade-down {
+  transform: translateY(-24px);
+}
+.aos-fade-left {
+  transform: translateX(-30px);
+}
+.aos-fade-right {
+  transform: translateX(30px);
+}
+.aos-zoom-in {
+  transform: scale(0.95);
+}
+.aos-blur-in {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Trạng thái sau khi cuộn tới (Revealed State) */
+[data-aos].aos-animate,
+.aos-fade-up.aos-animate,
+.aos-fade-down.aos-animate,
+.aos-fade-left.aos-animate,
+.aos-fade-right.aos-animate,
+.aos-zoom-in.aos-animate,
+.aos-blur-in.aos-animate {
+  opacity: 1 !important;
+  transform: translate(0, 0) scale(1) !important;
+}
+
+/* Stagger Delays phong cách Apple */
+[data-aos-delay="50"]  { transition-delay: 50ms; }
+[data-aos-delay="100"] { transition-delay: 100ms; }
+[data-aos-delay="150"] { transition-delay: 150ms; }
+[data-aos-delay="200"] { transition-delay: 200ms; }
+[data-aos-delay="250"] { transition-delay: 250ms; }
+[data-aos-delay="300"] { transition-delay: 300ms; }
+[data-aos-delay="400"] { transition-delay: 400ms; }
+
+/* Tự động áp dụng hiệu ứng mượt mà khi cuộn tới các thẻ BĐS, Nhân Viên, Tin Tức, Tiện Ích */
+.prop-card,
+.agent-card,
+.member-card,
+.home-article-card,
+.home-art-card,
+.team-member-card,
+.detail-section-card,
+.stat-card,
+.feature-box {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease, border-color 0.3s ease;
+  will-change: opacity, transform;
+}
+
+.prop-card.aos-animate,
+.agent-card.aos-animate,
+.member-card.aos-animate,
+.home-article-card.aos-animate,
+.home-art-card.aos-animate,
+.team-member-card.aos-animate,
+.detail-section-card.aos-animate,
+.stat-card.aos-animate,
+.feature-box.aos-animate {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Hỗ trợ chế độ giảm chuyển động cho người dùng nhạy cảm */
+@media (prefers-reduced-motion: reduce) {
+  [data-aos],
+  .prop-card,
+  .agent-card,
+  .home-article-card {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+

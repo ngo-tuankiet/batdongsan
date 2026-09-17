@@ -256,9 +256,95 @@ async function seed() {
     console.log(`+ Đã thêm/cập nhật BĐS: ${p.title} (${p.price})`);
   }
 
+  // 3. Thêm/Cập nhật Banners
+  const banners = [
+    {
+      id: 'home-banner-1',
+      name: 'Banner Trang Chủ 1 - Vinhomes Cần Giờ',
+      title: 'SIÊU DỰ ÁN CẦN GIỜ',
+      badge: 'HOT NHẤT 2026',
+      badgeIcon: 'fa-fire-flame-curved',
+      imageUrl: '/images/hero-vinhome-cangio.jpg',
+      linkUrl: '/du-an',
+      btnText: 'Xem Dự Án',
+      isActive: true,
+      page: 'home',
+    },
+    {
+      id: 'home-banner-2',
+      name: 'Banner Trang Chủ 2 - Grand Marina Ba Son',
+      title: 'GRAND MARINA SAIGON',
+      badge: 'CĂN HỘ 5 SAO',
+      badgeIcon: 'fa-gem',
+      imageUrl: 'https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&w=800&q=80',
+      linkUrl: '/nha-pho',
+      btnText: 'Xem Quỹ Căn',
+      isActive: true,
+      page: 'home',
+    },
+    {
+      id: 'home-banner-3',
+      name: 'Banner Trang Chủ 3 - Vinhomes Hóc Môn',
+      title: 'VINHOMES HÓC MÔN',
+      badge: 'ĐÓN VÀNH ĐAI 3',
+      badgeIcon: 'fa-city',
+      imageUrl: '/images/hero-vinhome-hocmon.jpg',
+      linkUrl: '/du-an',
+      btnText: 'Xem Chi Tiết',
+      isActive: true,
+      page: 'home',
+    },
+    {
+      id: 'home-banner-4',
+      name: 'Banner Trang Chủ 4 - Nhà Phố Q11',
+      title: 'NHÀ PHỐ MẶT TIỀN Q11',
+      badge: 'SỔ HỒNG TRAO TAY',
+      badgeIcon: 'fa-shield-halved',
+      imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+      linkUrl: '/nha-pho',
+      btnText: 'Xem Nhà Ngay',
+      isActive: true,
+      page: 'home',
+    },
+    {
+      id: 'nha-pho',
+      name: 'Banner Nhà Phố Tiêu Biểu',
+      title: 'NHÀ PHỐ TIÊU BIỂU',
+      badge: 'TIÊU BIỂU',
+      badgeIcon: 'fa-crown',
+      imageUrl: '/images/banner-poster-nhapho.jpg',
+      linkUrl: '/#properties',
+      btnText: 'Xem Quỹ Căn',
+      isActive: true,
+      page: 'nha-pho',
+    },
+    {
+      id: 'du-an',
+      name: 'Banner Dự Án Hot',
+      title: 'DỰ ÁN NỔI BẬT',
+      badge: 'HOT',
+      badgeIcon: 'fa-fire',
+      imageUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+      linkUrl: '/#projects',
+      btnText: 'Khám Phá Ngay',
+      isActive: true,
+      page: 'du-an',
+    },
+  ];
+
+  for (const b of banners) {
+    await prisma.banner.upsert({
+      where: { id: b.id },
+      update: b,
+      create: b,
+    });
+    console.log(`+ Đã thêm/cập nhật Banner: ${b.name} (${b.page})`);
+  }
+
   const totalAgents = await prisma.agent.count();
   const totalProps = await prisma.property.count();
-  console.log(`\n===> Hoàn tất: Tổng ${totalAgents} nhân viên và ${totalProps} bất động sản/dự án trong hệ thống!`);
+  const totalBanners = await prisma.banner.count();
+  console.log(`\n===> Hoàn tất: Tổng ${totalAgents} nhân viên, ${totalProps} BĐS/dự án, ${totalBanners} banners trong hệ thống!`);
 }
 
 seed().finally(() => prisma.$disconnect());

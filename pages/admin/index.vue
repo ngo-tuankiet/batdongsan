@@ -436,12 +436,21 @@
                         </div>
                         <div class="prop-meta-inline">
                           <span v-if="p.area"><i class="fa-solid fa-ruler-combined"></i> {{ p.area }}</span>
+                          <span v-if="p.dimensions" style="color: var(--gold-primary); font-weight: 600;">
+                            <i class="fa-solid fa-arrows-left-right-to-line"></i> {{ p.dimensions }}
+                          </span>
+                          <span v-if="calculatePricePerM2(p.priceRaw, p.area, p.price)" style="color: #10b981; font-weight: 600;">
+                            <i class="fa-solid fa-tag"></i> {{ calculatePricePerM2(p.priceRaw, p.area, p.price) }}
+                          </span>
                           <span v-if="p.structure"><i class="fa-solid fa-layer-group"></i> {{ p.structure }}</span>
                         </div>
                       </div>
                     </td>
                     <td>
                       <strong class="prop-price-text">{{ p.price }}</strong>
+                      <div v-if="calculatePricePerM2(p.priceRaw, p.area, p.price)" style="font-size: 0.76rem; color: #10b981; margin-top: 2px;">
+                        {{ calculatePricePerM2(p.priceRaw, p.area, p.price) }}
+                      </div>
                     </td>
                     <td>
                       <div v-if="p.categoryId === 'nha-pho'" class="cat-pill nha-pho">
@@ -764,8 +773,9 @@
                 <span class="filter-label"><i class="fa-solid fa-filter"></i> Lọc trang:</span>
                 <select v-model="bannerFilterPage" class="admin-select">
                   <option value="all">Tất cả banner ({{ banners.length }})</option>
-                  <option value="nha-pho">Trang Nhà Phố</option>
-                  <option value="du-an">Trang Dự Án</option>
+                  <option value="home">Trang Chủ (/)</option>
+                  <option value="nha-pho">Trang Nhà Phố (/nha-pho)</option>
+                  <option value="du-an">Trang Dự Án (/du-an)</option>
                 </select>
               </div>
 
@@ -797,7 +807,7 @@
                     <div>
                       <span class="banner-page-tag">
                         <i class="fa-solid fa-compass"></i>
-                        {{ b.page === 'nha-pho' ? 'Trang Nhà Phố (/nha-pho)' : (b.page === 'du-an' ? 'Trang Dự Án (/du-an)' : 'Tất cả trang') }}
+                        {{ b.page === 'home' ? 'Trang Chủ (/)' : (b.page === 'nha-pho' ? 'Trang Nhà Phố (/nha-pho)' : (b.page === 'du-an' ? 'Trang Dự Án (/du-an)' : 'Tất cả trang')) }}
                       </span>
                       <h3 class="banner-card-title">{{ b.name }}</h3>
                     </div>
@@ -975,16 +985,34 @@
             </div>
 
             <div>
-              <label>Giá số (Tỷ) để sắp xếp *</label>
+              <label>Giá số (Tỷ) để sắp xếp & tính đơn giá *</label>
               <input v-model="propForm.priceRaw" type="number" step="0.1" class="admin-input" placeholder="38.5" required>
             </div>
 
             <div>
-              <label>Diện tích (VD: 112 m²)</label>
+              <label>Diện tích (VD: 112 m² hoặc 140 m²) *</label>
               <input v-model="propForm.area" type="text" class="admin-input" placeholder="112 m²" required>
             </div>
 
             <div>
+              <label>
+                <i class="fa-solid fa-arrows-left-right-to-line" style="color: var(--gold-primary);"></i>
+                Kích thước Dài x Rộng (VD: 6m x 23.5m)
+              </label>
+              <input v-model="propForm.dimensions" type="text" class="admin-input" placeholder="VD: 6m x 23.5m hoặc 5m x 20m">
+            </div>
+
+            <div class="form-col-full" v-if="liveCalculatedPricePerM2">
+              <div style="background: rgba(16, 185, 129, 0.12); border: 1px dashed rgba(16, 185, 129, 0.45); border-radius: 6px; padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; font-size: 0.88rem; color: #10b981;">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-calculator"></i>
+                  <span>Đơn giá tự động tính trên m²:</span>
+                </span>
+                <strong style="font-size: 1.05rem;">{{ liveCalculatedPricePerM2 }}</strong>
+              </div>
+            </div>
+
+            <div class="form-col-full">
               <label>Vị trí địa chỉ</label>
               <input v-model="propForm.location" type="text" class="admin-input" placeholder="Mặt tiền CMT8, P. Bến Thành, Q.1" required>
             </div>
@@ -1402,6 +1430,7 @@
             <div>
               <label>Trang hiển thị *</label>
               <select v-model="bannerForm.page" class="admin-select">
+                <option value="home">Trang Chủ (/)</option>
                 <option value="nha-pho">Trang Nhà Phố (/nha-pho)</option>
                 <option value="du-an">Trang Dự Án (/du-an)</option>
                 <option value="all">Tất cả trang</option>
@@ -1564,6 +1593,7 @@ const crawlingNews = ref(false);
 
 // Danh mục Tỉnh / Thành Phố và Quận Huyện phân cấp chuẩn theo sáp nhập mới nhất
 import { PROVINCE_OPTIONS, PROVINCE_DISTRICTS } from '~/composables/useAdministrativeUnits';
+import { calculatePricePerM2 } from '~/composables/usePropertyUtils';
 
 // Admin filters
 const adminPropFilter = reactive({
@@ -1589,6 +1619,7 @@ const propForm = reactive({
   price: '',
   priceRaw: 0,
   area: '',
+  dimensions: '',
   location: '',
   structure: '',
   image: '',
@@ -1598,6 +1629,10 @@ const propForm = reactive({
   legal: '',
   rentIncome: '',
   description: '',
+});
+
+const liveCalculatedPricePerM2 = computed(() => {
+  return calculatePricePerM2(propForm.priceRaw, propForm.area, propForm.price);
 });
 
 const currentDistricts = computed(() => {
@@ -1900,6 +1935,7 @@ const openNewPropertyModal = () => {
   propForm.price = '';
   propForm.priceRaw = 0;
   propForm.area = '';
+  propForm.dimensions = '';
   propForm.location = '';
   propForm.structure = '';
   propForm.image = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80';
@@ -1928,6 +1964,7 @@ const openEditPropertyModal = (p: any) => {
   propForm.price = p.price;
   propForm.priceRaw = p.priceRaw;
   propForm.area = p.area;
+  propForm.dimensions = p.dimensions || '';
   propForm.location = p.location;
   propForm.structure = p.structure;
   propForm.image = p.image;
