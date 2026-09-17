@@ -169,7 +169,7 @@
 
         <!-- Nút Xem Tất Cả Bài Viết -->
         <div style="text-align: center;">
-          <NuxtLink to="/tin-tuc" class="btn btn-outline-gold" style="padding: 12px 28px; font-size: 0.9rem; font-weight: 700;">
+          <NuxtLink to="/tin-tuc" class="btn btn-gold" style="padding: 13px 32px; font-size: 0.95rem; font-weight: 700;">
             <i class="fa-solid fa-newspaper"></i> Xem Toàn Bộ Tin Tức & Kinh Nghiệm Đầu Tư
             <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
           </NuxtLink>
@@ -198,7 +198,7 @@
 
         <!-- Nút Xem Tất Cả Chuyên Viên -->
         <div style="text-align: center; margin-top: 36px;">
-          <NuxtLink to="/doi-ngu-chuyen-vien" class="btn btn-outline-gold" style="padding: 13px 32px; font-size: 0.95rem; font-weight: 700;">
+          <NuxtLink to="/doi-ngu-chuyen-vien" class="btn btn-gold" style="padding: 13px 32px; font-size: 0.95rem; font-weight: 700;">
             <i class="fa-solid fa-users"></i> Xem Toàn Bộ Đội Ngũ Chuyên Viên ({{ totalAgentsCount }}+ Chuyên Gia)
             <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
           </NuxtLink>

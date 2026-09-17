@@ -16,7 +16,7 @@ async function runQaAudit() {
     record('Trang chủ (Home)', 'Public Pages', 'FAIL', e.message);
   }
 
-  const pages = ['/nha-pho', '/du-an', '/tin-tuc', '/ky-gui', '/ve-chung-toi', '/admin'];
+  const pages = ['/nha-pho', '/du-an', '/doi-ngu-chuyen-vien', '/tin-tuc', '/ky-gui', '/ve-chung-toi', '/admin'];
   for (const p of pages) {
     try {
       const res = await fetch(`${baseUrl}${p}`);
