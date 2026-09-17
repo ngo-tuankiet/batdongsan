@@ -256,10 +256,10 @@
                 class="btn-admin-crawl" 
                 :disabled="crawlingNews"
                 @click="handleCrawlNews"
-                title="Kéo các tin thị trường BĐS mới nhất về làm bản nháp"
+                title="Kéo các tin thị trường BĐS mới nhất từ CafeLand.vn về làm bản nháp"
               >
                 <i class="fa-solid fa-bolt" :class="{ 'fa-spin': crawlingNews }"></i>
-                <span>{{ crawlingNews ? 'Đang Lấy Tin...' : '⚡ Cào Tin Mới (RSS)' }}</span>
+                <span>{{ crawlingNews ? 'Đang Lấy Tin CafeLand...' : '⚡ Cào Tin Mới (CafeLand.vn)' }}</span>
               </button>
 
               <button 
@@ -647,7 +647,10 @@
                           <i class="fa-solid fa-arrow-up-right-from-square"></i>
                         </NuxtLink>
                         <div class="prop-loc-text">
-                          <span v-if="item.source" style="color: var(--gold-primary); font-weight: 600;">[{{ item.source }}]</span>
+                          <span v-if="item.source" style="color: var(--gold-primary); font-weight: 700;">[{{ item.source }}]</span>
+                          <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener noreferrer" style="margin-left: 6px; color: var(--gold-primary); font-weight: 600; text-decoration: underline;" title="Mở link gốc bài viết CafeLand">
+                            Link gốc <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem;"></i>
+                          </a>
                           <span style="margin: 0 4px;">•</span>
                           <span>{{ item.author }}</span>
                           <span style="margin: 0 4px;">•</span>

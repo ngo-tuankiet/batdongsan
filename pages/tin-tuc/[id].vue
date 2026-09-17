@@ -57,6 +57,20 @@
         <!-- NỘI DUNG CHI TIẾT (RENDER HTML) -->
         <div class="article-body-html" v-html="article.content"></div>
 
+        <!-- NGUỒN BÀI VIẾT GỐC (KHI CÀO TỪ CAFELAND / LINK NGOÀI) -->
+        <div v-if="article.sourceUrl" class="article-source-box">
+          <div class="source-icon-wrap">
+            <i class="fa-solid fa-link"></i>
+          </div>
+          <div class="source-info-wrap">
+            <div class="source-label">Đường dẫn bài viết gốc:</div>
+            <a :href="article.sourceUrl" target="_blank" rel="noopener noreferrer" class="source-url-link">
+              <strong>{{ article.source || 'CafeLand.vn' }}</strong>: {{ article.sourceUrl }}
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </div>
+
         <!-- SHARE & CTA TƯ VẤN -->
         <div class="article-cta-box">
           <div class="cta-box-left">
@@ -307,6 +321,57 @@ useHead(() => ({
 }
 
 /* CTA BOX */
+/* NGUỒN BÀI VIẾT GỐC */
+.article-source-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid var(--border-gold, rgba(212, 175, 55, 0.3));
+  border-radius: var(--radius-md, 10px);
+  padding: 16px 20px;
+  margin: 30px 0 35px;
+}
+
+.source-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold-primary, #dfb76c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.source-label {
+  font-size: 0.78rem;
+  color: var(--text-muted, #94a3b8);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.source-url-link {
+  color: var(--gold-primary, #dfb76c);
+  font-size: 0.9rem;
+  text-decoration: none;
+  word-break: break-all;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.source-url-link:hover {
+  text-decoration: underline;
+  color: var(--gold-light, #f7e7a9);
+}
+
 .article-cta-box {
   background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, var(--bg-card) 100%);
   border: 1px solid var(--border-gold);
