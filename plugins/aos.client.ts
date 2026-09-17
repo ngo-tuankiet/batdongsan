@@ -58,7 +58,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         ) {
           const idx = Array.from(parent.children).indexOf(htmlEl);
           if (idx >= 0) {
-            htmlEl.style.transitionDelay = `${(idx % 4) * 70}ms`;
+            htmlEl.style.transitionDelay = `${(idx % 4) * 110}ms`;
           }
         }
       }
