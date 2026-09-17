@@ -15,7 +15,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Bến Thành Land - Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các dự án Vinhomes Cần Giờ & Vinhomes Hóc Môn. Pháp lý hoàn công chuẩn 100%, kết nối trực tiếp chủ nhà. Hotline: 0912.131.329.' },
+        { name: 'description', content: 'Bến Thành Land - Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các dự án Vinhomes Cần Giờ & Vinhomes Hóc Môn. Pháp lý hoàn công chuẩn 100%, kết nối trực tiếp chủ nhà. Hotline: 0901.355.446.' },
         { name: 'keywords', content: 'bến thành land, benthanhland, benthanhland.com, bất động sản quận 11, nhà phố quận 11, vinhome cần giờ, vinhome hóc môn, ký gửi nhà đất, mua bán nhà đất quận 11' },
         { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
         { name: 'author', content: 'Bến Thành Land' },
@@ -24,7 +24,7 @@ export default defineNuxtConfig({
         // OpenGraph / Facebook / Zalo
         { property: 'og:site_name', content: 'Bến Thành Land' },
         { property: 'og:title', content: 'Bến Thành Land | Hệ Thống Môi Giới BĐS Hàng Đầu Quận 11 & Dự Án Vinhomes' },
-        { property: 'og:description', content: 'Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các dự án Vinhomes Cần Giờ & Vinhomes Hóc Môn. Hotline: 0912.131.329.' },
+        { property: 'og:description', content: 'Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các dự án Vinhomes Cần Giờ & Vinhomes Hóc Môn. Hotline: 0901.355.446.' },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://benthanhland.com/' },
         { property: 'og:image', content: 'https://benthanhland.com/images/hero-vinhome-cangio.jpg' },
@@ -35,7 +35,7 @@ export default defineNuxtConfig({
         // Twitter Card
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: 'Bến Thành Land | Môi Giới BĐS Hàng Đầu Quận 11 & Dự Án Vinhomes' },
-        { name: 'twitter:description', content: 'Quỹ căn độc quyền nhà phố mặt tiền Quận 11, các dự án Vinhomes Cần Giờ & Vinhomes Hóc Môn. Hotline: 0912.131.329.' },
+        { name: 'twitter:description', content: 'Quỹ căn độc quyền nhà phố mặt tiền Quận 11, các dự án Vinhomes Cần Giờ & Vinhomes Hóc Môn. Hotline: 0901.355.446.' },
         { name: 'twitter:image', content: 'https://benthanhland.com/images/hero-vinhome-cangio.jpg' },
       ],
       link: [
@@ -59,7 +59,7 @@ export default defineNuxtConfig({
             image: 'https://benthanhland.com/images/hero-vinhome-cangio.jpg',
             '@id': 'https://benthanhland.com/#organization',
             url: 'https://benthanhland.com',
-            telephone: '0912131329',
+            telephone: '0901355446',
             priceRange: '$$$$',
             address: {
               '@type': 'PostalAddress',

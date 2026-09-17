@@ -25,121 +25,53 @@
         <span class="active-crumb">Dự Án Cao Cấp</span>
       </nav>
 
-      <!-- HERO SPLIT SECTION: BÊN TRÁI LÀ BANNER, BÊN PHẢI LÀ LIÊN HỆ NGƯỜI ĐƯỢC PHÂN BỔ CÓ BUTTON ĐỔI NGƯỜI -->
-      <section class="split-hero-container">
-        <!-- BÊN TRÁI: BANNER HÌNH ẢNH CAO CẤP DỰ ÁN -->
-        <div class="split-hero-banner">
-          <div class="banner-media-wrap">
-            <img 
-              src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80" 
-              alt="Danh mục Dự Án Bến Thành" 
-              class="banner-bg-img"
-            />
-            <div class="banner-gradient-overlay"></div>
-          </div>
-
-          <div class="banner-content">
-            <span class="hero-tag-badge" style="background: rgba(16, 185, 129, 0.2); border-color: var(--accent-green); color: #34d399;">
-              <i class="fa-solid fa-gem"></i> DỰ ÁN HÀNG HIỆU & NGHỈ DƯỠNG
-            </span>
-            <h1 class="banner-title">
-              Danh Mục Dự Án Cao Cấp & Căn Hộ Hạng Sang
-            </h1>
-            <p class="banner-desc">
-              Hệ thống các dự án căn hộ thương hiệu quốc tế, đại đô thị sinh thái và bất động sản nghỉ dưỡng cao cấp. Chính sách bán hàng trực tiếp từ Chủ Đầu Tư cùng quỹ căn ngoại giao vị trí đẹp nhất.
-            </p>
-
-            <div class="banner-key-points">
-              <div class="key-point-item">
-                <i class="fa-solid fa-building-shield"></i>
-                <span>Chủ Đầu Tư Uy Tín</span>
-              </div>
-              <div class="key-point-item">
-                <i class="fa-solid fa-percent"></i>
-                <span>Ân Hạn Gốc Lãi 0%</span>
-              </div>
-              <div class="key-point-item">
-                <i class="fa-solid fa-chart-line"></i>
-                <span>Tiềm Năng Sinh Lời Vượt Trội</span>
-              </div>
-            </div>
-
-            <div class="banner-stats-counter">
-              <span class="stat-badge">
-                <i class="fa-solid fa-fire"></i> Đang mở bán: <strong>{{ properties.length }}</strong> dự án
-              </span>
-            </div>
-          </div>
+      <!-- HERO BANNER DỰ ÁN CAO CẤP -->
+      <section class="duan-hero-banner">
+        <div class="banner-media-wrap">
+          <img 
+            src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=80" 
+            alt="Danh mục Dự Án Bến Thành" 
+            class="banner-bg-img"
+          />
+          <div class="banner-gradient-overlay"></div>
         </div>
 
-        <!-- BÊN PHẢI: THÔNG TIN LIÊN HỆ CỦA NGƯỜI ĐƯỢC PHÂN BỔ + BUTTON CHỌN NGƯỜI -->
-        <div class="split-hero-agent-card">
-          <div class="agent-card-header">
-            <span class="agent-duty-badge">
-              <i class="fa-solid fa-shield-halved"></i> CHUYÊN VIÊN ĐƯỢC PHÂN BỔ
-            </span>
-            <span class="agent-online-status">
-              <span class="pulse-dot"></span> Trực tuyến
-            </span>
-          </div>
+        <div class="banner-content">
+          <span class="hero-tag-badge" style="background: rgba(16, 185, 129, 0.2); border-color: var(--accent-green); color: #34d399;">
+            <i class="fa-solid fa-gem"></i> DỰ ÁN HÀNG HIỆU & NGHỈ DƯỠNG
+          </span>
+          <h1 class="banner-title">
+            Danh Mục Dự Án Cao Cấp & Căn Hộ Hạng Sang
+          </h1>
+          <p class="banner-desc">
+            Hệ thống các dự án căn hộ thương hiệu quốc tế, đại đô thị sinh thái và bất động sản nghỉ dưỡng cao cấp. Chính sách bán hàng trực tiếp từ Chủ Đầu Tư cùng quỹ căn ngoại giao vị trí đẹp nhất.
+          </p>
 
-          <!-- Thông tin chuyên viên đang được phân bổ -->
-          <div v-if="assignedAgent" class="assigned-agent-body">
-            <div class="assigned-avatar-wrap">
-              <img :src="assignedAgent.avatar" :alt="assignedAgent.name" class="assigned-avatar">
-              <span class="assigned-tag-pill">{{ assignedAgent.tag || 'Chuyên Gia' }}</span>
+          <div class="banner-key-points">
+            <div class="key-point-item">
+              <i class="fa-solid fa-building-shield"></i>
+              <span>Chủ Đầu Tư Uy Tín</span>
             </div>
-
-            <div class="assigned-main-info">
-              <h3 class="assigned-name">{{ assignedAgent.name }}</h3>
-              <p class="assigned-role">{{ assignedAgent.role }}</p>
-
-              <div class="assigned-stats-row">
-                <span><i class="fa-solid fa-business-time"></i> {{ assignedAgent.exp }}</span>
-                <span>•</span>
-                <span><i class="fa-solid fa-handshake-simple"></i> {{ assignedAgent.deals }}</span>
-              </div>
-
-              <p v-if="assignedAgent.slogan" class="assigned-slogan">
-                "{{ assignedAgent.slogan }}"
-              </p>
+            <div class="key-point-item">
+              <i class="fa-solid fa-percent"></i>
+              <span>Ân Hạn Gốc Lãi 0%</span>
             </div>
-
-            <!-- Nút liên hệ nhanh -->
-            <div class="assigned-action-buttons">
-              <a :href="`tel:${assignedAgent.phone.replace(/[^0-9]/g, '')}`" class="btn btn-call" style="width: 100%;">
-                <i class="fa-solid fa-phone"></i> Hotline Dự Án: {{ assignedAgent.phoneDisplay || assignedAgent.phone }}
-              </a>
-              <a :href="assignedAgent.zalo || 'https://zalo.me'" target="_blank" class="btn btn-zalo" style="width: 100%;">
-                <i class="fa-solid fa-comment-dots"></i> Nhận Bảng Giá & CSBH (Zalo)
-              </a>
-            </div>
-
-            <!-- BUTTON ĐỂ CHỌN / ĐỔI NGƯỜI (THEO YÊU CẦU CỦA BẠN) -->
-            <div class="agent-switch-wrap">
-              <button 
-                type="button" 
-                class="btn btn-outline-gold btn-switch-agent"
-                @click="showAgentModal = true"
-              >
-                <i class="fa-solid fa-users-gear"></i> Chọn / Đổi Chuyên Viên Khác
-              </button>
-              <p class="agent-switch-note">
-                Quý khách có thể tự do chọn chuyên viên ưng ý nhất để đồng hành
-              </p>
+            <div class="key-point-item">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Tiềm Năng Sinh Lời Vượt Trội</span>
             </div>
           </div>
 
-          <!-- Loading State for Agent -->
-          <div v-else style="text-align: center; padding: 40px; color: var(--text-muted);">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--gold-primary);"></i>
-            <p style="margin-top: 8px;">Đang kết nối chuyên viên phụ trách...</p>
+          <div class="banner-stats-counter">
+            <span class="stat-badge">
+              <i class="fa-solid fa-fire"></i> Đang mở bán: <strong>{{ properties.length }}</strong> dự án
+            </span>
           </div>
         </div>
       </section>
 
       <!-- BỘ LỌC TÌM KIẾM QUỸ CĂN DỰ ÁN -->
-      <section class="properties-list-section" style="margin-top: 50px;">
+      <section class="properties-list-section" style="margin-top: 40px;">
         <div class="section-header" style="text-align: left; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 25px;">
           <div>
             <p class="section-subtitle">DANH SÁCH DỰ ÁN</p>
@@ -205,15 +137,6 @@
 
     </div>
 
-    <!-- MODAL CHỌN ĐỔI CHUYÊN VIÊN -->
-    <AgentSelectorModal 
-      :is-open="showAgentModal" 
-      :current-agent-id="assignedAgent?.id" 
-      :agents="agents" 
-      @close="showAgentModal = false" 
-      @select="handleSelectAgent" 
-    />
-
     <!-- MODAL CHI TIẾT BĐS -->
     <PropertyDetailModal 
       :property="selectedProperty" 
@@ -225,7 +148,6 @@
 <script setup lang="ts">
 const { showToast } = useToast();
 const selectedProperty = ref<any>(null);
-const showAgentModal = ref(false);
 const searchKeyword = ref('');
 const filterPrice = ref('all');
 
@@ -348,22 +270,8 @@ useHead({
   padding: 100px 0 80px;
 }
 
-/* 2-COLUMN SPLIT HERO */
-.split-hero-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
-  align-items: stretch;
-}
-
-@media (min-width: 992px) {
-  .split-hero-container {
-    grid-template-columns: 1.3fr 1fr;
-  }
-}
-
-/* BÊN TRÁI: HERO BANNER */
-.split-hero-banner {
+/* DỰ ÁN HERO BANNER FULL-WIDTH */
+.duan-hero-banner {
   position: relative;
   border-radius: var(--radius-lg, 16px);
   overflow: hidden;
@@ -372,8 +280,8 @@ useHead({
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  min-height: 440px;
-  padding: 36px 32px;
+  min-height: 380px;
+  padding: 44px 36px;
 }
 
 .banner-media-wrap {
@@ -393,8 +301,8 @@ useHead({
   transition: transform 0.6s ease;
 }
 
-.split-hero-banner:hover .banner-bg-img {
-  transform: scale(1.06);
+.duan-hero-banner:hover .banner-bg-img {
+  transform: scale(1.05);
 }
 
 .banner-gradient-overlay {
@@ -403,12 +311,13 @@ useHead({
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, rgba(7, 14, 27, 0.35) 0%, rgba(7, 14, 27, 0.85) 65%, rgba(7, 14, 27, 0.98) 100%);
+  background: linear-gradient(180deg, rgba(7, 14, 27, 0.4) 0%, rgba(7, 14, 27, 0.85) 60%, rgba(7, 14, 27, 0.98) 100%);
 }
 
 .banner-content {
   position: relative;
   z-index: 2;
+  max-width: 800px;
 }
 
 .hero-tag-badge {
@@ -427,7 +336,7 @@ useHead({
 }
 
 .banner-title {
-  font-size: 1.85rem;
+  font-size: 2.1rem;
   font-weight: 800;
   color: #fff;
   line-height: 1.3;
@@ -436,11 +345,10 @@ useHead({
 }
 
 .banner-desc {
-  font-size: 0.92rem;
+  font-size: 0.96rem;
   color: #cbd5e1;
-  line-height: 1.6;
+  line-height: 1.65;
   margin-bottom: 20px;
-  max-width: 600px;
 }
 
 .banner-key-points {
@@ -454,11 +362,11 @@ useHead({
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   color: #f8fafc;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(4px);
-  padding: 6px 14px;
+  padding: 7px 16px;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
@@ -472,173 +380,12 @@ useHead({
 }
 
 .stat-badge {
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   color: var(--gold-light);
   background: rgba(0, 0, 0, 0.5);
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 6px;
   border: 1px solid rgba(212, 175, 55, 0.3);
-}
-
-/* BÊN PHẢI: ASSIGNED AGENT CARD */
-.split-hero-agent-card {
-  background: var(--bg-card, #132442);
-  border: 1px solid var(--border-gold, rgba(212, 175, 55, 0.4));
-  border-radius: var(--radius-lg, 16px);
-  box-shadow: var(--shadow-md, 0 8px 24px rgba(0,0,0,0.3));
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.agent-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.08));
-  margin-bottom: 18px;
-}
-
-.agent-duty-badge {
-  font-size: 0.76rem;
-  font-weight: 700;
-  color: var(--gold-primary, #dfb76c);
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.agent-online-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.76rem;
-  color: var(--accent-green, #10b981);
-}
-
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent-green, #10b981);
-  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-  animation: pulseGreen 1.8s infinite;
-}
-
-@keyframes pulseGreen {
-  0% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-  }
-}
-
-.assigned-agent-body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.assigned-avatar-wrap {
-  position: relative;
-  width: 95px;
-  height: 95px;
-  margin: 0 auto;
-}
-
-.assigned-avatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--gold-primary, #dfb76c);
-  box-shadow: var(--shadow-gold);
-}
-
-.assigned-tag-pill {
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--gold-gradient);
-  color: #070e1b;
-  font-weight: 800;
-  font-size: 0.65rem;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  white-space: nowrap;
-}
-
-.assigned-main-info {
-  text-align: center;
-}
-
-.assigned-name {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text-main, #fff);
-  margin-bottom: 4px;
-}
-
-.assigned-role {
-  font-size: 0.85rem;
-  color: var(--text-muted, #94a3b8);
-  margin-bottom: 8px;
-}
-
-.assigned-stats-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: var(--gold-light, #f7e7a9);
-  margin-bottom: 10px;
-}
-
-.assigned-slogan {
-  font-size: 0.82rem;
-  font-style: italic;
-  color: var(--text-sub, #cbd5e1);
-  background: rgba(255, 255, 255, 0.04);
-  padding: 8px 12px;
-  border-radius: 8px;
-  border-left: 3px solid var(--gold-primary);
-  text-align: left;
-}
-
-.assigned-action-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 4px;
-}
-
-.agent-switch-wrap {
-  margin-top: 10px;
-  text-align: center;
-  padding-top: 14px;
-  border-top: 1px dashed var(--border-color, rgba(255,255,255,0.1));
-}
-
-.btn-switch-agent {
-  width: 100%;
-  padding: 10px 18px;
-  font-size: 0.88rem;
-  font-weight: 600;
-}
-
-.agent-switch-note {
-  font-size: 0.74rem;
-  color: var(--text-muted, #94a3b8);
-  margin-top: 6px;
 }
 
 .empty-state-box {

@@ -26,7 +26,7 @@
           <div>
             <h4 style="color: var(--gold-primary); margin-bottom: 12px; font-size: 1rem;">THÔNG TIN LIÊN HỆ</h4>
             <p style="margin-bottom: 6px;"><i class="fa-solid fa-location-dot" style="color: var(--gold-primary);"></i> 6 Đường Số 5A, Phường Bình Thới, TP. Hồ Chí Minh</p>
-            <p style="margin-bottom: 6px;"><i class="fa-solid fa-phone" style="color: var(--gold-primary);"></i> Hotline: <a href="tel:0912131329" style="color: inherit; font-weight: 700;">0912.131.329</a></p>
+            <p style="margin-bottom: 6px;"><i class="fa-solid fa-phone" style="color: var(--gold-primary);"></i> Hotline: <a href="tel:0901355446" style="color: inherit; font-weight: 700;">0901.355.446</a></p>
             <p style="margin-bottom: 6px;"><i class="fa-solid fa-envelope" style="color: var(--gold-primary);"></i> contact@benthanhland.vn</p>
           </div>
         </div>

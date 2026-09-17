@@ -440,11 +440,11 @@ const googleMapsExternalUrl = computed(() => {
 
 // Contact info
 const hotlinePhone = computed(() => {
-  return property.value?.agent?.phone || '0912131329';
+  return property.value?.agent?.phone || '0901355446';
 });
 
 const displayPhone = computed(() => {
-  return property.value?.agent?.phoneDisplay || '0912.131.329';
+  return property.value?.agent?.phoneDisplay || '0901.355.446';
 });
 
 const zaloUrl = computed(() => {

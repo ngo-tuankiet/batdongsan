@@ -136,10 +136,10 @@
             <p>Tránh mất tiền oan từ các bẫy quy hoạch ngầm, lộ giới mở rộng và tính toán chính xác dòng tiền sinh lời trước khi đặt cọc.</p>
           </div>
           <div class="cta-actions">
-            <a href="tel:0912131329" class="btn btn-gold cta-btn">
-              <i class="fa-solid fa-phone"></i> Đặt Lịch Tư Vấn 1-1 (0912.131.329)
+            <a href="tel:0901355446" class="btn btn-gold cta-btn">
+              <i class="fa-solid fa-phone"></i> Đặt Lịch Tư Vấn 1-1 (0901.355.446)
             </a>
-            <a href="https://zalo.me" target="_blank" class="btn btn-outline-gold cta-btn">
+            <a href="https://zalo.me/0901355446" target="_blank" class="btn btn-outline-gold cta-btn">
               <i class="fa-solid fa-comment-dots"></i> Nhắn Tin Zalo Chuyên Gia
             </a>
           </div>

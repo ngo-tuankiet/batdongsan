@@ -139,7 +139,7 @@
             <li>
               <i class="fa-solid fa-phone-volume"></i>
               <div>
-                <strong>Hotline tư vấn 24/7:</strong> <a href="tel:0912131329" style="color: var(--gold-primary); font-weight: 700;">0912.131.329</a>
+                <strong>Hotline tư vấn 24/7:</strong> <a href="tel:0901355446" style="color: var(--gold-primary); font-weight: 700;">0901.355.446</a>
               </div>
             </li>
             <li>
@@ -157,10 +157,10 @@
           </ul>
 
           <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
-            <a href="tel:0912131329" class="btn btn-gold" style="padding: 12px 24px; font-weight: 700;">
+            <a href="tel:0901355446" class="btn btn-gold" style="padding: 12px 24px; font-weight: 700;">
               <i class="fa-solid fa-phone"></i> Gọi Hotline Ngay
             </a>
-            <a href="https://zalo.me/0912131329" target="_blank" class="btn btn-outline-gold" style="padding: 12px 24px; font-weight: 700;">
+            <a href="https://zalo.me/0901355446" target="_blank" class="btn btn-outline-gold" style="padding: 12px 24px; font-weight: 700;">
               <i class="fa-solid fa-comment-dots"></i> Kết Nối Zalo
             </a>
           </div>
@@ -185,7 +185,7 @@
 useHead({
   title: 'Về Chúng Tôi | Sàn Giao Dịch Bất Động Sản Bến Thành Land',
   meta: [
-    { name: 'description', content: 'Tìm hiểu về Bến Thành Land - Hệ thống môi giới bất động sản hàng đầu Quận 11 và đại lý F1 dự án Vinhomes Cần Giờ, Vinhomes Hóc Môn. Triết lý Minh bạch - Bảo mật - Hiệu quả. Hotline: 0912.131.329.' },
+    { name: 'description', content: 'Tìm hiểu về Bến Thành Land - Hệ thống môi giới bất động sản hàng đầu Quận 11 và đại lý F1 dự án Vinhomes Cần Giờ, Vinhomes Hóc Môn. Triết lý Minh bạch - Bảo mật - Hiệu quả. Hotline: 0901.355.446.' },
     { property: 'og:title', content: 'Về Chúng Tôi | Sàn Giao Dịch Bất Động Sản Bến Thành Land' },
     { property: 'og:description', content: '12+ năm kinh nghiệm thực chiến tại Quận 11, 1.500+ giao dịch thành công. Cam kết pháp lý 100%.' },
     { property: 'og:url', content: 'https://benthanhland.com/ve-chung-toi' }

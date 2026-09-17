@@ -32,8 +32,8 @@
         </NuxtLink>
 
         <!-- Hotline Sàn -->
-        <a href="tel:0912131329" class="btn btn-gold header-hotline-btn" style="padding: 9px 18px; font-size: 0.85rem;">
-          <i class="fa-solid fa-phone"></i> 0912.131.329
+        <a href="tel:0901355446" class="btn btn-gold header-hotline-btn" style="padding: 9px 18px; font-size: 0.85rem;">
+          <i class="fa-solid fa-phone"></i> 0901.355.446
         </a>
       </div>
     </div>

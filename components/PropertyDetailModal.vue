@@ -35,8 +35,8 @@
         </table>
 
         <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px;">
-          <a :href="`tel:${(property.agent?.phone || '0912131329').replace(/[^0-9]/g, '')}`" class="btn btn-call" style="flex: 1;">
-            <i class="fa-solid fa-phone"></i> Gọi: {{ property.agent?.phoneDisplay || property.agent?.phone || '0912.131.329' }}
+          <a :href="`tel:${(property.agent?.phone || '0901355446').replace(/[^0-9]/g, '')}`" class="btn btn-call" style="flex: 1;">
+            <i class="fa-solid fa-phone"></i> Gọi: {{ property.agent?.phoneDisplay || property.agent?.phone || '0901.355.446' }}
           </a>
           <a :href="property.agent?.zalo || 'https://zalo.me'" target="_blank" class="btn btn-zalo" style="flex: 1;">
             <i class="fa-solid fa-comment-dots"></i> Nhắn Zalo

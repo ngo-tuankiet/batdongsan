@@ -86,11 +86,11 @@
 
             <!-- CONTACT ACTIONS -->
             <div class="member-actions">
-              <a :href="`tel:${agent.phone || '0912131329'}`" class="btn btn-gold member-btn">
-                <i class="fa-solid fa-phone"></i> Gọi: {{ agent.phoneDisplay || agent.phone || '0912.131.329' }}
+              <a :href="`tel:${agent.phone || '0901355446'}`" class="btn btn-gold member-btn">
+                <i class="fa-solid fa-phone"></i> Gọi: {{ agent.phoneDisplay || agent.phone || '0901.355.446' }}
               </a>
               <a 
-                :href="`https://zalo.me/${agent.zalo || agent.phone || '0912131329'}`" 
+                :href="`https://zalo.me/${agent.zalo || agent.phone || '0901355446'}`" 
                 target="_blank" 
                 class="btn btn-outline-gold member-btn"
               >
@@ -119,8 +119,8 @@
             </p>
           </div>
           <div class="consultation-btn-group">
-            <a href="tel:0912131329" class="btn btn-gold" style="padding: 14px 28px; font-size: 1rem;">
-              <i class="fa-solid fa-phone-volume"></i> HOTLINE: 0912.131.329
+            <a href="tel:0901355446" class="btn btn-gold" style="padding: 14px 28px; font-size: 1rem;">
+              <i class="fa-solid fa-phone-volume"></i> HOTLINE: 0901.355.446
             </a>
             <NuxtLink to="/ky-gui" class="btn btn-outline-gold" style="padding: 14px 28px; font-size: 1rem;">
               <i class="fa-solid fa-file-signature"></i> Gửi Hồ Sơ Ký Gửi
@@ -139,7 +139,7 @@ import { ref, computed } from 'vue';
 useHead({
   title: 'Đội Ngũ Chuyên Viên Tư Vấn BĐS Cao Cấp | Bến Thành Land',
   meta: [
-    { name: 'description', content: 'Đội ngũ chuyên gia và môi giới thực chiến Bến Thành Land chuyên tư vấn nhà phố Quận 11, biệt thự và đại dự án Vinhomes Cần Giờ, Hóc Môn. Hotline: 0912.131.329.' },
+    { name: 'description', content: 'Đội ngũ chuyên gia và môi giới thực chiến Bến Thành Land chuyên tư vấn nhà phố Quận 11, biệt thự và đại dự án Vinhomes Cần Giờ, Hóc Môn. Hotline: 0901.355.446.' },
     { property: 'og:title', content: 'Đội Ngũ Chuyên Viên Tư Vấn BĐS Cao Cấp | Bến Thành Land' },
     { property: 'og:description', content: 'Hội đồng chuyên gia thực chiến am hiểu pháp lý và quy hoạch bất động sản trung tâm.' },
   ]

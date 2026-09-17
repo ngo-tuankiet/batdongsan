@@ -64,8 +64,8 @@
             <p>Liên hệ trực tiếp Ban Giám Đốc Sàn Bến Thành để được hỗ trợ kiểm tra pháp lý và xem quỹ căn độc quyền giá gốc.</p>
           </div>
           <div class="cta-box-right">
-            <a href="tel:0912131329" class="btn btn-gold">
-              <i class="fa-solid fa-phone"></i> Hotline: 0912.131.329
+            <a href="tel:0901355446" class="btn btn-gold">
+              <i class="fa-solid fa-phone"></i> Hotline: 0901.355.446
             </a>
           </div>
         </div>

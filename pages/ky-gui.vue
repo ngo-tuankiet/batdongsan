@@ -124,10 +124,10 @@
           <h3>Quý Khách Cần Tư Vấn Ký Gửi Trực Tiếp?</h3>
           <p>Đội ngũ chuyên gia pháp lý và định giá sẵn sàng hỗ trợ quý vị 24/7 qua Hotline hoặc Zalo.</p>
           <div class="cta-btns">
-            <a href="tel:0912131329" class="btn btn-gold" style="padding: 13px 28px; font-weight: 700;">
-              <i class="fa-solid fa-phone"></i> Hotline: 0912.131.329
+            <a href="tel:0901355446" class="btn btn-gold" style="padding: 13px 28px; font-weight: 700;">
+              <i class="fa-solid fa-phone"></i> Hotline: 0901.355.446
             </a>
-            <a href="https://zalo.me/0912131329" target="_blank" class="btn btn-outline-gold" style="padding: 13px 28px; font-weight: 700;">
+            <a href="https://zalo.me/0901355446" target="_blank" class="btn btn-outline-gold" style="padding: 13px 28px; font-weight: 700;">
               <i class="fa-solid fa-comment-dots"></i> Chat Zalo Ngay
             </a>
           </div>
@@ -141,7 +141,7 @@
 useHead({
   title: 'Ký Gửi Mua Bán Nhà Đất Nhanh Chóng | Bến Thành Land',
   meta: [
-    { name: 'description', content: 'Dịch vụ ký gửi nhà phố mặt tiền Quận 11, căn hộ và dự án cao cấp. Thẩm định giá nhanh, bảo mật thông tin, kết nối hơn 1.000+ nhà đầu tư sẵn tài chính. Hotline: 0912.131.329.' },
+    { name: 'description', content: 'Dịch vụ ký gửi nhà phố mặt tiền Quận 11, căn hộ và dự án cao cấp. Thẩm định giá nhanh, bảo mật thông tin, kết nối hơn 1.000+ nhà đầu tư sẵn tài chính. Hotline: 0901.355.446.' },
     { property: 'og:title', content: 'Ký Gửi Mua Bán Nhà Đất Nhanh Chóng | Bến Thành Land' },
     { property: 'og:description', content: 'Thẩm định giá chuẩn xác, bảo mật 100%, thanh khoản nhanh chóng cùng Bến Thành Land.' },
     { property: 'og:url', content: 'https://benthanhland.com/ky-gui' }

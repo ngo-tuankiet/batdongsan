@@ -52,7 +52,7 @@
         <NuxtLink :to="`/bat-dong-san/${property.id}`" class="btn btn-outline-gold">
           <i class="fa-regular fa-eye"></i> Chi Tiết
         </NuxtLink>
-        <a :href="`tel:${(property.agent?.phone || '0912131329').replace(/[^0-9]/g, '')}`" class="btn btn-gold">
+        <a :href="`tel:${(property.agent?.phone || '0901355446').replace(/[^0-9]/g, '')}`" class="btn btn-gold">
           <i class="fa-solid fa-phone"></i> Xem Nhà
         </a>
       </div>
