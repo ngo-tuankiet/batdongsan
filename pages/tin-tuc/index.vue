@@ -117,11 +117,24 @@
 
             <div class="card-footer">
               <span class="author-name">
-                <i class="fa-solid fa-pen-nib"></i> {{ item.author }}
+                <i class="fa-solid fa-newspaper" style="color: var(--gold-primary);"></i> {{ item.source || item.author }}
               </span>
-              <NuxtLink :to="`/tin-tuc/${item.slug || item.id}`" class="card-read-link">
-                Đọc tiếp <i class="fa-solid fa-arrow-right"></i>
-              </NuxtLink>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <a 
+                  v-if="item.sourceUrl" 
+                  :href="item.sourceUrl" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style="font-size: 0.78rem; color: var(--gold-primary); text-decoration: underline; font-weight: 600;"
+                  title="Mở bài viết gốc tại trang báo"
+                  @click.stop
+                >
+                  Link gốc ↗
+                </a>
+                <NuxtLink :to="`/tin-tuc/${item.slug || item.id}`" class="card-read-link">
+                  Đọc tiếp <i class="fa-solid fa-arrow-right"></i>
+                </NuxtLink>
+              </div>
             </div>
           </div>
         </article>

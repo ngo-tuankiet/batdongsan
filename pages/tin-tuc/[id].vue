@@ -38,7 +38,20 @@
             </div>
             <div>
               <div class="author-name-text">{{ article.author }}</div>
-              <small class="author-desc-text">Nguồn: {{ article.source || 'BĐS Bến Thành Thực Chiến' }}</small>
+              <small class="author-desc-text">
+                Nguồn xuất bản: 
+                <a 
+                  v-if="article.sourceUrl" 
+                  :href="article.sourceUrl" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style="color: var(--gold-primary); font-weight: 700; text-decoration: underline;"
+                  title="Mở bài viết gốc"
+                >
+                  {{ article.source || 'CafeLand.vn' }} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem;"></i>
+                </a>
+                <span v-else>{{ article.source || 'BĐS Bến Thành Thực Chiến' }}</span>
+              </small>
             </div>
           </div>
         </header>
@@ -57,17 +70,31 @@
         <!-- NỘI DUNG CHI TIẾT (RENDER HTML) -->
         <div class="article-body-html" v-html="article.content"></div>
 
-        <!-- NGUỒN BÀI VIẾT GỐC (KHI CÀO TỪ CAFELAND / LINK NGOÀI) -->
-        <div v-if="article.sourceUrl" class="article-source-box">
-          <div class="source-icon-wrap">
-            <i class="fa-solid fa-link"></i>
+        <!-- THÔNG TIN BẢN QUYỀN & TRÍCH DẪN NGUỒN CHÍNH THỨC -->
+        <div v-if="article.sourceUrl" class="article-copyright-source-box">
+          <div class="copyright-header">
+            <div class="copyright-icon-badge">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <div class="copyright-title">THÔNG TIN BẢN QUYỀN & NGUỒN BÀI VIẾT CHÍNH THỨC</div>
+              <div class="copyright-subtitle">Bài viết được dẫn nguồn nguyên bản từ đơn vị xuất bản báo chí <strong>{{ article.source || 'CafeLand.vn' }}</strong></div>
+            </div>
           </div>
-          <div class="source-info-wrap">
-            <div class="source-label">Đường dẫn bài viết gốc:</div>
-            <a :href="article.sourceUrl" target="_blank" rel="noopener noreferrer" class="source-url-link">
-              <strong>{{ article.source || 'CafeLand.vn' }}</strong>: {{ article.sourceUrl }}
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
+
+          <div class="copyright-body">
+            <div class="direct-link-row">
+              <span class="direct-link-label"><i class="fa-solid fa-link"></i> Link bài viết chính chủ:</span>
+              <a :href="article.sourceUrl" target="_blank" rel="noopener noreferrer" class="direct-link-btn" title="Bấm để chuyển tới trang bài viết gốc của tác giả">
+                <span>{{ article.sourceUrl }}</span>
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+
+            <p class="copyright-legal-disclaimer">
+              <i class="fa-solid fa-circle-info" style="color: var(--gold-primary);"></i>
+              <em>Toàn bộ bản quyền tác phẩm, hình ảnh và tư liệu thuộc về tác giả & cơ quan báo chí <strong>{{ article.source || 'CafeLand.vn' }}</strong>. Hệ thống Bến Thành Land dẫn nguồn minh bạch nhằm mục đích cung cấp thông tin thị trường đa chiều cho quý khách hàng & nhà đầu tư.</em>
+            </p>
           </div>
         </div>
 
@@ -321,55 +348,99 @@ useHead(() => ({
 }
 
 /* CTA BOX */
-/* NGUỒN BÀI VIẾT GỐC */
-.article-source-box {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: rgba(212, 175, 55, 0.08);
-  border: 1px solid var(--border-gold, rgba(212, 175, 55, 0.3));
-  border-radius: var(--radius-md, 10px);
-  padding: 16px 20px;
-  margin: 30px 0 35px;
+/* THÔNG TIN BẢN QUYỀN & NGUỒN GỐC BÀI VIẾT */
+.article-copyright-source-box {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%);
+  border: 1.5px solid var(--border-gold, rgba(212, 175, 55, 0.4));
+  border-radius: var(--radius-md, 12px);
+  padding: 24px;
+  margin: 35px 0 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-.source-icon-wrap {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgba(212, 175, 55, 0.15);
+.copyright-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  margin-bottom: 16px;
+}
+
+.copyright-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(212, 175, 55, 0.2);
   color: var(--gold-primary, #dfb76c);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   flex-shrink: 0;
+  border: 1px solid var(--border-gold);
 }
 
-.source-label {
-  font-size: 0.78rem;
-  color: var(--text-muted, #94a3b8);
+.copyright-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--gold-primary, #dfb76c);
+  letter-spacing: 0.5px;
   margin-bottom: 2px;
+}
+
+.copyright-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-sub, #cbd5e1);
+}
+
+.direct-link-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.direct-link-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted, #94a3b8);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  font-weight: 700;
 }
 
-.source-url-link {
-  color: var(--gold-primary, #dfb76c);
-  font-size: 0.9rem;
-  text-decoration: none;
-  word-break: break-all;
+.direct-link-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-weight: 500;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: var(--gold-light, #f7e7a9);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  word-break: break-all;
   transition: all 0.2s ease;
 }
 
-.source-url-link:hover {
-  text-decoration: underline;
-  color: var(--gold-light, #f7e7a9);
+.direct-link-btn:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: var(--gold-primary);
+  transform: translateY(-2px);
+  color: #fff;
+}
+
+.copyright-legal-disclaimer {
+  font-size: 0.8rem;
+  color: var(--text-muted, #94a3b8);
+  line-height: 1.6;
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .article-cta-box {
