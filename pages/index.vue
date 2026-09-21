@@ -22,7 +22,6 @@
       </div>
 
       <div class="container hero-content-layer">
-        <p class="section-subtitle">GIẢI PHÁP BĐS MUA BÁN KÝ GỬI QUẬN 11 &amp; ĐẠI LÝ F1 VINHOMES</p>
         <h1 class="hero-main-title">
           Kết Nối Bất Động Sản <br><span class="gold-text">An Cư &amp; Thịnh Vượng</span>
         </h1>
@@ -156,10 +155,7 @@
           <p class="section-subtitle" style="color: var(--gold-primary); font-weight: 700; letter-spacing: 1px; font-size: 0.82rem;">
             <i class="fa-solid fa-book-open"></i> GÓC NHÌN ĐẦU TƯ
           </p>
-          <h2 class="section-title" style="font-size: 2rem; margin: 8px 0 12px;">Câu Chuyện Đầu Tư Bất Động Sản Thực Chiến</h2>
-          <p class="section-desc" style="max-width: 720px; margin: 0 auto; color: var(--text-muted); font-size: 0.95rem;">
-            Phân tích chuyên sâu về đòn bẩy tài chính, kiểm tra quy hoạch lộ giới và bài học đắt giá từ 12 năm kinh nghiệm thực tế tại Quận 11.
-          </p>
+          <h2 class="section-title" style="font-size: 2rem; margin: 8px 0 12px;">Tin tức và câu chuyện bất động sản</h2>
         </div>
 
         <!-- 3 Articles Cards Grid -->
@@ -202,7 +198,7 @@
         <!-- Nút Xem Tất Cả Bài Viết -->
         <div style="text-align: center;">
           <NuxtLink to="/tin-tuc" class="btn btn-gold" style="padding: 13px 32px; font-size: 0.95rem; font-weight: 700;">
-            <i class="fa-solid fa-newspaper"></i> Xem Toàn Bộ Tin Tức & Kinh Nghiệm Đầu Tư
+            <i class="fa-solid fa-newspaper"></i> Xem Toàn Bộ Tin Tức
             <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
           </NuxtLink>
         </div>
