@@ -24,7 +24,7 @@
       <div class="container hero-content-layer">
         <p class="section-subtitle">GIẢI PHÁP BĐS MUA BÁN KÝ GỬI QUẬN 11 &amp; ĐẠI LÝ F1 VINHOMES</p>
         <h1 class="hero-main-title">
-          Khẳng Định Đẳng Cấp Tại <br><span class="gold-text">Trái Tim Sài Gòn</span>
+          Kết Nối Bất Động Sản <br><span class="gold-text">An Cư &amp; Thịnh Vượng</span>
         </h1>
         <p class="hero-main-sub">
           Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các siêu dự án Vinhomes Hóc Môn &amp; Vinhomes Cần Giờ.
@@ -154,7 +154,7 @@
       <div class="container">
         <div class="section-header" style="text-align: center; margin-bottom: 36px;">
           <p class="section-subtitle" style="color: var(--gold-primary); font-weight: 700; letter-spacing: 1px; font-size: 0.82rem;">
-            <i class="fa-solid fa-book-open"></i> GÓC NHÌN CHUYÊN GIA BẾN THÀNH
+            <i class="fa-solid fa-book-open"></i> GÓC NHÌN ĐẦU TƯ
           </p>
           <h2 class="section-title" style="font-size: 2rem; margin: 8px 0 12px;">Câu Chuyện Đầu Tư Bất Động Sản Thực Chiến</h2>
           <p class="section-desc" style="max-width: 720px; margin: 0 auto; color: var(--text-muted); font-size: 0.95rem;">
@@ -213,7 +213,6 @@
     <section id="team" class="team-section">
       <div class="container">
         <div class="section-header">
-          <p class="section-subtitle">ĐỘI NGŨ CHUYÊN GIA</p>
           <h2 class="section-title">Đội Ngũ Hỗ Trợ Tư Vấn</h2>
           <p class="section-desc">
             Mỗi chuyên viên đều sở hữu hồ sơ năng lực và trang cá nhân riêng biệt, am hiểu sâu từng ngõ ngách và phân khúc cụ thể để phục vụ quý khách tốt nhất.
