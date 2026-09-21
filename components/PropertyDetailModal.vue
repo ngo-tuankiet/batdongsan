@@ -23,6 +23,7 @@
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 0.9rem;">
           <tbody>
           <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 0; color: var(--text-muted); width: 40%;">Phân loại BĐS:</td><td style="font-weight: 700; color: var(--gold-primary);">{{ property.categoryId === 'nha-pho' ? 'Nhà Phố' : 'Dự Án' }}</td></tr>
+          <tr v-if="property.createdAt" style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 0; color: var(--text-muted);">Ngày đăng:</td><td style="font-weight: 600;"><i class="fa-regular fa-calendar-days" style="color: var(--gold-primary); margin-right: 5px;"></i>{{ new Date(property.createdAt).toLocaleDateString('vi-VN') }}</td></tr>
           <tr v-if="property.ward" style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 0; color: var(--text-muted);">Khu vực phường:</td><td style="font-weight: 600;">{{ property.ward }}</td></tr>
           <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 0; color: var(--text-muted);">Diện tích:</td><td style="font-weight: 600;">{{ property.area }}</td></tr>
           <tr v-if="property.dimensions" style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 0; color: var(--text-muted);">Kích thước (Dài x Rộng):</td><td style="font-weight: 700; color: var(--gold-primary);"><i class="fa-solid fa-arrows-left-right-to-line"></i> {{ property.dimensions }}</td></tr>

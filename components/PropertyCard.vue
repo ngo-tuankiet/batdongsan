@@ -43,9 +43,15 @@
         </div>
       </div>
 
-      <div class="prop-agent-tag" v-if="property.agent">
-        <i class="fa-solid fa-user-tie" style="color: var(--gold-primary);"></i>
-        <span>Phụ trách: <strong>{{ property.agent.name }}</strong></span>
+      <div class="prop-card-meta-row" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; font-size: 0.78rem;">
+        <div class="prop-agent-tag" v-if="property.agent" style="margin-bottom: 0;">
+          <i class="fa-solid fa-user-tie" style="color: var(--gold-primary);"></i>
+          <span>Phụ trách: <strong>{{ property.agent.name }}</strong></span>
+        </div>
+        <div v-if="property.createdAt" class="prop-post-date" style="color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">
+          <i class="fa-regular fa-calendar-days" style="color: var(--gold-primary);"></i>
+          <span>Ngày đăng: <strong>{{ formatDate(property.createdAt) }}</strong></span>
+        </div>
       </div>
 
       <div class="prop-actions">
@@ -73,6 +79,17 @@ defineEmits(['select']);
 const unitPrice = computed(() => {
   return calculatePricePerM2(props.property.priceRaw, props.property.area, props.property.price);
 });
+
+const formatDate = (dateStr?: string | Date) => {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleDateString('vi-VN');
+  } catch {
+    return '';
+  }
+};
 </script>
 
 <style scoped>

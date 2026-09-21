@@ -17,7 +17,7 @@
           Ký Gửi Bất Động Sản Bến Thành Land
         </h1>
         <p class="section-desc" style="max-width: 820px; margin: 12px auto 0;">
-          Chúng tôi sở hữu tệp hơn <strong>1.000+ Nhà Đầu Tư VIP</strong> sẵn sàng thanh toán nhanh trong 7 - 14 ngày cho các bất động sản giá tốt, pháp lý rõ ràng tại Quận 11 và khu vực lân cận.
+          Chúng tôi sở hữu tệp hơn <strong>1.000+ Nhà Đầu Tư VIP</strong> sẵn sàng thanh toán trong 7 - 14 ngày cho các bất động sản giá tốt, pháp lý rõ ràng tại Quận 11 và khu vực lân cận.
         </p>
       </div>
 
@@ -34,7 +34,7 @@
           <div class="process-step-num">02</div>
           <div class="process-icon"><i class="fa-solid fa-scale-balanced"></i></div>
           <h3 class="process-title">Thẩm Định & Định Giá</h3>
-          <p class="process-desc">Tư vấn mức giá bán hoặc cho thuê sát giá thị trường nhất, tối đa hóa lợi nhuận mà vẫn đảm bảo thanh khoản nhanh.</p>
+          <p class="process-desc">Tư vấn mức giá bán hoặc cho thuê sát giá thị trường nhất, tối đa hóa lợi nhuận mà vẫn đảm bảo thanh khoản tối ưu.</p>
         </div>
 
         <div class="process-card">
@@ -113,7 +113,7 @@
           </div>
           <div class="faq-item">
             <h4><i class="fa-regular fa-circle-question" style="color: var(--gold-primary);"></i> Có hỗ trợ thủ tục vay ngân hàng cho người mua không?</h4>
-            <p>Chúng tôi có đối tác ngân hàng chiến lược (Vietcombank, MBBank, TPBank...) hỗ trợ thẩm định và giải ngân nhanh cho bên mua.</p>
+            <p>Chúng tôi có đối tác ngân hàng chiến lược (Vietcombank, MBBank, TPBank...) hỗ trợ thẩm định và giải ngân thuận lợi cho bên mua.</p>
           </div>
         </div>
       </div>
@@ -139,11 +139,11 @@
 
 <script setup lang="ts">
 useHead({
-  title: 'Ký Gửi Mua Bán Nhà Đất Nhanh Chóng | Bến Thành Land',
+  title: 'Ký Gửi Mua Bán Nhà Đất | Bến Thành Land',
   meta: [
-    { name: 'description', content: 'Dịch vụ ký gửi nhà phố mặt tiền Quận 11, căn hộ và dự án cao cấp. Thẩm định giá nhanh, bảo mật thông tin, kết nối hơn 1.000+ nhà đầu tư sẵn tài chính. Hotline: 0901.355.446.' },
-    { property: 'og:title', content: 'Ký Gửi Mua Bán Nhà Đất Nhanh Chóng | Bến Thành Land' },
-    { property: 'og:description', content: 'Thẩm định giá chuẩn xác, bảo mật 100%, thanh khoản nhanh chóng cùng Bến Thành Land.' },
+    { name: 'description', content: 'Dịch vụ ký gửi nhà phố mặt tiền Quận 11, căn hộ và dự án cao cấp. Thẩm định giá chính xác, bảo mật thông tin, kết nối hơn 1.000+ nhà đầu tư sẵn tài chính. Hotline: 0901.355.446.' },
+    { property: 'og:title', content: 'Ký Gửi Mua Bán Nhà Đất | Bến Thành Land' },
+    { property: 'og:description', content: 'Thẩm định giá chuẩn xác, bảo mật 100%, thanh khoản tối ưu cùng Bến Thành Land.' },
     { property: 'og:url', content: 'https://benthanhland.com/ky-gui' }
   ]
 });

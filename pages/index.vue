@@ -22,7 +22,7 @@
       </div>
 
       <div class="container hero-content-layer">
-        <p class="section-subtitle">HỆ THỐNG MÔI GIỚI BĐS HÀNG ĐẦU QUẬN 11 &amp; ĐẠI LÝ F1 VINHOMES</p>
+        <p class="section-subtitle">GIẢI PHÁP BĐS MUA BÁN KÝ GỬI QUẬN 11 &amp; ĐẠI LÝ F1 VINHOMES</p>
         <h1 class="hero-main-title">
           Khẳng Định Đẳng Cấp Tại <br><span class="gold-text">Trái Tim Sài Gòn</span>
         </h1>
@@ -93,7 +93,7 @@
     <section id="properties" class="properties-section">
       <div class="container">
         <div class="section-header">
-          <p class="section-subtitle">QUỸ HÀNG SÀN BẾN THÀNH LAND</p>
+          <p class="section-subtitle">QUỸ HÀNG BẾN THÀNH LAND</p>
           <h2 class="section-title">Bất Động Sản Tiêu Biểu Đang Mở Bán</h2>
           <p class="section-desc">Toàn bộ giỏ hàng đã được thẩm định pháp lý 100%, phân loại chuẩn Nhà Phố trung tâm và Dự Án cao cấp.</p>
         </div>
@@ -214,7 +214,7 @@
       <div class="container">
         <div class="section-header">
           <p class="section-subtitle">ĐỘI NGŨ CHUYÊN GIA</p>
-          <h2 class="section-title">Đội Ngũ Chuyên Viên Tư Vấn Xuất Sắc</h2>
+          <h2 class="section-title">Đội Ngũ Hỗ Trợ Tư Vấn</h2>
           <p class="section-desc">
             Mỗi chuyên viên đều sở hữu hồ sơ năng lực và trang cá nhân riêng biệt, am hiểu sâu từng ngõ ngách và phân khúc cụ thể để phục vụ quý khách tốt nhất.
           </p>
@@ -231,7 +231,7 @@
         <!-- Nút Xem Tất Cả Chuyên Viên -->
         <div style="text-align: center; margin-top: 36px;">
           <NuxtLink to="/doi-ngu-chuyen-vien" class="btn btn-gold" style="padding: 13px 32px; font-size: 0.95rem; font-weight: 700;">
-            <i class="fa-solid fa-users"></i> Xem Toàn Bộ Đội Ngũ Chuyên Viên ({{ totalAgentsCount }}+ Chuyên Gia)
+            <i class="fa-solid fa-users"></i> Xem Toàn Bộ Đội Ngũ Hỗ Trợ Tư Vấn ({{ totalAgentsCount }}+ Chuyên Gia)
             <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
           </NuxtLink>
         </div>
@@ -245,7 +245,7 @@
     <section id="about" style="padding: 80px 0;">
       <div class="container" style="max-width: 900px; text-align: center;">
         <p class="section-subtitle">VỀ CHÚNG TÔI</p>
-        <h2 class="section-title">Sàn Giao Dịch Bất Động Sản Bến Thành</h2>
+        <h2 class="section-title">Bất Động Sản Bến Thành</h2>
         <p style="color: var(--text-sub); font-size: 1rem; line-height: 1.8; margin-top: 20px;">
           Được thành lập với sứ mệnh kết nối những bất động sản giá trị nhất tại trung tâm Sài Gòn với những chủ nhân xứng tầm. Với mạng lưới chuyên viên thực chiến giàu kinh nghiệm cùng triết lý <strong>"Minh bạch - Bảo mật - Hiệu quả"</strong>, chúng tôi tự hào là đối tác tin cậy của hơn 1.000+ nhà đầu tư trong và ngoài nước.
         </p>

@@ -14,7 +14,7 @@
         <li><NuxtLink to="/" class="nav-link">Trang Chủ</NuxtLink></li>
         <li><NuxtLink to="/nha-pho" class="nav-link">Nhà Phố</NuxtLink></li>
         <li><NuxtLink to="/du-an" class="nav-link">Dự Án</NuxtLink></li>
-        <li><NuxtLink to="/doi-ngu-chuyen-vien" class="nav-link">Đội Ngũ Chuyên Viên</NuxtLink></li>
+        <li><NuxtLink to="/doi-ngu-chuyen-vien" class="nav-link">Đội Ngũ Hỗ Trợ Tư Vấn</NuxtLink></li>
         <li><NuxtLink to="/tin-tuc" class="nav-link">Tin Tức</NuxtLink></li>
         <li><NuxtLink to="/ky-gui" class="nav-link">Ký Gửi Nhà Đất</NuxtLink></li>
         <li><NuxtLink to="/ve-chung-toi" class="nav-link">Về Chúng Tôi</NuxtLink></li>

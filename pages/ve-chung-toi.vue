@@ -18,7 +18,7 @@
             Hệ Thống Phân Phối BĐS Cao Cấp &amp; Nhà Phố Trung Tâm Sài Gòn
           </h1>
           <p class="about-lead-text">
-            Thành lập từ năm 2012, <strong>Bến Thành Land</strong> tự hào là một trong những sàn giao dịch bất động sản uy tín hàng đầu, tiên phong trong việc cung cấp các sản phẩm nhà phố mặt tiền Quận 11 và phân phối đại lý F1 các đại đô thị Vinhomes Cần Giờ, Vinhomes Hóc Môn.
+            Thành lập từ năm 2012, <strong>Bến Thành Land</strong> tự hào là đơn vị bất động sản uy tín, tiên phong trong việc cung cấp các sản phẩm nhà phố mặt tiền Quận 11 và phân phối đại lý F1 các đại đô thị Vinhomes Cần Giờ, Vinhomes Hóc Môn.
           </p>
           <div class="about-hero-stats">
             <div class="stat-box">
@@ -65,7 +65,7 @@
           <div class="value-card">
             <div class="value-icon"><i class="fa-solid fa-chart-line"></i></div>
             <h3>Hiệu Quả</h3>
-            <p>Tối ưu hóa thời gian và dòng tiền, tư vấn chiến lược đầu tư mang lại tỷ suất sinh lời vượt trội và thanh khoản nhanh chóng nhất.</p>
+            <p>Tối ưu hóa thời gian và dòng tiền, tư vấn chiến lược đầu tư mang lại tỷ suất sinh lời vượt trội và thanh khoản tối ưu nhất.</p>
           </div>
         </div>
       </div>
@@ -128,7 +128,7 @@
       <div class="hq-card">
         <div class="hq-info">
           <p class="section-subtitle" style="color: var(--gold-primary);">TRỤ SỞ GIAO DỊCH</p>
-          <h2 style="font-size: 1.8rem; margin: 8px 0 16px; color: var(--text-main);">Sàn Bất Động Sản Bến Thành Land</h2>
+          <h2 style="font-size: 1.8rem; margin: 8px 0 16px; color: var(--text-main);">Bất Động Sản Bến Thành Land</h2>
           <ul class="hq-list">
             <li>
               <i class="fa-solid fa-location-dot"></i>
@@ -183,10 +183,10 @@
 
 <script setup lang="ts">
 useHead({
-  title: 'Về Chúng Tôi | Sàn Giao Dịch Bất Động Sản Bến Thành Land',
+  title: 'Về Chúng Tôi | Bến Thành Land',
   meta: [
-    { name: 'description', content: 'Tìm hiểu về Bến Thành Land - Hệ thống môi giới bất động sản hàng đầu Quận 11 và đại lý F1 dự án Vinhomes Cần Giờ, Vinhomes Hóc Môn. Triết lý Minh bạch - Bảo mật - Hiệu quả. Hotline: 0901.355.446.' },
-    { property: 'og:title', content: 'Về Chúng Tôi | Sàn Giao Dịch Bất Động Sản Bến Thành Land' },
+    { name: 'description', content: 'Tìm hiểu về Bến Thành Land - Giải pháp bất động sản mua bán ký gửi Quận 11 và đại lý F1 dự án Vinhomes Cần Giờ, Vinhomes Hóc Môn. Triết lý Minh bạch - Bảo mật - Hiệu quả. Hotline: 0901.355.446.' },
+    { property: 'og:title', content: 'Về Chúng Tôi | Bến Thành Land' },
     { property: 'og:description', content: '12+ năm kinh nghiệm thực chiến tại Quận 11, 1.500+ giao dịch thành công. Cam kết pháp lý 100%.' },
     { property: 'og:url', content: 'https://benthanhland.com/ve-chung-toi' }
   ]

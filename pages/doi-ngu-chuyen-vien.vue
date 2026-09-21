@@ -5,7 +5,7 @@
       <nav class="detail-breadcrumb" style="margin-bottom: 24px;">
         <NuxtLink to="/">Trang Chủ</NuxtLink>
         <i class="fa-solid fa-chevron-right"></i>
-        <span class="active-crumb">Đội Ngũ Chuyên Viên Tư Vấn</span>
+        <span class="active-crumb">Đội Ngũ Hỗ Trợ Tư Vấn</span>
       </nav>
 
       <!-- PAGE HEADER -->
@@ -15,7 +15,7 @@
             <i class="fa-solid fa-users-gear"></i> HỘI ĐỒNG CHUYÊN GIA THỰC CHIẾN
           </p>
           <h1 class="page-main-title" style="font-size: 2.2rem; margin-top: 8px;">
-            Đội Ngũ Chuyên Viên Tư Vấn Cao Cấp
+            Đội Ngũ Hỗ Trợ Tư Vấn
           </h1>
           <p class="section-desc" style="max-width: 800px; margin: 12px auto 0;">
             Mỗi chuyên viên tại Bến Thành Land đều sở hữu hồ sơ năng lực thực chiến, am hiểu sâu sắc quy hoạch từng tuyến đường Quận 11 và nắm giữ quỹ căn ngoại giao trực tiếp từ các Chủ Đầu Tư danh tiếng.
@@ -137,10 +137,10 @@
 import { ref, computed } from 'vue';
 
 useHead({
-  title: 'Đội Ngũ Chuyên Viên Tư Vấn BĐS Cao Cấp | Bến Thành Land',
+  title: 'Đội Ngũ Hỗ Trợ Tư Vấn BĐS | Bến Thành Land',
   meta: [
     { name: 'description', content: 'Đội ngũ chuyên gia và môi giới thực chiến Bến Thành Land chuyên tư vấn nhà phố Quận 11, biệt thự và đại dự án Vinhomes Cần Giờ, Hóc Môn. Hotline: 0901.355.446.' },
-    { property: 'og:title', content: 'Đội Ngũ Chuyên Viên Tư Vấn BĐS Cao Cấp | Bến Thành Land' },
+    { property: 'og:title', content: 'Đội Ngũ Hỗ Trợ Tư Vấn BĐS | Bến Thành Land' },
     { property: 'og:description', content: 'Hội đồng chuyên gia thực chiến am hiểu pháp lý và quy hoạch bất động sản trung tâm.' },
   ]
 });

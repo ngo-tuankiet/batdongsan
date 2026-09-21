@@ -4,7 +4,7 @@
       <div style="max-width: 860px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: var(--radius-lg); padding: 40px 32px; box-shadow: var(--shadow-md);">
         <div class="section-header" style="margin-bottom: 28px;">
           <p class="section-subtitle">DÀNH CHO CHỦ NHÀ & NHÀ ĐẦU TƯ</p>
-          <h2 class="section-title" style="font-size: 1.85rem;">Ký Gửi Mua Bán - Cho Thuê Nhanh BĐS</h2>
+          <h2 class="section-title" style="font-size: 1.85rem;">Ký Gửi Mua Bán - Cho Thuê BĐS</h2>
           <p class="section-desc">Chúng tôi có sẵn tệp khách VIP sẵn sàng giải ngân trong 7 ngày cho các BĐS định giá hợp lý.</p>
         </div>
 
@@ -47,7 +47,7 @@
               Hình ảnh hiện trạng BĐS / Sổ hồng (Tùy chọn)
             </label>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
-              Tải lên hình ảnh mặt tiền, nội thất hoặc sổ hồng giúp chúng tôi thẩm định và kết nối khách hàng nhanh chóng hơn.
+              Tải lên hình ảnh mặt tiền, nội thất hoặc sổ hồng giúp chúng tôi thẩm định và kết nối khách hàng hiệu quả hơn.
             </p>
 
             <!-- Vùng Kéo & Thả hoặc Bấm chọn ảnh -->

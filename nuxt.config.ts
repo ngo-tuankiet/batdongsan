@@ -11,7 +11,7 @@ export default defineNuxtConfig({
         lang: 'vi',
         'data-theme': 'light'
       },
-      title: 'Bến Thành Land | Hệ Thống Môi Giới BĐS Hàng Đầu Quận 11 & Dự Án Vinhomes',
+      title: 'Bến Thành Land | Giải Pháp BĐS Mua Bán Ký Gửi Quận 11 & Dự Án Vinhomes',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
 
         // OpenGraph / Facebook / Zalo
         { property: 'og:site_name', content: 'Bến Thành Land' },
-        { property: 'og:title', content: 'Bến Thành Land | Hệ Thống Môi Giới BĐS Hàng Đầu Quận 11 & Dự Án Vinhomes' },
+        { property: 'og:title', content: 'Bến Thành Land | Giải Pháp BĐS Mua Bán Ký Gửi Quận 11 & Dự Án Vinhomes' },
         { property: 'og:description', content: 'Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các dự án Vinhomes Cần Giờ & Vinhomes Hóc Môn. Hotline: 0901.355.446.' },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://benthanhland.com/' },
@@ -34,7 +34,7 @@ export default defineNuxtConfig({
 
         // Twitter Card
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: 'Bến Thành Land | Môi Giới BĐS Hàng Đầu Quận 11 & Dự Án Vinhomes' },
+        { name: 'twitter:title', content: 'Bến Thành Land | Giải Pháp BĐS Mua Bán Ký Gửi Quận 11 & Dự Án Vinhomes' },
         { name: 'twitter:description', content: 'Quỹ căn độc quyền nhà phố mặt tiền Quận 11, các dự án Vinhomes Cần Giờ & Vinhomes Hóc Môn. Hotline: 0901.355.446.' },
         { name: 'twitter:image', content: 'https://benthanhland.com/images/hero-vinhome-cangio.jpg' },
       ],
@@ -72,7 +72,7 @@ export default defineNuxtConfig({
               addressCountry: 'VN'
             },
             areaServed: ['Quận 11', 'Quận 1', 'Cần Giờ', 'Hóc Môn', 'Thành phố Hồ Chí Minh'],
-            description: 'Hệ thống môi giới bất động sản hàng đầu Quận 11 và các dự án Vinhomes Cần Giờ, Vinhomes Hóc Môn.'
+            description: 'Giải pháp bất động sản mua bán ký gửi Quận 11 và các dự án Vinhomes Cần Giờ, Vinhomes Hóc Môn.'
           })
         }
       ]

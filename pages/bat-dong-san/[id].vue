@@ -53,6 +53,9 @@
               Dự Án Cao Cấp <span v-if="property.province || property.ward">• {{ [property.province, property.ward].filter(Boolean).join(' • ') }}</span>
             </span>
             <span class="prop-code-badge">MÃ: {{ property.id }}</span>
+            <span v-if="property.createdAt" class="prop-date-badge" style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--text-muted); background: rgba(255, 255, 255, 0.05); padding: 3px 10px; border-radius: 4px; border: 1px solid var(--border-color);">
+              <i class="fa-regular fa-calendar-days" style="color: var(--gold-primary);"></i> Ngày đăng: {{ formatDate(property.createdAt) }}
+            </span>
           </div>
 
           <h1 class="detail-title">{{ property.title }}</h1>
@@ -120,6 +123,12 @@
               </h3>
               
               <div class="specs-grid">
+                <div v-if="property.createdAt" class="spec-item">
+                  <span class="spec-label">Ngày đăng tin</span>
+                  <strong class="spec-value" style="color: var(--gold-primary);">
+                    <i class="fa-regular fa-calendar-days"></i> {{ formatDate(property.createdAt) }}
+                  </strong>
+                </div>
                 <div v-if="property.province" class="spec-item">
                   <span class="spec-label">Tỉnh / Thành</span>
                   <strong class="spec-value" style="color: var(--gold-primary);">{{ property.province }}</strong>
@@ -271,7 +280,7 @@
                 <div class="logo-icon" style="width: 48px; height: 48px; font-size: 1.2rem;">BT</div>
                 <div>
                   <h4 style="color: var(--text-main); font-size: 1rem;">Ban Quản Lý Quỹ Căn</h4>
-                  <p style="color: var(--gold-primary); font-size: 0.8rem;">Sàn Giao Dịch Bến Thành</p>
+                  <p style="color: var(--gold-primary); font-size: 0.8rem;">Bến Thành Land</p>
                 </div>
               </div>
 
@@ -343,6 +352,17 @@ const unitPrice = computed(() => {
   if (!property.value) return '';
   return calculatePricePerM2(property.value.priceRaw, property.value.area, property.value.price);
 });
+
+const formatDate = (dateStr?: string | Date) => {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleDateString('vi-VN');
+  } catch {
+    return '';
+  }
+};
 
 // Gallery state
 const activeImageIndex = ref(0);

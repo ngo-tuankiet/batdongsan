@@ -240,7 +240,7 @@ const sendMessage = async (userText: string) => {
       botReply = 'Dạ bên em có bảng phân tích công thức <strong>Đòn Bẩy Tài Chính 30-70</strong> và tính toán dòng tiền cho thuê bù lãi ngân hàng an toàn tuyệt đối.<br>Quý khách nhắn lại <strong>Số Điện Thoại</strong> để chuyên gia tài chính gửi bảng tính Excel cho mình nhé!';
       followUpChips = ['📞 Để lại Số Điện Thoại'];
     } else if (lower.includes('gọi lại') || lower.includes('tư vấn') || lower.includes('hotline')) {
-      botReply = 'Dạ quý khách chỉ cần nhập <strong>Số Điện Thoại</strong> tại đây hoặc gọi trực tiếp Hotline Sàn: <a href="tel:0901355446" style="color:var(--gold-primary); font-weight:700;">0901.355.446</a> (24/7) để được hỗ trợ nhanh nhất ạ!';
+      botReply = 'Dạ quý khách chỉ cần nhập <strong>Số Điện Thoại</strong> tại đây hoặc gọi trực tiếp Hotline: <a href="tel:0901355446" style="color:var(--gold-primary); font-weight:700;">0901.355.446</a> (24/7) để được hỗ trợ tốt nhất ạ!';
     } else {
       botReply = 'Cảm ơn quý khách đã nhắn tin! Quý khách vui lòng để lại <strong>Số Điện Thoại</strong> hoặc nhu cầu mức tài chính dự kiến để Chuyên viên phụ trách liên hệ hỗ trợ chu đáo nhất nhé!';
       followUpChips = ['📞 Để lại SĐT liên hệ'];
