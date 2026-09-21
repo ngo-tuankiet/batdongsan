@@ -905,7 +905,7 @@
           <div class="form-grid">
             <div class="form-col-full">
               <label>Tiêu đề tin đăng *</label>
-              <input v-model="propForm.title" type="text" class="admin-input" placeholder="VD: Mặt tiền CMT8, P. Bến Thành, Quận 1" required>
+              <input v-model="propForm.title" type="text" class="admin-input" placeholder="VD: Mặt tiền Đường 3 Tháng 2, Phường 11, Quận 11" required>
             </div>
 
             <div>
@@ -1442,7 +1442,7 @@
 
             <div>
               <label>Tiêu đề trên banner *</label>
-              <input v-model="bannerForm.title" type="text" class="admin-input" placeholder="VD: NHÀ PHỐ QUẬN 1" required>
+              <input v-model="bannerForm.title" type="text" class="admin-input" placeholder="VD: NHÀ PHỐ QUẬN 11" required>
             </div>
 
             <div>
@@ -1618,7 +1618,7 @@ const propForm = reactive({
   title: '',
   categoryId: 'nha-pho',
   province: 'TP. Hồ Chí Minh',
-  ward: 'P. Bến Thành, Quận 1',
+  ward: 'Phường 11, Quận 11',
   price: '',
   priceRaw: 0,
   area: '',
@@ -1933,7 +1933,7 @@ const openNewPropertyModal = () => {
   propForm.title = '';
   propForm.categoryId = 'nha-pho';
   propForm.province = 'TP. Hồ Chí Minh';
-  propForm.ward = 'P. Bến Thành, Quận 1';
+  propForm.ward = 'Phường 11, Quận 11';
   customProvince.value = '';
   propForm.price = '';
   propForm.priceRaw = 0;
@@ -2109,7 +2109,7 @@ const openNewAgentModal = () => {
   agentForm.isEdit = false;
   agentForm.id = '';
   agentForm.name = '';
-  agentForm.role = 'Chuyên Viên Tư Vấn BĐS Q.1';
+  agentForm.role = 'Chuyên Viên Hỗ Trợ Tư Vấn BĐS';
   agentForm.phone = '';
   agentForm.zalo = '';
   agentForm.exp = '5+ Năm';

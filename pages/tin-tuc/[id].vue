@@ -102,7 +102,7 @@
         <div class="article-cta-box">
           <div class="cta-box-left">
             <h3>Cần Tra Cứu Quy Hoạch & Thẩm Định Giá Nhà Phố?</h3>
-            <p>Liên hệ trực tiếp Ban Giám Đốc Sàn Bến Thành để được hỗ trợ kiểm tra pháp lý và xem quỹ căn độc quyền giá gốc.</p>
+            <p>Liên hệ trực tiếp Ban Giám Đốc Bến Thành Land để được hỗ trợ kiểm tra pháp lý và xem quỹ căn độc quyền giá gốc.</p>
           </div>
           <div class="cta-box-right">
             <a href="tel:0901355446" class="btn btn-gold">
@@ -116,7 +116,7 @@
           <div class="bio-avatar">BT</div>
           <div class="bio-content">
             <h4>Bất Động Sản Bến Thành</h4>
-            <p>Đơn vị chuyên tư vấn đầu tư, định giá và phân phối nhà phố trung tâm Quận 1 & các dự án căn hộ hạng sang. Nắm giữ quỹ căn độc quyền với đầy đủ hồ sơ pháp lý hoàn công.</p>
+            <p>Đơn vị chuyên tư vấn đầu tư, định giá và phân phối nhà phố Quận 11 & các dự án căn hộ, đại đô thị. Nắm giữ quỹ căn độc quyền với đầy đủ hồ sơ pháp lý hoàn công.</p>
           </div>
         </div>
 
@@ -144,7 +144,7 @@ const { data: article, pending } = await useFetch(`/api/articles/${idOrSlug.valu
 useHead(() => ({
   title: article.value ? `${article.value.title} - BĐS Bến Thành` : 'Bài Viết Đầu Tư BĐS Bến Thành',
   meta: [
-    { name: 'description', content: article.value?.excerpt || 'Kinh nghiệm đầu tư BĐS thực chiến Quận 1' },
+    { name: 'description', content: article.value?.excerpt || 'Kinh nghiệm đầu tư BĐS thực chiến Quận 11' },
     { property: 'og:title', content: article.value?.title || 'Bài Viết Đầu Tư' },
     { property: 'og:image', content: article.value?.image || '' },
   ],

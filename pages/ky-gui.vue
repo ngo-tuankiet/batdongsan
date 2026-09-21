@@ -89,7 +89,7 @@
             <i class="fa-solid fa-bolt-lightning"></i>
             <div>
               <h4>Tốc Độ Thanh Khoản Vượt Trội</h4>
-              <p>Mạng lưới liên kết 50+ sàn liên kết và 8 chuyên viên thực chiến túc trực tại địa bàn 24/7.</p>
+              <p>Mạng lưới hơn 50+ đối tác liên kết và đội ngũ chuyên viên thực chiến túc trực tại địa bàn 24/7.</p>
             </div>
           </div>
         </div>

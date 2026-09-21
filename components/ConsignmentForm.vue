@@ -216,7 +216,7 @@ const handleSubmit = async () => {
       },
     });
 
-    showToast('Đã gửi hồ sơ ký gửi thành công! Ban Quản Lý Sàn Bến Thành sẽ liên hệ thẩm định trong 2 giờ.');
+    showToast('Đã gửi hồ sơ ký gửi thành công! Ban Quản Lý Bến Thành Land sẽ liên hệ thẩm định trong 2 giờ.');
     form.name = '';
     form.phone = '';
     form.propertyInterest = '';

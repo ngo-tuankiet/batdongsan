@@ -12,7 +12,7 @@
               BẾN THÀNH <span class="gold-text">LAND</span>
             </h3>
             <p style="font-size: 0.88rem; line-height: 1.6;">
-              Hệ thống phân phối bất động sản trung tâm Quận 1 cao cấp. Nơi hội tụ các chuyên gia tư vấn giàu kinh nghiệm, nắm giữ quỹ căn độc quyền giá gốc.
+              Giải pháp bất động sản mua bán ký gửi Quận 11 và các dự án cao cấp. Nơi hội tụ đội ngũ hỗ trợ tư vấn giàu kinh nghiệm, nắm giữ quỹ căn độc quyền giá gốc.
             </p>
           </div>
 

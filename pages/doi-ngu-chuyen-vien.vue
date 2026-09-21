@@ -112,7 +112,7 @@
         <div class="consultation-box">
           <div class="consultation-text">
             <h3 style="font-size: 1.5rem; margin-bottom: 8px; color: var(--text-main);">
-              Bạn Muốn Kết Nối Trực Tiếp Với Ban Quản Trị Sàn?
+              Bạn Muốn Kết Nối Trực Tiếp Với Ban Quản Trị Bến Thành Land?
             </h3>
             <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
               Hotline 24/7 của chúng tôi sẵn sàng giải đáp mọi thắc mắc về thẩm định pháp lý và định giá nhà đất Quận 11.

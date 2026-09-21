@@ -107,8 +107,8 @@ export default defineEventHandler(async (event) => {
     return [
       {
         id: 'nha-pho',
-        name: 'Banner Nhà Phố Trung Tâm',
-        title: 'NHÀ PHỐ QUẬN 1',
+        name: 'Banner Nhà Phố Quận 11',
+        title: 'NHÀ PHỐ QUẬN 11',
         badge: 'TIÊU BIỂU',
         badgeIcon: 'fa-crown',
         imageUrl: '/images/banner-poster-nhapho.jpg',

@@ -145,7 +145,7 @@
         <div class="cta-inner">
           <div class="cta-text">
             <span class="cta-mini-tag"><i class="fa-solid fa-shield-halved"></i> TƯ VẤN CHIẾN LƯỢC ĐẦU TƯ</span>
-            <h2>Bạn Cần Thẩm Định Pháp Lý & Dòng Tiền Nhà Phố Quận 1?</h2>
+            <h2>Bạn Cần Thẩm Định Pháp Lý & Dòng Tiền Nhà Phố Quận 11?</h2>
             <p>Tránh mất tiền oan từ các bẫy quy hoạch ngầm, lộ giới mở rộng và tính toán chính xác dòng tiền sinh lời trước khi đặt cọc.</p>
           </div>
           <div class="cta-actions">
@@ -218,7 +218,7 @@ const resetFilters = () => {
 useHead({
   title: 'Câu Chuyện Đầu Tư BĐS - Kinh Nghiệm Thực Chiến Bến Thành',
   meta: [
-    { name: 'description', content: 'Góc nhìn thẳng thắn từ 12 năm đầu tư BĐS trung tâm: đòn bẩy tài chính an toàn, pháp lý nhà phố Quận 1 và phân tích chu kỳ.' },
+    { name: 'description', content: 'Góc nhìn thẳng thắn từ 12 năm đầu tư BĐS: đòn bẩy tài chính an toàn, pháp lý nhà phố Quận 11 và phân tích chu kỳ.' },
   ],
 });
 </script>

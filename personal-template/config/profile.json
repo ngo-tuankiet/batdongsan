@@ -1,8 +1,8 @@
 {
   "agent": {
     "name": "Ngô Tuấn Kiệt",
-    "title": "Chuyên Viên Tư Vấn Bất Động Sản Cao Cấp",
-    "agency": "Bất Động Sản Bến Thành",
+    "title": "Chuyên Viên Hỗ Trợ Tư Vấn Bất Động Sản",
+    "agency": "Bến Thành Land",
     "phone": "0901234567",
     "phone_display": "0901.234.567",
     "zalo": "https://zalo.me/0901234567",
@@ -10,7 +10,7 @@
     "email": "tuankiet.bdsbenthanh@gmail.com",
     "avatar": "assets/images/avatar.jpg",
     "slogan": "Tận Tâm - Minh Bạch - Đồng Hành Cùng Quyết Định Đầu Tư Triệu Đô",
-    "bio": "Với hơn 6 năm gắn bó sâu sát với thị trường BĐS Trung tâm Quận 1 & Bến Thành, tôi cam kết mang đến giỏ hàng độc quyền, giá gốc từ chủ nhà và hỗ trợ trọn gói pháp lý sang tên an toàn tuyệt đối.",
+    "bio": "Với hơn 6 năm gắn bó sâu sát với thị trường BĐS Quận 11 & các đại đô thị Vinhomes, tôi cam kết mang đến giỏ hàng độc quyền, giá gốc từ chủ nhà và hỗ trợ trọn gói pháp lý sang tên an toàn tuyệt đối.",
     "stats": [
       { "label": "Năm kinh nghiệm", "value": "6+" },
       { "label": "Giao dịch thành công", "value": "135+" },

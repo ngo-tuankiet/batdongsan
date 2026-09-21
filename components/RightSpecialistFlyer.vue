@@ -6,7 +6,7 @@
         v-if="isOpen" 
         class="vertical-right-flyer" 
         role="complementary" 
-        aria-label="Dashboard Chuyên Viên Tư Vấn Bến Thành Land"
+        aria-label="Dashboard Chuyên Viên Hỗ Trợ Tư Vấn Bến Thành Land"
       >
         <!-- THANH TIÊU ĐỀ TRÊN CÙNG -->
         <div class="flyer-top-bar">
@@ -137,7 +137,7 @@
         type="button"
         class="flyer-reopen-tab-right" 
         @click="isOpen = true" 
-        title="Mở lại Dashboard Chuyên Viên Tư Vấn"
+        title="Mở lại Dashboard Chuyên Viên Hỗ Trợ Tư Vấn"
         aria-label="Mở lại chuyên viên"
       >
         <span class="tab-pulse-ring"></span>

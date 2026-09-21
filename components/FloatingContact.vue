@@ -142,7 +142,7 @@ const getCurrentTime = () => {
 const messages = ref<ChatMessage[]>([
   {
     sender: 'bot',
-    text: 'Xin chào quý khách! Tôi là trợ lý tư vấn của <strong>Sàn Bất Động Sản Bến Thành</strong>.<br>Quý khách đang quan tâm đến dòng sản phẩm nào tại Quận 1 ạ?',
+    text: 'Xin chào quý khách! Tôi là trợ lý tư vấn của <strong>Bến Thành Land</strong>.<br>Quý khách đang quan tâm đến dòng sản phẩm nào tại Quận 11 & Dự án Vinhomes ạ?',
     time: getCurrentTime(),
     chips: [
       '🏠 Xem quỹ căn Nhà Phố',
@@ -231,10 +231,10 @@ const sendMessage = async (userText: string) => {
     const lower = userText.toLowerCase();
 
     if (lower.includes('nhà phố') || lower.includes('nha pho')) {
-      botReply = 'Dạ hiện Sàn Bến Thành đang có các căn <strong>Nhà Phố mặt tiền & hẻm xe hơi</strong> tại P. Bến Thành, Đa Kao, Tân Định giá từ <strong>23.5 Tỷ - 85 Tỷ</strong> (đang có sẵn HĐ thuê từ 60 - 150 triệu/tháng).<br>Quý khách có thể để lại <strong>Số Điện Thoại</strong> để nhận bảng vẽ quy hoạch và lịch xem nhà thực tế nhé!';
-      followUpChips = ['📞 090... (Để lại SĐT)', '📍 Xem nhà P. Bến Thành', '📍 Xem nhà P. Đa Kao'];
+      botReply = 'Dạ hiện Bến Thành Land đang có các căn <strong>Nhà Phố mặt tiền & hẻm xe hơi</strong> tại các tuyến đường Quận 11 (3 Tháng 2, Lãnh Binh Thăng, Minh Phụng, Bình Thới...) giá từ <strong>8.5 Tỷ - 65 Tỷ</strong>.<br>Quý khách có thể để lại <strong>Số Điện Thoại</strong> để nhận bản vẽ quy hoạch và lịch xem nhà thực tế nhé!';
+      followUpChips = ['📞 090... (Để lại SĐT)', '📍 Xem nhà đường 3/2 Q.11', '📍 Xem nhà Bình Thới Q.11'];
     } else if (lower.includes('dự án') || lower.includes('du an') || lower.includes('căn hộ')) {
-      botReply = 'Dạ các dự án căn hộ hạng sang trọng điểm hiện tại gồm <strong>Grand Marina Saigon (Bến Nghé)</strong> và <strong>D1 Mension Somerset (Bến Thành/Cầu Kho)</strong> giá từ <strong>14.8 Tỷ - 52 Tỷ</strong>.<br>Quý khách muốn xem căn mấy phòng ngủ hoặc để lại <strong>Số Điện Thoại</strong> em gửi bảng giá gốc nhé!';
+      botReply = 'Dạ các dự án trọng điểm hiện tại gồm đại đô thị <strong>Vinhomes Cần Giờ</strong> và <strong>Vinhomes Hóc Môn</strong> với chính sách ưu đãi trực tiếp giai đoạn 1.<br>Quý khách muốn tìm hiểu loại hình nào hoặc để lại <strong>Số Điện Thoại</strong> em gửi bảng giá chi tiết nhé!';
       followUpChips = ['📞 Để lại SĐT nhận báo giá', '🏢 Căn 2 Phòng Ngủ', '🏢 Duplex Penthouse'];
     } else if (lower.includes('dòng tiền') || lower.includes('lãi suất') || lower.includes('vay') || lower.includes('đòn bẩy')) {
       botReply = 'Dạ bên em có bảng phân tích công thức <strong>Đòn Bẩy Tài Chính 30-70</strong> và tính toán dòng tiền cho thuê bù lãi ngân hàng an toàn tuyệt đối.<br>Quý khách nhắn lại <strong>Số Điện Thoại</strong> để chuyên gia tài chính gửi bảng tính Excel cho mình nhé!';

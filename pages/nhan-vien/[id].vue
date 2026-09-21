@@ -31,14 +31,14 @@
               <p class="agent-hero-title">{{ agent.role }}</p>
               <p class="agent-hero-slogan">"{{ agent.slogan || 'Tận tâm - Uy tín - Minh bạch' }}"</p>
               <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 16px;">
-                {{ agent.bio || 'Chuyên viên tư vấn bất động sản cao cấp trung tâm Bến Thành - Quận 1.' }}
+                {{ agent.bio || 'Chuyên viên hỗ trợ tư vấn bất động sản Quận 11 & Dự án Vinhomes.' }}
               </p>
               
               <div class="agent-stats-badges" style="display: flex; flex-wrap: wrap; gap: 10px;">
                 <span class="agent-tag" style="position: static;">Kinh nghiệm: {{ agent.exp }}</span>
                 <span class="agent-tag" style="position: static;">Đã giao dịch: {{ agent.deals }}</span>
                 <span class="agent-tag" style="position: static;">{{ agent.properties?.length || 0 }} căn phụ trách</span>
-                <span class="agent-tag" style="position: static;">BĐS Bến Thành - Q.1</span>
+                <span class="agent-tag" style="position: static;">Bến Thành Land - Q.11</span>
               </div>
             </div>
 
@@ -112,9 +112,9 @@ const copyShareLink = () => {
 };
 
 useHead({
-  title: computed(() => agent.value ? `${agent.value.name} - ${agent.value.role} | BĐS Bến Thành` : 'Chuyên Viên Tư Vấn BĐS Bến Thành'),
+  title: computed(() => agent.value ? `${agent.value.name} - ${agent.value.role} | Bến Thành Land` : 'Chuyên Viên Hỗ Trợ Tư Vấn BĐS | Bến Thành Land'),
   meta: [
-    { name: 'description', content: computed(() => agent.value?.bio || 'Chuyên viên tư vấn BĐS cao cấp Bến Thành - Quận 1.') },
+    { name: 'description', content: computed(() => agent.value?.bio || 'Chuyên viên hỗ trợ tư vấn BĐS Quận 11 - Bến Thành Land.') },
   ],
 });
 </script>

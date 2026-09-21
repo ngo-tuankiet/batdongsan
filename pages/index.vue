@@ -158,7 +158,7 @@
           </p>
           <h2 class="section-title" style="font-size: 2rem; margin: 8px 0 12px;">Câu Chuyện Đầu Tư Bất Động Sản Thực Chiến</h2>
           <p class="section-desc" style="max-width: 720px; margin: 0 auto; color: var(--text-muted); font-size: 0.95rem;">
-            Phân tích chuyên sâu về đòn bẩy tài chính, kiểm tra quy hoạch lộ giới và bài học đắt giá từ 12 năm kinh nghiệm thực tế tại Quận 1.
+            Phân tích chuyên sâu về đòn bẩy tài chính, kiểm tra quy hoạch lộ giới và bài học đắt giá từ 12 năm kinh nghiệm thực tế tại Quận 11.
           </p>
         </div>
 

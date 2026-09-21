@@ -186,7 +186,7 @@
                 <i class="fa-solid fa-circle-info" style="color: var(--gold-primary);"></i> Mô Tả Chi Tiết
               </h3>
               <div class="detail-desc-text">
-                <p>{{ property.description || 'Vị trí đắc địa trung tâm Quận 1, thanh khoản cao, giao dịch an toàn.' }}</p>
+                <p>{{ property.description || 'Vị trí đắc địa Quận 11, thanh khoản tốt, giao dịch an toàn.' }}</p>
               </div>
 
               <!-- Features checklist -->

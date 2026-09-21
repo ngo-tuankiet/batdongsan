@@ -4,7 +4,7 @@
     <LeftFlyerBanner 
       v-if="currentBanner && currentBanner.isActive"
       :imageSrc="currentBanner.imageUrl || '/images/banner-poster-nhapho.jpg'"
-      :title="currentBanner.title || 'NHÀ PHỐ QUẬN 1'"
+      :title="currentBanner.title || 'NHÀ PHỐ QUẬN 11'"
       :badgeIcon="currentBanner.badgeIcon || 'fa-crown'"
       :btnText="currentBanner.btnText || 'Xem Quỹ Căn'"
       reopenLabel="Banner Nhà Phố"
@@ -22,15 +22,15 @@
       <nav class="detail-breadcrumb" style="margin-bottom: 20px;">
         <NuxtLink to="/">Trang Chủ</NuxtLink>
         <i class="fa-solid fa-chevron-right"></i>
-        <span class="active-crumb">Nhà Phố Trung Tâm</span>
+        <span class="active-crumb">Nhà Phố Quận 11</span>
       </nav>
 
       <!-- PAGE HEADER: TIÊU ĐỀ + BỘ LỌC TÌM KIẾM -->
       <div id="properties-list-top" class="page-header-bar">
         <div>
           <p class="section-subtitle">DANH SÁCH GIỎ HÀNG</p>
-          <h1 class="page-main-title">Nhà Phố Trung Tâm Đang Mở Bán</h1>
-          <p class="page-sub-desc">Quỹ căn nhà phố mặt tiền Quận 1 – pháp lý chuẩn sổ hồng riêng, giá gốc chủ đầu tư.</p>
+          <h1 class="page-main-title">Nhà Phố Quận 11 Đang Mở Bán</h1>
+          <p class="page-sub-desc">Quỹ căn nhà phố mặt tiền & hẻm xe hơi Quận 11 – pháp lý chuẩn sổ hồng riêng, giá gốc trực tiếp chủ nhà.</p>
         </div>
         <div class="filter-controls-row">
           <input
