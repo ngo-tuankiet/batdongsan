@@ -507,16 +507,57 @@ img {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: var(--transition);
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-sm);
+  position: relative;
+
+  /* 1. THAO TÁC DUYỆT: Trồi từ dưới lên êm ái (Smooth Silk Rise) */
+  opacity: 0;
+  transform: translateY(70px) scale(0.96);
+  filter: blur(5px);
+  transition: opacity 1.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.35s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.45s ease,
+              border-color 0.45s ease;
+  will-change: opacity, transform, filter;
 }
 
+.prop-card.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0px);
+}
+
+/* 2. VIỀN LASER ÁNH KIM QUÉT NHẸ */
+.prop-card.revealed::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px; bottom: -1px;
+  border-radius: inherit;
+  border: 2px solid #ca8a04;
+  box-shadow: 0 0 20px rgba(202, 138, 4, 0.5);
+  opacity: 0;
+  animation: aura-laser-scan 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.2s;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes aura-laser-scan {
+  0%   { opacity: 0; transform: scale(0.98); }
+  50%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+/* 3. KHI CHẠM / RÊ CHUỘT: PHÓNG TO BỔNG LÊN MẠNH MẼ 1.08X */
 .prop-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--border-gold);
-  box-shadow: var(--shadow-md);
+  transform: perspective(1200px) rotateX(0deg) translateY(-14px) scale(1.08) !important;
+  border-color: #ca8a04 !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.14), 0 0 30px rgba(202, 138, 4, 0.35) !important;
+  z-index: 25;
+  transition: transform 0.45s cubic-bezier(0.34, 1.3, 0.64, 1), box-shadow 0.45s ease, border-color 0.45s ease !important;
 }
 
 .prop-img-wrap {
@@ -531,11 +572,19 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  transform: scale(1.15);
+  filter: brightness(0.95);
+  transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1), filter 1.4s ease;
+}
+
+.prop-card.revealed .prop-img {
+  transform: scale(1.0);
+  filter: brightness(1.0);
 }
 
 .prop-card:hover .prop-img {
-  transform: scale(1.08);
+  transform: scale(1.22) !important;
+  filter: brightness(1.04) !important;
 }
 
 .prop-badge {
@@ -669,17 +718,49 @@ img {
   border-radius: var(--radius-md);
   padding: 26px 20px;
   text-align: center;
-  transition: var(--transition);
   display: flex;
   flex-direction: column;
   position: relative;
   box-shadow: var(--shadow-sm);
+
+  /* 1. THAO TÁC DUYỆT: Trồi từ dưới lên êm ái (Smooth Silk Rise) */
+  opacity: 0;
+  transform: translateY(70px) scale(0.96);
+  filter: blur(5px);
+  transition: opacity 1.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.35s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.45s ease,
+              border-color 0.45s ease;
+  will-change: opacity, transform, filter;
+}
+
+.team-card.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0px);
+}
+
+.team-card.revealed::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px; bottom: -1px;
+  border-radius: inherit;
+  border: 2px solid #ca8a04;
+  box-shadow: 0 0 20px rgba(202, 138, 4, 0.5);
+  opacity: 0;
+  animation: aura-laser-scan 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.2s;
+  pointer-events: none;
+  z-index: 5;
 }
 
 .team-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--border-gold);
-  box-shadow: var(--shadow-gold);
+  transform: perspective(1200px) rotateX(0deg) translateY(-14px) scale(1.08) !important;
+  border-color: #ca8a04 !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.14), 0 0 30px rgba(202, 138, 4, 0.35) !important;
+  z-index: 25;
+  transition: transform 0.45s cubic-bezier(0.34, 1.3, 0.64, 1), box-shadow 0.45s ease, border-color 0.45s ease !important;
 }
 
 .team-tag {
@@ -980,24 +1061,27 @@ img {
   will-change: filter, opacity, transform;
 }
 
-/* 2. Hero Background Slideshow */
+/* 2. Hero Background Slideshow & 3D Master Animations */
 .master-hero {
   position: relative;
-  padding: 160px 0 90px;
+  padding: 150px 0 80px;
   text-align: center;
   color: #fff;
   overflow: hidden;
   background: #070e1b;
+  perspective: 1000px;
 }
 
 .hero-bg-container {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: -30px;
+  left: -30px;
+  right: -30px;
+  bottom: -30px;
   z-index: 1;
   overflow: hidden;
+  will-change: transform;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.4, 1);
 }
 
 .hero-bg-slide {
@@ -1009,28 +1093,131 @@ img {
   background-size: cover;
   background-position: center;
   opacity: 0;
-  transform: scale(1);
-  transition: opacity 1.2s ease-in-out, transform 8s ease-out;
+  transform: scale(1.0);
+  transition: opacity 1.8s cubic-bezier(0.22, 1, 0.36, 1), transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
+  will-change: opacity, transform;
 }
 
 .hero-bg-slide.active {
-  opacity: 1;
-  transform: scale(1.06);
+  opacity: 0.98;
+  z-index: 2;
+  animation: heroKenBurns 16s ease-in-out infinite alternate;
 }
 
+@keyframes heroKenBurns {
+  0%   { transform: scale(1.0) translate(0, 0); }
+  50%  { transform: scale(1.12) translate(-1%, -1.2%); }
+  100% { transform: scale(1.05) translate(1%, 0.8%); }
+}
+
+/* Lớp phủ sáng đều - không tối 2 bên */
 .hero-bg-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(7, 14, 27, 0.6) 0%, rgba(7, 14, 27, 0.85) 100%);
-  z-index: 2;
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.22) 0%, rgba(15, 23, 42, 0.42) 60%, rgba(15, 23, 42, 0.65) 100%);
+  z-index: 3;
+  pointer-events: none;
 }
 
 [data-theme="light"] .hero-bg-overlay {
-  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.82) 100%);
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.22) 0%, rgba(15, 23, 42, 0.42) 60%, rgba(15, 23, 42, 0.62) 100%);
+}
+
+/* Canvas hạt bụi vàng Stardust */
+#hero-stardust-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* Text Roller 3D Dát Vàng */
+.roller-wrapper {
+  display: inline-block;
+  height: 1.35em;
+  line-height: 1.35em;
+  overflow: hidden;
+  vertical-align: bottom;
+  position: relative;
+}
+.roller-track {
+  display: flex;
+  flex-direction: column;
+  animation: roll-text-slow 11s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.roller-item {
+  height: 1.35em;
+  line-height: 1.35em;
+  display: block;
+  white-space: nowrap;
+}
+@keyframes roll-text-slow {
+  0%, 25%     { transform: translateY(0); }
+  33%, 58%    { transform: translateY(-25%); }
+  66%, 91%    { transform: translateY(-50%); }
+  100%        { transform: translateY(-75%); }
+}
+
+/* ===================================================================
+   3D MOUSE AMBIENT GLOW & SMART HOVER BADGE
+   =================================================================== */
+.cursor-ambient-glow {
+  display: none !important;
+}
+
+.cursor-hover-badge {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 100000;
+  background: rgba(15, 23, 42, 0.94);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.7);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25), 0 0 16px rgba(202, 138, 4, 0.4);
+  backdrop-filter: blur(10px);
+  will-change: transform, opacity;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+  white-space: nowrap;
+}
+.cursor-hover-badge.visible {
+  opacity: 1;
+}
+
+/* 3D Specular Card Glare */
+.card-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 6;
+  border-radius: inherit;
+  background: radial-gradient(circle 260px at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255, 255, 255, 0.45), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  mix-blend-mode: overlay;
+}
+.prop-card:hover .card-glare,
+.home-art-card:hover .card-glare,
+.team-card:hover .card-glare,
+.agent-card:hover .card-glare,
+.team-member-card:hover .card-glare,
+.article-grid-card:hover .card-glare {
+  opacity: 1;
 }
 
 .hero-content-layer {
@@ -1405,35 +1592,137 @@ img {
 [data-aos-delay="300"] { transition-delay: 380ms; }
 [data-aos-delay="400"] { transition-delay: 460ms; }
 
-/* Tự động áp dụng hiệu ứng mượt mà khi cuộn tới các thẻ BĐS, Nhân Viên, Tin Tức, Tiện Ích */
+/* ===================================================================
+   LUXURY CARD ANIMATION (BĐS, NHÂN VIÊN, TIN TỨC)
+   Trồi mượt mà từ dưới lên + Viền laser quét vàng + Zoom 1.08x + Nghiêng 3D
+   =================================================================== */
 .prop-card,
+.team-card,
 .agent-card,
-.member-card,
-.home-article-card,
 .home-art-card,
+.home-article-card,
+.article-grid-card,
+.member-card,
 .team-member-card,
 .detail-section-card,
 .stat-card,
 .feature-box {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 1.1s cubic-bezier(0.19, 1, 0.22, 1),
-              transform 1.1s cubic-bezier(0.19, 1, 0.22, 1),
-              box-shadow 0.35s ease, border-color 0.35s ease;
-  will-change: opacity, transform;
+  transform: translateY(70px) scale(0.96);
+  filter: blur(5px);
+  transition: opacity 1.25s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.25s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.45s ease,
+              border-color 0.45s ease;
+  will-change: opacity, transform, filter;
+  position: relative;
 }
 
+.prop-card.revealed,
 .prop-card.aos-animate,
+.team-card.revealed,
+.team-card.aos-animate,
+.agent-card.revealed,
 .agent-card.aos-animate,
-.member-card.aos-animate,
-.home-article-card.aos-animate,
+.home-art-card.revealed,
 .home-art-card.aos-animate,
+.home-article-card.revealed,
+.home-article-card.aos-animate,
+.article-grid-card.revealed,
+.article-grid-card.aos-animate,
+.team-member-card.revealed,
 .team-member-card.aos-animate,
+.member-card.aos-animate,
 .detail-section-card.aos-animate,
 .stat-card.aos-animate,
 .feature-box.aos-animate {
   opacity: 1 !important;
-  transform: translateY(0) !important;
+  transform: translateY(0) scale(1) !important;
+  filter: blur(0px) !important;
+}
+
+/* Viền Laser Quét Sáng Khi Vừa Trồi Lên */
+.prop-card.revealed::before,
+.prop-card.aos-animate::before,
+.team-card.revealed::before,
+.team-card.aos-animate::before,
+.agent-card.revealed::before,
+.agent-card.aos-animate::before,
+.home-art-card.revealed::before,
+.home-art-card.aos-animate::before,
+.home-article-card.revealed::before,
+.home-article-card.aos-animate::before,
+.article-grid-card.revealed::before,
+.article-grid-card.aos-animate::before,
+.team-member-card.revealed::before,
+.team-member-card.aos-animate::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px; bottom: -1px;
+  border-radius: inherit;
+  border: 2px solid #ca8a04;
+  box-shadow: 0 0 20px rgba(202, 138, 4, 0.5);
+  opacity: 0;
+  animation: aura-laser-scan 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.2s;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes aura-laser-scan {
+  0%   { opacity: 0; transform: scale(0.98); }
+  50%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+/* Hover Phóng To 1.08x và Viền Ánh Kim Đẳng Cấp */
+.prop-card:hover,
+.team-card:hover,
+.agent-card:hover,
+.home-art-card:hover,
+.home-article-card:hover,
+.article-grid-card:hover,
+.team-member-card:hover {
+  transform: perspective(1200px) translateY(-14px) scale(1.08) !important;
+  border-color: #ca8a04 !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.14), 0 0 30px rgba(202, 138, 4, 0.35) !important;
+  z-index: 30;
+  transition: transform 0.45s cubic-bezier(0.34, 1.3, 0.64, 1), box-shadow 0.45s ease, border-color 0.45s ease !important;
+}
+
+/* Ảnh phóng to 1.22x */
+.prop-card:hover .prop-img,
+.home-art-card:hover .home-art-thumb img,
+.home-article-card:hover img,
+.article-grid-card:hover .card-thumb-link img,
+.team-card:hover .team-avatar-box img,
+.agent-card:hover .team-avatar-box img,
+.team-member-card:hover .member-img {
+  transform: scale(1.22) !important;
+  filter: brightness(1.05) !important;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease !important;
+}
+
+/* Vệt sáng quét chéo ảnh khi hover */
+.prop-img-wrap::after,
+.home-art-thumb::after,
+.card-thumb-link::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -60%;
+  width: 40%; height: 200%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.38), transparent);
+  transform: rotate(30deg);
+  pointer-events: none;
+  opacity: 0;
+}
+.prop-card:hover .prop-img-wrap::after,
+.home-art-card:hover .home-art-thumb::after,
+.article-grid-card:hover .card-thumb-link::after {
+  opacity: 1;
+  left: 140%;
+  transition: left 1.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Hỗ trợ chế độ giảm chuyển động cho người dùng nhạy cảm */

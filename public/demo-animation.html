@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bến Thành Land | Demo Hoạt Ảnh Kéo Tương Tác Đẳng Cấp (Drag & Parallax)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-primary: #070e1b;
+      --bg-secondary: #0e1a30;
+      --bg-card: #132442;
+      --bg-card-hover: #172c50;
+      --bg-input: #091222;
+      
+      --border-color: #1d365f;
+      --border-gold: rgba(212, 175, 55, 0.35);
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-sub: #cbd5e1;
+      
+      --gold-primary: #d4af37;
+      --gold-light: #f7e7a9;
+      --gold-dark: #aa771c;
+      --gold-gradient: linear-gradient(135deg, #f7e7a9 0%, #d4af37 50%, #aa771c 100%);
+      --gold-glow: rgba(212, 175, 55, 0.25);
+      
+      --font-heading: 'Montserrat', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+      
+      --anim-ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Scroll Progress Bar mạ vàng ở đỉnh */
+    #scroll-progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3.5px;
+      background: var(--gold-gradient);
+      width: 0%;
+      z-index: 99999;
+      box-shadow: 0 0 12px var(--gold-primary);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===================================================================
+       THANH ĐIỀU HƯỚNG NHANH CHỌN XEM LẠI BẢN 1, BẢN 2 & BẢN KÉO MỚI
+       =================================================================== */
+    .top-switch-bar {
+      background: rgba(9, 18, 34, 0.95);
+      border-bottom: 1.5px solid var(--border-gold);
+      backdrop-filter: blur(16px);
+      padding: 10px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .top-switch-bar span {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold-light);
+    }
+    .switch-link {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .switch-link:hover {
+      border-color: var(--gold-primary);
+      color: #fff;
+    }
+    .switch-link.active {
+      background: var(--gold-gradient);
+      color: #070e1b;
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 14px var(--gold-glow);
+    }
+
+    /* ===================================================================
+       HEADER & GOLD SHIMMER TEXT
+       =================================================================== */
+    .site-header {
+      background: rgba(7, 14, 27, 0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 76px;
+    }
+    .brand-logo {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gold-text {
+      background: linear-gradient(90deg, #f7e7a9 0%, #d4af37 35%, #fff 50%, #d4af37 65%, #aa771c 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      font-weight: 700;
+      animation: text-shine 5.5s linear infinite;
+    }
+    @keyframes text-shine {
+      to { background-position: 200% center; }
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-link {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+    .nav-phone-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-light);
+      padding: 9px 18px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* ===================================================================
+       HERO SECTION WITH 3D TEXT ROLL
+       =================================================================== */
+    .master-hero {
+      position: relative;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 75px 0 25px;
+      overflow: hidden;
+    }
+    .hero-bg-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    .hero-bg-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.36;
+      transition: transform 10s ease;
+    }
+    .hero-bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(7, 14, 27, 0.45) 0%, rgba(7, 14, 27, 0.96) 100%),
+                  linear-gradient(180deg, rgba(7, 14, 27, 0.2) 0%, #070e1b 100%);
+    }
+
+    .hero-content-layer {
+      position: relative;
+      z-index: 3;
+      max-width: 980px;
+    }
+    .hero-main-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.3rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.22;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .roller-wrapper {
+      display: inline-block;
+      height: 1.22em;
+      overflow: hidden;
+      vertical-align: bottom;
+      position: relative;
+    }
+    .roller-track {
+      display: flex;
+      flex-direction: column;
+      animation: roll-text-slow 13s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+    .roller-item {
+      height: 1.22em;
+      line-height: 1.22em;
+      display: block;
+      white-space: nowrap;
+    }
+    @keyframes roll-text-slow {
+      0%, 20%     { transform: translateY(0); }
+      25%, 45%    { transform: translateY(-20%); }
+      50%, 70%    { transform: translateY(-40%); }
+      75%, 95%    { transform: translateY(-60%); }
+      100%        { transform: translateY(-80%); }
+    }
+
+    .hero-main-sub {
+      font-size: clamp(1rem, 1.8vw, 1.15rem);
+      color: var(--text-sub);
+      max-width: 740px;
+      margin: 0 auto 32px;
+    }
+
+    .search-filter-box {
+      background: rgba(14, 26, 48, 0.85);
+      border: 1px solid var(--border-gold);
+      backdrop-filter: blur(20px);
+      padding: 14px 20px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+    .filter-input, .filter-select {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 11px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .filter-input { flex: 1 1 240px; }
+    .filter-search-btn {
+      background: var(--gold-gradient);
+      color: #070e1b;
+      border: none;
+      padding: 11px 26px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    /* ===================================================================
+       ĐỘT PHÁ MỚI: BỘ SƯU TẬP BĐS KÉO LƯỚT TƯƠNG TÁC (DRAGGABLE SLIDER)
+       =================================================================== */
+    .drag-showcase-section {
+      padding: 70px 0 85px;
+      position: relative;
+    }
+
+    .drag-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .drag-hint-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-light);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      animation: pulse-drag 2s infinite;
+    }
+    @keyframes pulse-drag {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); box-shadow: 0 0 16px var(--gold-glow); }
+    }
+
+    .slider-nav-arrows {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .slider-nav-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    .slider-nav-btn:hover {
+      background: var(--gold-primary);
+      color: #070e1b;
+      transform: scale(1.1);
+      box-shadow: 0 0 15px var(--gold-glow);
+    }
+
+    /* Drag Container Viewport */
+    .drag-viewport {
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+      padding: 20px 0 35px;
+      margin: 0 -12px;
+    }
+    .drag-viewport.is-dragging {
+      cursor: grabbing;
+    }
+
+    /* Custom Floating Drag Cursor Tooltip */
+    .drag-tooltip {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      background: rgba(14, 26, 48, 0.95);
+      border: 1.5px solid var(--gold-primary);
+      color: var(--gold-light);
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 15px var(--gold-glow);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .drag-tooltip.active {
+      opacity: 1;
+    }
+
+    /* Track chứa các thẻ BĐS */
+    .drag-track {
+      display: flex;
+      gap: 28px;
+      padding: 0 12px;
+      transition: transform 0.1s ease-out;
+      will-change: transform;
+    }
+
+    /* THẺ SẢN PHẨM PHONG CÁCH PANORAMA HIỆN ĐẠI */
+    .drag-prop-card {
+      flex: 0 0 380px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      transition: border-color 0.4s, box-shadow 0.4s, transform 0.4s var(--anim-ease-luxury);
+    }
+    @media (max-width: 500px) {
+      .drag-prop-card { flex: 0 0 300px; }
+    }
+
+    .drag-prop-card:hover {
+      border-color: var(--border-gold);
+      transform: translateY(-8px) scale(1.015);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55), 0 0 30px rgba(212, 175, 55, 0.22);
+    }
+
+    .drag-card-img-wrap {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+      background: #091222;
+    }
+    .drag-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .drag-prop-card:hover .drag-card-img {
+      transform: scale(1.1);
+    }
+
+    /* Tia sáng quét ảnh khi hover */
+    .drag-card-img-wrap::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: rotate(30deg);
+      pointer-events: none;
+      opacity: 0;
+    }
+    .drag-prop-card:hover .drag-card-img-wrap::after {
+      opacity: 1;
+      left: 140%;
+      transition: left 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .drag-card-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(7, 14, 27, 0.88);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 6px;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      z-index: 4;
+    }
+    .badge-radar-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: radar-ping 2.2s infinite;
+    }
+    @keyframes radar-ping {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.6); opacity: 0.5; }
+    }
+
+    .drag-card-price {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: var(--gold-gradient);
+      color: #070e1b;
+      font-weight: 800;
+      font-size: 0.98rem;
+      padding: 7px 16px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      z-index: 4;
+      transition: transform 0.3s;
+    }
+    .drag-prop-card:hover .drag-card-price {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6);
+    }
+
+    .drag-card-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .drag-card-loc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .drag-card-title {
+      font-family: var(--font-heading);
+      font-size: 1.18rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 14px;
+      color: var(--text-main);
+      transition: color 0.3s;
+    }
+    .drag-prop-card:hover .drag-card-title {
+      color: var(--gold-light);
+    }
+
+    .drag-card-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 18px;
+    }
+    .drag-meta-item {
+      text-align: center;
+    }
+    .drag-meta-item span {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .drag-meta-item strong {
+      font-size: 0.88rem;
+      color: var(--gold-light);
+    }
+
+    .drag-card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+    .btn-gold {
+      background: var(--gold-gradient);
+      color: #070e1b;
+      padding: 11px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex: 1;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px var(--gold-glow);
+    }
+    .btn-outline-gold {
+      background: transparent;
+      border: 1px solid var(--border-gold);
+      color: var(--gold-light);
+      padding: 11px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.88rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    /* THANH THƯỚC ĐO TIẾN TRÌNH KÉO (DRAGGABLE SCRUBBER) */
+    .drag-progress-wrapper {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .drag-track-bar {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      position: relative;
+      cursor: pointer;
+    }
+    .drag-thumb {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      width: 60px;
+      height: 10px;
+      background: var(--gold-gradient);
+      border-radius: var(--radius-full);
+      transform: translateY(-50%);
+      box-shadow: 0 0 14px var(--gold-primary);
+      transition: width 0.2s, left 0.1s ease-out;
+    }
+    .drag-counter {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      font-family: var(--font-heading);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      background: #050a14;
+      border-top: 1px solid var(--border-color);
+      padding: 60px 0 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Thanh tiến trình cuộn mạ vàng đỉnh màn hình -->
+  <div id="scroll-progress-bar"></div>
+
+  <!-- FLOATING TOOLTIP KHI RÊ CHUỘT VÀO VÙNG KÉO -->
+  <div class="drag-tooltip" id="drag-tooltip">
+    <i class="fa-solid fa-hand"></i>
+    <span>GIỮ &amp; KÉO QUA LẠI • DRAG</span>
+  </div>
+
+  <!-- THANH CHỌN XEM NHANH CÁC BẢN ANIMATION -->
+  <nav class="top-switch-bar">
+    <span>💎 Bạn Có Thể Chuyển Xem Các Kiểu:</span>
+    <a href="demo-animation-1.html" class="switch-link">
+      <i class="fa-solid fa-bookmark"></i> Kiểu 1 (Mở Rèm Ánh Sáng)
+    </a>
+    <a href="demo-animation-2.html" class="switch-link">
+      <i class="fa-solid fa-cube"></i> Kiểu 2 (3D Laser - Bạn Vừa Chọn)
+    </a>
+    <a href="demo-animation.html" class="switch-link active">
+      <i class="fa-solid fa-arrows-left-right"></i> ✨ Bản Mới (Animation Kéo Lướt Tương Tác)
+    </a>
+  </nav>
+
+  <!-- Header Navigation -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="brand-logo">
+        <span style="width:10px;height:10px;border-radius:50%;background:var(--gold-primary);box-shadow:0 0 10px var(--gold-primary);"></span>
+        <span>BẾN THÀNH <span class="gold-text">LAND</span></span>
+      </a>
+
+      <nav>
+        <ul class="main-nav">
+          <li><a href="#drag-section" class="nav-link">Bộ Sưu Tập BĐS VIP</a></li>
+          <li><a href="#hero" class="nav-link">Tìm Kiếm Quỹ Căn</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <a href="tel:0901355446" class="nav-phone-btn">
+          <i class="fa-solid fa-phone"></i> 0901.355.446
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MASTER HERO SECTION -->
+  <section id="hero" class="master-hero">
+    <div class="hero-bg-container">
+      <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=80');"></div>
+      <div class="hero-bg-overlay"></div>
+    </div>
+
+    <div class="container hero-content-layer">
+      <h1 class="hero-main-title">
+        Kết Nối Bất Động Sản <br>
+        <span class="roller-wrapper">
+          <span class="roller-track">
+            <span class="roller-item gold-text">An Cư &amp; Thịnh Vượng</span>
+            <span class="roller-item gold-text">Vị Thế Độc Tôn</span>
+            <span class="roller-item gold-text">Lợi Nhuận Bền Vững</span>
+            <span class="roller-item gold-text">Pháp Lý Hoàn Chuẩn</span>
+            <span class="roller-item gold-text">An Cư &amp; Thịnh Vượng</span>
+          </span>
+        </span>
+      </h1>
+      
+      <p class="hero-main-sub">
+        Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các siêu dự án Vinhomes Hóc Môn &amp; Vinhomes Cần Giờ.
+      </p>
+
+      <div class="search-filter-box">
+        <input type="text" class="filter-input" placeholder="Nhập tên đường, địa chỉ hoặc từ khóa...">
+        <select class="filter-select"><option>Tất cả loại BĐS</option></select>
+        <select class="filter-select"><option>Tất cả Quận / Phường</option></select>
+        <button class="filter-search-btn"><i class="fa-solid fa-magnifying-glass"></i> Tìm Kiếm</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       BỘ SƯU TẬP BĐS KÉO LƯỚT QUÁN TÍNH ĐỘT PHÁ (DRAG & PARALLAX SHOWCASE)
+       =================================================================== -->
+  <section id="drag-section" class="drag-showcase-section">
+    <div class="container">
+      <div class="drag-header-row">
+        <div>
+          <div class="drag-hint-badge">
+            <i class="fa-solid fa-hand-pointer"></i>
+            <span>BẠN HÃY GIỮ CHUỘT ĐỂ KÉO LƯỚT QUA LẠI NHA!</span>
+          </div>
+          <h2 style="font-family: var(--font-heading); font-size: clamp(1.8rem, 3.2vw, 2.5rem); font-weight: 800; margin-top: 10px;">
+            Bộ Sưu Tập Bất Động Sản VIP
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;">
+            Trải nghiệm kéo vuốt tương tác mượt như ứng dụng di động, có quán tính mượt mà và chuyển động đa chiều.
+          </p>
+        </div>
+
+        <div class="slider-nav-arrows">
+          <button class="slider-nav-btn" id="btn-prev-slide" title="Lướt sang trái">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <button class="slider-nav-btn" id="btn-next-slide" title="Lướt sang phải">
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- VÙNG KÉO LƯỚT TƯƠNG TÁC (DRAG VIEWPORT) -->
+      <div class="drag-viewport" id="drag-viewport">
+        <div class="drag-track" id="drag-track">
+          <!-- Thẻ 1 -->
+          <div class="drag-prop-card">
+            <div class="drag-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=700&q=80" alt="Nhà Phố Lê Đại Hành" class="drag-card-img">
+              <span class="drag-card-badge"><span class="badge-radar-dot"></span> Độc Quyền VIP</span>
+              <span class="drag-card-price">38.5 Tỷ</span>
+            </div>
+            <div class="drag-card-body">
+              <div class="drag-card-loc"><i class="fa-solid fa-location-dot" style="color: var(--gold-primary);"></i> Mặt tiền Lê Đại Hành, P.11, Q.11</div>
+              <h3 class="drag-card-title">Nhà Phố 5 Tầng Thang Máy Mặt Tiền Trung Tâm</h3>
+              <div class="drag-card-meta">
+                <div class="drag-meta-item"><span>Diện tích</span><strong>112 m²</strong></div>
+                <div class="drag-meta-item"><span>Kích thước</span><strong>4.5 x 25m</strong></div>
+                <div class="drag-meta-item"><span>Pháp lý</span><strong style="color: #10b981;">Sổ hồng</strong></div>
+              </div>
+              <div class="drag-card-actions">
+                <button class="btn-outline-gold"><i class="fa-regular fa-eye"></i> Chi Tiết</button>
+                <button class="btn-gold"><i class="fa-solid fa-phone"></i> Xem Nhà</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thẻ 2 -->
+          <div class="drag-prop-card">
+            <div class="drag-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=700&q=80" alt="Dinh Thự Cần Giờ" class="drag-card-img">
+              <span class="drag-card-badge"><span class="badge-radar-dot"></span> Dự Án Biển</span>
+              <span class="drag-card-price">85.0 Tỷ</span>
+            </div>
+            <div class="drag-card-body">
+              <div class="drag-card-loc"><i class="fa-solid fa-location-dot" style="color: var(--gold-primary);"></i> Phân khu Đảo Biển, Vinhomes Cần Giờ</div>
+              <h3 class="drag-card-title">Dinh Thự Ven Biển Siêu Đô Thị Nghỉ Dưỡng</h3>
+              <div class="drag-card-meta">
+                <div class="drag-meta-item"><span>Diện tích</span><strong>450 m²</strong></div>
+                <div class="drag-meta-item"><span>Kích thước</span><strong>18 x 25m</strong></div>
+                <div class="drag-meta-item"><span>Pháp lý</span><strong style="color: #10b981;">Lâu dài</strong></div>
+              </div>
+              <div class="drag-card-actions">
+                <button class="btn-outline-gold"><i class="fa-regular fa-eye"></i> Chi Tiết</button>
+                <button class="btn-gold"><i class="fa-solid fa-phone"></i> Xem Nhà</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thẻ 3 -->
+          <div class="drag-prop-card">
+            <div class="drag-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=700&q=80" alt="Vinhomes Grand Park" class="drag-card-img">
+              <span class="drag-card-badge"><span class="badge-radar-dot"></span> Suất Ngoại Giao</span>
+              <span class="drag-card-price">52.0 Tỷ</span>
+            </div>
+            <div class="drag-card-body">
+              <div class="drag-card-loc"><i class="fa-solid fa-location-dot" style="color: var(--gold-primary);"></i> Khu Manhattan, Vinhomes Grand Park</div>
+              <h3 class="drag-card-title">Biệt Thự Đơn Lập View Trực Diện Công Viên</h3>
+              <div class="drag-card-meta">
+                <div class="drag-meta-item"><span>Diện tích</span><strong>310 m²</strong></div>
+                <div class="drag-meta-item"><span>Kích thước</span><strong>15 x 20m</strong></div>
+                <div class="drag-meta-item"><span>Pháp lý</span><strong style="color: #10b981;">Hoàn công</strong></div>
+              </div>
+              <div class="drag-card-actions">
+                <button class="btn-outline-gold"><i class="fa-regular fa-eye"></i> Chi Tiết</button>
+                <button class="btn-gold"><i class="fa-solid fa-phone"></i> Xem Nhà</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thẻ 4 -->
+          <div class="drag-prop-card">
+            <div class="drag-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=700&q=80" alt="Penthouse" class="drag-card-img">
+              <span class="drag-card-badge"><span class="badge-radar-dot"></span> Siêu Sang</span>
+              <span class="drag-card-price">68.5 Tỷ</span>
+            </div>
+            <div class="drag-card-body">
+              <div class="drag-card-loc"><i class="fa-solid fa-location-dot" style="color: var(--gold-primary);"></i> Landmark 81, Vinhomes Central Park</div>
+              <h3 class="drag-card-title">Penthouse Duplex Sky Villa Ôm Trọn Sông Sài Gòn</h3>
+              <div class="drag-card-meta">
+                <div class="drag-meta-item"><span>Diện tích</span><strong>380 m²</strong></div>
+                <div class="drag-meta-item"><span>Nội thất</span><strong>Ý Full Option</strong></div>
+                <div class="drag-meta-item"><span>Pháp lý</span><strong style="color: #10b981;">Sổ hồng</strong></div>
+              </div>
+              <div class="drag-card-actions">
+                <button class="btn-outline-gold"><i class="fa-regular fa-eye"></i> Chi Tiết</button>
+                <button class="btn-gold"><i class="fa-solid fa-phone"></i> Xem Nhà</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thẻ 5 -->
+          <div class="drag-prop-card">
+            <div class="drag-card-img-wrap">
+              <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=700&q=80" alt="Nhà Phố Ba Tháng Hai" class="drag-card-img">
+              <span class="drag-card-badge"><span class="badge-radar-dot"></span> Vị Trí Vàng</span>
+              <span class="drag-card-price">46.0 Tỷ</span>
+            </div>
+            <div class="drag-card-body">
+              <div class="drag-card-loc"><i class="fa-solid fa-location-dot" style="color: var(--gold-primary);"></i> Mặt tiền Ba Tháng Hai, P.8, Quận 11</div>
+              <h3 class="drag-card-title">Tòa Nhà Văn Phòng 6 Tầng Mặt Tiền Kinh Doanh VIP</h3>
+              <div class="drag-card-meta">
+                <div class="drag-meta-item"><span>Diện tích</span><strong>140 m²</strong></div>
+                <div class="drag-meta-item"><span>Dòng tiền</span><strong>95 Tr/tháng</strong></div>
+                <div class="drag-meta-item"><span>Pháp lý</span><strong style="color: #10b981;">Sổ hồng</strong></div>
+              </div>
+              <div class="drag-card-actions">
+                <button class="btn-outline-gold"><i class="fa-regular fa-eye"></i> Chi Tiết</button>
+                <button class="btn-gold"><i class="fa-solid fa-phone"></i> Xem Nhà</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THANH THƯỚC ĐO TIẾN TRÌNH KÉO -->
+      <div class="drag-progress-wrapper">
+        <div class="drag-counter" id="drag-counter">Căn 01 / 05</div>
+        <div class="drag-track-bar" id="drag-track-bar">
+          <div class="drag-thumb" id="drag-thumb"></div>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-arrows-left-right"></i> Kéo lướt tự do</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 35px; margin-bottom: 30px;">
+        <div>
+          <h3 style="font-size: 1.3rem; margin-bottom: 12px; color: var(--text-main);">
+            BẾN THÀNH <span class="gold-text">LAND</span>
+          </h3>
+          <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-muted);">
+            Giải pháp bất động sản mua bán ký gửi Quận 11 và các dự án cao cấp.
+          </p>
+        </div>
+        <div>
+          <h4 style="color: var(--gold-primary); margin-bottom: 12px; font-size: 1rem;">CÁC BẢN ANIMATION ĐÃ LƯU</h4>
+          <p style="margin-bottom: 6px;"><a href="demo-animation-1.html" style="color: var(--text-sub);">👉 Bản Lưu Kiểu 1: Mở rèm ánh sáng &amp; nảy số giá</a></p>
+          <p style="margin-bottom: 6px;"><a href="demo-animation-2.html" style="color: var(--text-sub);">👉 Bản Lưu Kiểu 2: 3D Holographic Flip &amp; Viền Laser Vàng</a></p>
+        </div>
+      </div>
+      <div style="text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
+        © 2026 Bản quyền thuộc về Bến Thành Land. Bản Demo Hoạt Ảnh Không Làm Ảnh Hưởng Đến Web Gốc.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 1. THANH TIẾN TRÌNH CUỘN TRANG
+    const progressBar = document.getElementById('scroll-progress-bar');
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      progressBar.style.width = ((winScroll / height) * 100) + '%';
+    });
+
+    // 2. KINETIC DRAG & MOMENTUM SLIDER LOGIC
+    const viewport = document.getElementById('drag-viewport');
+    const track = document.getElementById('drag-track');
+    const thumb = document.getElementById('drag-thumb');
+    const counter = document.getElementById('drag-counter');
+    const tooltip = document.getElementById('drag-tooltip');
+
+    let isDown = false;
+    let startX = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+    let animationID = 0;
+    let maxTranslate = 0;
+
+    function calcMaxTranslate() {
+      maxTranslate = track.scrollWidth - viewport.clientWidth;
+      if (maxTranslate < 0) maxTranslate = 0;
+    }
+    window.addEventListener('resize', calcMaxTranslate);
+    calcMaxTranslate();
+
+    // Tooltip di chuyển theo chuột
+    viewport.addEventListener('mouseenter', () => tooltip.classList.add('active'));
+    viewport.addEventListener('mouseleave', () => tooltip.classList.remove('active'));
+    window.addEventListener('mousemove', (e) => {
+      tooltip.style.left = e.clientX + 'px';
+      tooltip.style.top = (e.clientY - 35) + 'px';
+    });
+
+    // Bắt đầu Kéo (Drag Start)
+    viewport.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX;
+      viewport.classList.add('is-dragging');
+      cancelAnimationFrame(animationID);
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isDown) return;
+      isDown = false;
+      viewport.classList.remove('is-dragging');
+      prevTranslate = currentTranslate;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const currentX = e.pageX;
+      const diff = currentX - startX;
+      currentTranslate = prevTranslate + diff * 1.25;
+
+      // Giới hạn biên kéo
+      if (currentTranslate > 30) currentTranslate = 30;
+      if (currentTranslate < -maxTranslate - 30) currentTranslate = -maxTranslate - 30;
+
+      setSliderPosition();
+    });
+
+    // Hỗ trợ cảm ứng trên điện thoại / tablet
+    viewport.addEventListener('touchstart', (e) => {
+      isDown = true;
+      startX = e.touches[0].pageX;
+      cancelAnimationFrame(animationID);
+    });
+    window.addEventListener('touchend', () => {
+      if (!isDown) return;
+      isDown = false;
+      prevTranslate = currentTranslate;
+    });
+    window.addEventListener('touchmove', (e) => {
+      if (!isDown) return;
+      const currentX = e.touches[0].pageX;
+      const diff = currentX - startX;
+      currentTranslate = prevTranslate + diff;
+      if (currentTranslate > 20) currentTranslate = 20;
+      if (currentTranslate < -maxTranslate - 20) currentTranslate = -maxTranslate - 20;
+      setSliderPosition();
+    });
+
+    function setSliderPosition() {
+      track.style.transform = `translateX(${currentTranslate}px)`;
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      if (maxTranslate <= 0) return;
+      const pct = Math.min(Math.max(-currentTranslate / maxTranslate, 0), 1);
+      const trackBarWidth = document.getElementById('drag-track-bar').clientWidth;
+      const thumbWidth = thumb.clientWidth;
+      thumb.style.left = (pct * (trackBarWidth - thumbWidth)) + 'px';
+
+      // Cập nhật số căn
+      const totalCards = 5;
+      const currentCardIdx = Math.min(Math.floor(pct * totalCards) + 1, totalCards);
+      counter.textContent = `Căn 0${currentCardIdx} / 0${totalCards}`;
+    }
+
+    // Nút mũi tên chuyển slide
+    document.getElementById('btn-prev-slide').addEventListener('click', () => {
+      currentTranslate = Math.min(currentTranslate + 400, 0);
+      prevTranslate = currentTranslate;
+      track.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+      setSliderPosition();
+      setTimeout(() => track.style.transition = 'none', 500);
+    });
+
+    document.getElementById('btn-next-slide').addEventListener('click', () => {
+      currentTranslate = Math.max(currentTranslate - 400, -maxTranslate);
+      prevTranslate = currentTranslate;
+      track.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+      setSliderPosition();
+      setTimeout(() => track.style.transition = 'none', 500);
+    });
+
+    // Cho phép lăn bánh xe chuột ngang khi ở trong viewport
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      currentTranslate -= e.deltaY * 0.9;
+      if (currentTranslate > 0) currentTranslate = 0;
+      if (currentTranslate < -maxTranslate) currentTranslate = -maxTranslate;
+      prevTranslate = currentTranslate;
+      setSliderPosition();
+    }, { passive: false });
+  </script>
+</body>
+</html>

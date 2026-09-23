@@ -9,8 +9,11 @@
 
     <!-- HERO SECTION WITH BACKGROUND SLIDESHOW & SEARCH FILTER -->
     <section id="hero" class="master-hero">
-      <!-- Background Slideshow Layer -->
-      <div class="hero-bg-container">
+      <!-- Stardust Canvas Hạt Bụi Vàng Lơ Lửng -->
+      <canvas id="hero-stardust-canvas"></canvas>
+
+      <!-- Background Slideshow Layer với Parallax Chuột 3D -->
+      <div class="hero-bg-container" :style="heroParallaxStyle">
         <div 
           v-for="(slide, sIdx) in heroSlides" 
           :key="sIdx"
@@ -23,7 +26,15 @@
 
       <div class="container hero-content-layer">
         <h1 class="hero-main-title">
-          Kết Nối Bất Động Sản <br><span class="gold-text">An Cư &amp; Thịnh Vượng</span>
+          Kết Nối Bất Động Sản <br>
+          <div class="roller-wrapper">
+            <div class="roller-track">
+              <div class="roller-item gold-text">An Cư &amp; Thịnh Vượng</div>
+              <div class="roller-item gold-text">Đẳng Cấp Thượng Lưu</div>
+              <div class="roller-item gold-text">Pháp Lý Minh Bạch 100%</div>
+              <div class="roller-item gold-text">An Cư &amp; Thịnh Vượng</div>
+            </div>
+          </div>
         </h1>
         <p class="hero-main-sub">
           Nắm giữ quỹ căn độc quyền nhà phố mặt tiền Quận 11, các siêu dự án Vinhomes Hóc Môn &amp; Vinhomes Cần Giờ.
@@ -164,7 +175,9 @@
             v-for="art in homeArticles" 
             :key="art.id"
             class="home-art-card"
+            data-hover-badge="✦ Đọc Bài"
           >
+            <div class="card-glare"></div>
             <NuxtLink :to="`/tin-tuc/${art.slug || art.id}`" class="home-art-thumb">
               <img :src="art.image" :alt="art.title" loading="lazy">
               <span class="home-art-pill">{{ art.category }}</span>
@@ -374,7 +387,7 @@ const startHeroSlideTimer = () => {
     if (heroSlideTimer) clearInterval(heroSlideTimer);
     heroSlideTimer = setInterval(() => {
       activeHeroSlideIndex.value = (activeHeroSlideIndex.value + 1) % heroSlides.length;
-    }, 4500);
+    }, 8000);
   }
 };
 
@@ -428,12 +441,124 @@ const homepageLeftFlyerSlides = computed(() => {
   return defaultHomeSlides;
 });
 
+// --- HERO 3D PARALLAX THEO TỌA ĐỘ CHUỘT ---
+const heroParallaxStyle = ref<{ transform: string }>({ transform: 'translate3d(0, 0, 0)' });
+let targetHeroX = 0;
+let targetHeroY = 0;
+let currentHeroX = 0;
+let currentHeroY = 0;
+let heroAnimId: number | null = null;
+
+const handleHeroMouseMove = (e: MouseEvent) => {
+  if (!import.meta.client) return;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  targetHeroX = ((e.clientX - w / 2) / (w / 2)) * -20;
+  targetHeroY = ((e.clientY - h / 2) / (h / 2)) * -14;
+};
+
+const loopHeroParallax = () => {
+  currentHeroX += (targetHeroX - currentHeroX) * 0.08;
+  currentHeroY += (targetHeroY - currentHeroY) * 0.08;
+  heroParallaxStyle.value = {
+    transform: `translate3d(${currentHeroX.toFixed(2)}px, ${currentHeroY.toFixed(2)}px, 0)`
+  };
+  heroAnimId = requestAnimationFrame(loopHeroParallax);
+};
+
+// --- HERO STARDUST GOLD PARTICLES CANVAS ---
+let stardustAnimId: number | null = null;
+const initStardustCanvas = () => {
+  if (!import.meta.client) return;
+  const canvas = document.getElementById('hero-stardust-canvas') as HTMLCanvasElement | null;
+  const heroEl = document.getElementById('hero');
+  if (!canvas || !heroEl) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  let canvasW = 0;
+  let canvasH = 0;
+  const resizeCanvas = () => {
+    canvasW = canvas.width = heroEl.offsetWidth;
+    canvasH = canvas.height = heroEl.offsetHeight;
+  };
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  class GoldParticle {
+    x = 0;
+    y = 0;
+    size = 0;
+    speedY = 0;
+    speedX = 0;
+    alpha = 0;
+    pulseSpeed = 0;
+    pulseDir = 1;
+
+    constructor() {
+      this.reset(true);
+    }
+    reset(initial = false) {
+      this.x = Math.random() * canvasW;
+      this.y = initial ? Math.random() * canvasH : canvasH + 10;
+      this.size = Math.random() * 2.5 + 0.8;
+      this.speedY = Math.random() * 0.5 + 0.2;
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.alpha = Math.random() * 0.7 + 0.2;
+      this.pulseSpeed = Math.random() * 0.02 + 0.01;
+      this.pulseDir = Math.random() > 0.5 ? 1 : -1;
+    }
+    update() {
+      this.y -= this.speedY;
+      this.x += this.speedX;
+      this.alpha += this.pulseSpeed * this.pulseDir;
+      if (this.alpha >= 0.95) this.pulseDir = -1;
+      if (this.alpha <= 0.15) this.pulseDir = 1;
+      if (this.y < -15 || this.x < -15 || this.x > canvasW + 15) {
+        this.reset();
+      }
+    }
+    draw() {
+      if (!ctx) return;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(254, 240, 138, ${this.alpha.toFixed(2)})`;
+      ctx.shadowBlur = this.size * 4;
+      ctx.shadowColor = 'rgba(234, 179, 8, 0.7)';
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  const particles: GoldParticle[] = [];
+  for (let i = 0; i < 42; i++) {
+    particles.push(new GoldParticle());
+  }
+
+  const renderParticles = () => {
+    ctx.clearRect(0, 0, canvasW, canvasH);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    stardustAnimId = requestAnimationFrame(renderParticles);
+  };
+  renderParticles();
+};
+
 onMounted(() => {
   startHeroSlideTimer();
+  window.addEventListener('mousemove', handleHeroMouseMove, { passive: true });
+  heroAnimId = requestAnimationFrame(loopHeroParallax);
+  initStardustCanvas();
 });
 
 onUnmounted(() => {
   if (heroSlideTimer) clearInterval(heroSlideTimer);
+  window.removeEventListener('mousemove', handleHeroMouseMove);
+  if (heroAnimId) cancelAnimationFrame(heroAnimId);
+  if (stardustAnimId) cancelAnimationFrame(stardustAnimId);
 });
 
 const handleSearch = async () => {
@@ -487,12 +612,6 @@ const handleSearch = async () => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: var(--transition);
-}
-.home-art-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-gold);
-  box-shadow: var(--shadow-gold);
 }
 .home-art-thumb {
   position: relative;

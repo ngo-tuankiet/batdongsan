@@ -92,7 +92,9 @@
           v-for="item in filteredArticles" 
           :key="item.id" 
           class="article-grid-card"
+          data-hover-badge="✦ Đọc Bài"
         >
+          <div class="card-glare"></div>
           <NuxtLink :to="`/tin-tuc/${item.slug || item.id}`" class="card-thumb-link">
             <img :src="item.image" :alt="item.title" loading="lazy">
             <span class="card-category-badge">{{ item.category }}</span>

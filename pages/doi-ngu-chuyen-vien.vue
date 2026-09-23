@@ -47,9 +47,11 @@
       <div v-if="filteredAgents.length > 0" class="team-grid-container">
         <div 
           v-for="agent in filteredAgents" 
-          :key="agent.id"
+          :key="agent.id" 
           class="team-member-card"
+          data-hover-badge="✦ Tư Vấn"
         >
+          <div class="card-glare"></div>
           <!-- AVATAR & BADGE -->
           <div class="member-avatar-wrapper">
             <img :src="agent.avatar" :alt="agent.name" class="member-img" />

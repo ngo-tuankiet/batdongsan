@@ -1,5 +1,6 @@
 <template>
-  <div class="prop-card">
+  <div class="prop-card" data-hover-badge="✦ Xem Nhà">
+    <div class="card-glare"></div>
     <NuxtLink :to="`/bat-dong-san/${property.id}`" class="prop-img-wrap" style="display: block; text-decoration: none;">
       <img :src="property.image" :alt="property.title" class="prop-img" loading="lazy">
       <span class="prop-badge">{{ property.badge || 'Đang Bán' }}</span>

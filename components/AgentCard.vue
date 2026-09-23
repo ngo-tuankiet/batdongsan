@@ -1,5 +1,6 @@
 <template>
-  <div class="team-card">
+  <div class="team-card" data-hover-badge="✦ Tư Vấn">
+    <div class="card-glare"></div>
     <span class="team-tag">{{ agent.tag || 'Chuyên Viên' }}</span>
     <div class="team-avatar-box">
       <img :src="agent.avatar" :alt="agent.name">
