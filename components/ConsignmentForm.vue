@@ -5,7 +5,7 @@
         <div class="section-header" style="margin-bottom: 28px;">
           <p class="section-subtitle">DÀNH CHO CHỦ NHÀ & NHÀ ĐẦU TƯ</p>
           <h2 class="section-title" style="font-size: 1.85rem;">Ký Gửi Mua Bán - Cho Thuê BĐS</h2>
-          <p class="section-desc">Chúng tôi có sẵn tệp khách VIP sẵn sàng giải ngân trong 7 ngày cho các BĐS định giá hợp lý.</p>
+          <p class="section-desc">Chúng tôi có thể giải ngân sớm theo kì vọng của khách hàng.</p>
         </div>
 
         <form @submit.prevent="handleSubmit">

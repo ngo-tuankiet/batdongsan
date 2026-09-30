@@ -2,8 +2,15 @@ import { prisma } from '../utils/prisma';
 
 export const AgentController = {
   // GET /api/agents
-  async getAgents() {
+  async getAgents(query?: any) {
+    const where: any = {};
+    // Nếu không truyền all=true (mặc định cho web khách), chỉ lấy nhân viên ĐƯỢC TÍCH SAO (isStarred)
+    if (query?.all !== 'true') {
+      where.isStarred = true;
+      where.status = { not: 'locked' };
+    }
     return await prisma.agent.findMany({
+      where,
       include: {
         properties: {
           select: { id: true, title: true, price: true, location: true },
@@ -28,20 +35,35 @@ export const AgentController = {
   // POST /api/agents
   async createAgent(data: any) {
     const id = data.id || `agent_${Date.now()}`;
-    const phone = data.phone;
+    const phone = data.phone || '0901355446';
     const phoneDisplay = data.phoneDisplay || phone.replace(/(\d{4})(\d{3})(\d{3})/, '$1.$2.$3');
+
+    // Tạo mã NV tự tăng nếu chưa có
+    let code = data.code;
+    if (!code) {
+      const count = await prisma.agent.count();
+      code = 'NV' + String(count + 1).padStart(3, '0');
+    }
 
     return await prisma.agent.create({
       data: {
         id,
+        code,
+        username: data.username || `user_${Date.now()}`,
+        password: data.password || 'password123',
+        userRole: data.userRole || 'user',
+        officeId: data.officeId || 'VP1',
+        departmentId: data.departmentId || null,
+        status: data.status || 'active',
+        isStarred: data.isStarred !== undefined ? Boolean(data.isStarred) : false,
         name: data.name,
-        role: data.role,
+        role: data.role || 'Chuyên Viên Tư Vấn',
         phone,
         phoneDisplay,
         zalo: data.zalo || `https://zalo.me/${phone}`,
         avatar: data.avatar || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80',
-        exp: data.exp || '5+ Năm',
-        deals: data.deals || '50+ Căn',
+        exp: data.exp || '3+ Năm',
+        deals: data.deals || '20+ Căn',
         slogan: data.slogan,
         bio: data.bio,
         tag: data.tag || 'Chuyên Viên',
@@ -52,23 +74,32 @@ export const AgentController = {
   // PUT /api/agents/:id
   async updateAgent(id: string, data: any) {
     const phone = data.phone;
-    const phoneDisplay = data.phoneDisplay || phone?.replace(/(\d{4})(\d{3})(\d{3})/, '$1.$2.$3');
+    const phoneDisplay = data.phoneDisplay || (phone ? phone.replace(/(\d{4})(\d{3})(\d{3})/, '$1.$2.$3') : undefined);
+
+    const updateData: any = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.role !== undefined) updateData.role = data.role;
+    if (data.code !== undefined) updateData.code = data.code;
+    if (data.username !== undefined) updateData.username = data.username;
+    if (data.password !== undefined && data.password.trim()) updateData.password = data.password;
+    if (data.userRole !== undefined) updateData.userRole = data.userRole;
+    if (data.officeId !== undefined) updateData.officeId = data.officeId;
+    if (data.departmentId !== undefined) updateData.departmentId = data.departmentId;
+    if (data.status !== undefined) updateData.status = data.status;
+    if (data.isStarred !== undefined) updateData.isStarred = Boolean(data.isStarred);
+    if (phone !== undefined) updateData.phone = phone;
+    if (phoneDisplay !== undefined) updateData.phoneDisplay = phoneDisplay;
+    if (data.zalo !== undefined) updateData.zalo = data.zalo;
+    if (data.avatar !== undefined) updateData.avatar = data.avatar;
+    if (data.exp !== undefined) updateData.exp = data.exp;
+    if (data.deals !== undefined) updateData.deals = data.deals;
+    if (data.slogan !== undefined) updateData.slogan = data.slogan;
+    if (data.bio !== undefined) updateData.bio = data.bio;
+    if (data.tag !== undefined) updateData.tag = data.tag;
 
     return await prisma.agent.update({
       where: { id },
-      data: {
-        name: data.name,
-        role: data.role,
-        phone,
-        phoneDisplay,
-        zalo: data.zalo,
-        avatar: data.avatar,
-        exp: data.exp,
-        deals: data.deals,
-        slogan: data.slogan,
-        bio: data.bio,
-        tag: data.tag,
-      },
+      data: updateData,
     });
   },
 

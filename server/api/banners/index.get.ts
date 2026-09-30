@@ -4,6 +4,8 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event);
   const page = query.page as string | undefined;
 
+  const position = query.position as string | undefined;
+
   try {
     // Check if banners table is empty or missing home banners, auto-seed defaults if needed
     const count = await prisma.banner.count();
@@ -21,6 +23,7 @@ export default defineEventHandler(async (event) => {
             btnText: 'Dự Án Hóc Môn',
             isActive: true,
             page: 'home',
+            position: 'left',
           },
           {
             id: 'home-cangio',
@@ -33,6 +36,7 @@ export default defineEventHandler(async (event) => {
             btnText: 'Dự Án Cần Giờ',
             isActive: true,
             page: 'home',
+            position: 'left',
           },
           {
             id: 'home-nhapho',
@@ -45,6 +49,7 @@ export default defineEventHandler(async (event) => {
             btnText: 'Giỏ Hàng Q.11',
             isActive: true,
             page: 'home',
+            position: 'left',
           },
           {
             id: 'home-kygui',
@@ -57,6 +62,20 @@ export default defineEventHandler(async (event) => {
             btnText: 'Ký Gửi BĐS VIP',
             isActive: true,
             page: 'home',
+            position: 'left',
+          },
+          {
+            id: 'home-right-1',
+            name: 'Banner Phải - Mặt Tiền Trần Văn Giáp',
+            title: 'MẶT TIỀN TRẦN VĂN GIÁP TÂN PHÚ',
+            badge: 'GIÁ TỐT 8.7 TỶ',
+            badgeIcon: 'fa-fire-flame-curved',
+            imageUrl: '/uploads/properties/71-tran-van-giap/1787729929665_2135752137969373260_2135752137969373260_6c9b4b3545f90c61e92ece6bacc7511f.jpg',
+            linkUrl: '/bat-dong-san/TP-TVG-71',
+            btnText: 'Xem Chi Tiết',
+            isActive: true,
+            page: 'home',
+            position: 'right',
           },
           {
             id: 'nha-pho',
@@ -69,6 +88,7 @@ export default defineEventHandler(async (event) => {
             btnText: 'Xem Quỹ Căn',
             isActive: true,
             page: 'nha-pho',
+            position: 'left',
           },
           {
             id: 'du-an',
@@ -81,24 +101,25 @@ export default defineEventHandler(async (event) => {
             btnText: 'Xem Dự Án Hot',
             isActive: true,
             page: 'du-an',
+            position: 'left',
           },
         ],
       });
     }
 
+    const whereClause: any = {};
     if (page) {
-      return await prisma.banner.findMany({
-        where: {
-          OR: [
-            { page },
-            { page: 'all' },
-          ],
-        },
-        orderBy: { createdAt: 'asc' },
-      });
+      whereClause.OR = [
+        { page },
+        { page: 'all' },
+      ];
+    }
+    if (position) {
+      whereClause.position = position;
     }
 
     return await prisma.banner.findMany({
+      where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
       orderBy: { createdAt: 'asc' },
     });
   } catch (err: any) {

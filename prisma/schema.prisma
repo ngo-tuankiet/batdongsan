@@ -8,23 +8,37 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// NHÂN SỰ / CHUYÊN VIÊN BĐS & TÀI KHOẢN CHẤM CÔNG HỆ THỐNG
 model Agent {
-  id           String     @id
-  name         String
-  role         String
-  phone        String
-  phoneDisplay String?
-  zalo         String?
-  avatar       String
-  exp          String
-  deals        String
-  slogan       String?
-  bio          String?
-  tag          String?    @default("Chuyên Viên")
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  properties   Property[]
-  leads        Lead[]
+  id                 String     @id
+  code               String?    // Mã nhân viên: NV001, NV002, AD001...
+  username           String?    @unique
+  password           String?    @default("123456")
+  userRole           String?    @default("user") // 'admin', 'manager', 'user'
+  officeId           String?
+  departmentId       String?
+  status             String?    @default("active") // 'active', 'locked'
+  isStarred          Boolean    @default(true) // ⭐ TÍCH SAO: NHÂN VIÊN ĐƯỢC TÍCH SAO MỚI ĐƯỢC ĐƯA LÊN WEB BĐS
+  name               String
+  role               String     // Chức vụ: Trưởng Ban Tư Vấn, Chuyên Viên Nhà Phố...
+  phone              String
+  phoneDisplay       String?
+  zalo               String?
+  avatar             String
+  exp                String     @default("3+ Năm")
+  deals              String     @default("20+ Căn")
+  slogan             String?
+  bio                String?
+  tag                String?    @default("Chuyên Viên")
+  salaryRate         Float?     // Mức lương theo ngày nếu có tùy chỉnh riêng
+  allowanceRate      Float?     // Mức phụ cấp riêng
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  
+  properties         Property[]
+  leads              Lead[]
+  attendances        Attendance[]
+  leaveRequests      LeaveRequest[]
 }
 
 model Category {
@@ -38,8 +52,8 @@ model Property {
   id          String    @id
   agentId     String?
   categoryId  String?
-  province    String?   @default("TP. Hồ Chí Minh") // Tỉnh / Thành phố (VD: TP. Hồ Chí Minh, Đồng Nai, Bình Dương...)
-  ward        String?   // Quận / Huyện / Phường / Xã
+  province    String?   @default("TP. Hồ Chí Minh")
+  ward        String?
   title       String
   location    String
   price       String
@@ -54,9 +68,9 @@ model Property {
   rentIncome  String?
   badge       String?   @default("Đang Bán")
   image       String
-  images      String?   // JSON String: danh sách ảnh album ["url1", "url2", ...]
-  mapUrl      String?   // Tùy chỉnh link Google Maps hoặc tọa độ
-  features    String?   // JSON String
+  images      String?   // JSON String
+  mapUrl      String?
+  features    String?
   description String?
   status      String?   @default("available")
   createdAt   DateTime  @default(now())
@@ -74,7 +88,7 @@ model Lead {
   demand           String?
   budget           String?
   propertyInterest String?
-  images           String?  // JSON array chứa URL các ảnh ký gửi
+  images           String?
   note             String?
   createdAt        DateTime @default(now())
 
@@ -96,7 +110,7 @@ model Article {
   excerpt     String
   content     String
   image       String
-  category    String   // "Kinh nghiệm thực chiến", "Pháp lý an toàn", "Đòn bẩy tài chính", "Phân tích chu kỳ", "Bài học đắt giá"
+  category    String
   author      String   @default("Ban Chuyên Gia Bến Thành")
   readTime    String   @default("5 phút đọc")
   views       Int      @default(150)
@@ -109,16 +123,120 @@ model Article {
 }
 
 model Banner {
-  id          String   @id // "nha-pho", "du-an", etc.
-  name        String   // Tên gợi nhớ trong admin, VD: "Banner Nhà Phố", "Banner Dự Án"
-  title       String   // Tiêu đề trên banner
+  id          String   @id
+  name        String
+  title       String
   badge       String?  @default("TIÊU BIỂU")
   badgeIcon   String?  @default("fa-crown")
   imageUrl    String
   linkUrl     String?  @default("/#properties")
   btnText     String?  @default("Xem Chi Tiết")
   isActive    Boolean  @default(true)
-  page        String?  @default("nha-pho") // "nha-pho", "du-an", "all"
+  page        String?  @default("nha-pho")
+  position    String?  @default("left")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// ==================== CÁC MODEL CHẤM CÔNG & NHÂN SỰ BẾN THÀNH ====================
+
+// 1. VĂN PHÒNG / CHI NHÁNH & MẠNG WIFI
+model Office {
+  id               String       @id // "VP1", "VP2", "VP3"
+  name             String
+  address          String
+  ssid             String?
+  networks         String?      // JSON array: ["192.168.1.91", "116.109.185."]
+  active           Boolean      @default(true)
+  workStart        String?      @default("09:30")
+  workEnd          String?      @default("12:00")
+  lateGraceMinutes Int?         @default(15)
+  createdAt        DateTime     @default(now())
+}
+
+// 2. PHÒNG BAN
+model Department {
+  id               String       @id // "PB01", "PB02"...
+  name             String
+  officeId         String?
+  viewAll          Boolean      @default(false)
+  createdAt        DateTime     @default(now())
+}
+
+// 3. KHUNG GIỜ LÀM VIỆC (ADMIN CÓ THỂ BỔ SUNG NHIỀU KHUNG GIỜ)
+model WorkShift {
+  id               String       @id @default(cuid())
+  name             String       // "Ca Sáng", "Ca Chiều", "Ca Hành Chính", "Ca Thị Trường"...
+  workStart        String       // "09:30"
+  workEnd          String       // "12:00"
+  lateGraceMinutes Int          @default(15)
+  isDefault        Boolean      @default(false)
+  officeId         String?      // null = áp dụng chung, hoặc chỉ định văn phòng
+  departmentIds    String?      // null = tất cả phòng ban, hoặc danh sách id phân cách bằng dấu phẩy "PB01,PB02"
+  note             String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+// 4. CÀI ĐẶT LƯƠNG & ĐỊNH MỨC (4 KHOẢN RÕ RÀNG THEO YÊU CẦU)
+model SalarySetting {
+  id                 String     @id @default("default")
+  companyName        String     @default("Công Ty Bến Thành")
+  // 4 KHOẢN ĐỊNH MỨC LƯƠNG:
+  salaryPerDay       Float      @default(50000) // 1. Lương một ngày công chuẩn (VNĐ)
+  allowancePerDay    Float      @default(50000) // 2. Phụ cấp (VNĐ)
+  tripAllowance      Float      @default(50000) // 3. Chi phí công tác (VNĐ/ngày đi công tác)
+  otherAllowance     Float      @default(0)     // 4. Chi phí khác (VNĐ): phụ cấp xăng xe, điện thoại, hỗ trợ công việc
+  otherAllowanceNote String?    @default("Hỗ trợ xăng xe, điện thoại, chi phí khác")
+  
+  lateGraceMinutes   Int        @default(15)
+  workStart          String     @default("09:30")
+  workEnd            String     @default("12:00")
+  requireWifi        Boolean    @default(true)
+  trustProxy         Boolean    @default(true)
+  updatedAt          DateTime   @updatedAt
+}
+
+// 5. BẢNG DỮ LIỆU CHẤM CÔNG HÀNG NGÀY
+model Attendance {
+  id           String    @id @default(cuid())
+  userId       String
+  userName     String?
+  userCode     String?
+  date         String    // YYYY-MM-DD
+  checkIn      String?   // HH:mm:ss
+  checkOut     String?   // HH:mm:ss
+  ipIn         String?
+  ipOut        String?
+  officeId     String?
+  officeName   String?
+  shiftName    String?   @default("Ca Chuẩn")
+  status       String    @default("present") // "present", "late", "trip", "leave"
+  isLate       Boolean   @default(false)
+  lateMinutes  Int       @default(0)
+  isTrip       Boolean   @default(false)
+  tripReason   String?
+  note         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  agent        Agent?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 6. ĐƠN XIN VẮNG / ĐI CÔNG TÁC / ĐI TRỄ
+model LeaveRequest {
+  id           String    @id @default(cuid())
+  userId       String
+  userName     String?
+  userCode     String?
+  type         String    @default("leave") // "leave", "trip", "late"
+  fromDate     String
+  toDate       String
+  reason       String
+  status       String    @default("pending") // "pending", "approved", "rejected"
+  note         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  agent        Agent?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

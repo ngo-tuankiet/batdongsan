@@ -6,38 +6,167 @@
       <span>{{ toastMsg }}</span>
     </div>
 
-    <!-- 1. MÀN HÌNH ĐĂNG NHẬP (NẾU CHƯA LOGIN) -->
+    <!-- 1. MÀN HÌNH ĐĂNG NHẬP (HỖ TRỢ CẢ ADMIN & NHÂN VIÊN USER) -->
     <div v-if="!isLoggedIn" class="admin-login-wrapper">
       <div class="admin-login-box">
         <div class="login-header">
-          <div class="admin-brand-logo-wrap" style="margin: 0 auto 12px; width: 56px; height: 56px;">
+          <div class="admin-brand-logo-wrap" style="margin: 0 auto 12px; width: 60px; height: 60px;">
             <img src="/images/logo-ben-thanh.png" alt="Bến Thành Land" class="admin-sidebar-logo-img">
           </div>
-          <h2>Quản Trị Bến Thành Land</h2>
-          <p>Đăng nhập để vào Bảng điều khiển Quản lý Trung tâm</p>
+          <h2>Hệ Thống Bến Thành Land</h2>
+          <p>Đăng nhập Quản Trị CMS & Cổng Chấm Công Nhân Sự</p>
         </div>
 
-        <form @submit.prevent="handleLogin" class="login-form">
+        <!-- NÚT CHUYỂN ĐỔI: ĐĂNG NHẬP / ĐĂNG KÝ TÀI KHOẢN -->
+        <div style="display: flex; background: var(--bg-secondary, #f1f5f9); padding: 4px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color, #e2e8f0);">
+          <button 
+            type="button" 
+            @click="authMode = 'login'" 
+            :style="authMode === 'login' ? 'flex: 1; padding: 9px; border-radius: 6px; border: none; font-weight: 700; font-size: 0.85rem; background: var(--bg-card, #fff); color: var(--gold-primary, #b8860b); box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;' : 'flex: 1; padding: 9px; border-radius: 6px; border: none; font-weight: 600; font-size: 0.85rem; background: transparent; color: var(--text-muted); cursor: pointer;'"
+          >
+            <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+          </button>
+          <button 
+            type="button" 
+            @click="authMode = 'register'" 
+            :style="authMode === 'register' ? 'flex: 1; padding: 9px; border-radius: 6px; border: none; font-weight: 700; font-size: 0.85rem; background: var(--bg-card, #fff); color: #2563eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;' : 'flex: 1; padding: 9px; border-radius: 6px; border: none; font-weight: 600; font-size: 0.85rem; background: transparent; color: var(--text-muted); cursor: pointer;'"
+          >
+            <i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản
+          </button>
+        </div>
+
+        <!-- FORM 1: ĐĂNG NHẬP -->
+        <form v-if="authMode === 'login'" @submit.prevent="handleLogin" class="login-form">
           <div class="form-group">
-            <label>Mật khẩu quản trị (CMS)</label>
+            <label>Tài khoản / Mã nhân viên *</label>
             <div class="input-with-icon">
-              <i class="fa-solid fa-lock"></i>
+              <i class="fa-solid fa-user"></i>
               <input 
-                v-model="password" 
-                type="password" 
-                placeholder="Nhập mật khẩu quản trị..." 
+                v-model="loginUsername" 
+                type="text" 
+                placeholder="Mã NV (VD: NV001), username hoặc admin..." 
                 required
+                autocomplete="username"
               >
             </div>
           </div>
 
+          <div class="form-group">
+            <label>Mật khẩu *</label>
+            <div class="input-with-icon" style="position: relative;">
+              <i class="fa-solid fa-lock"></i>
+              <input 
+                v-model="password" 
+                :type="showPassword ? 'text' : 'password'" 
+                placeholder="Nhập mật khẩu (Mặc định: 123456)..." 
+                required
+                autocomplete="current-password"
+                style="padding-right: 40px;"
+              >
+              <button 
+                type="button" 
+                @click="showPassword = !showPassword" 
+                style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem;"
+                tabindex="-1"
+                :title="showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+              >
+                <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Thông báo lỗi khi sai pass hoặc tài khoản bị khóa -->
+          <div v-if="loginError" style="margin-bottom: 16px; padding: 10px 14px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; color: #dc2626; font-size: 0.82rem; display: flex; align-items: flex-start; gap: 8px; text-align: left;">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 1rem; flex-shrink: 0; margin-top: 2px;"></i>
+            <span>{{ loginError }}</span>
+          </div>
+
           <button type="submit" class="btn-admin-primary login-btn" :disabled="loginLoading">
             <i class="fa-solid fa-right-to-bracket"></i>
-            {{ loginLoading ? 'Đang xác thực...' : 'Đăng Nhập Quản Trị' }}
+            {{ loginLoading ? 'Đang xác thực...' : 'Đăng Nhập Vào Hệ Thống' }}
           </button>
         </form>
 
-        <div class="login-footer">
+        <!-- FORM 2: ĐĂNG KÝ TÀI KHOẢN NHÂN VIÊN MỚI -->
+        <form v-else @submit.prevent="handleRegister" class="login-form">
+          <div class="form-group">
+            <label>Họ và tên nhân viên *</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-id-card"></i>
+              <input v-model="registerForm.name" type="text" placeholder="Ví dụ: Nguyễn Văn Nam" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Số điện thoại (Hotline) *</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-phone"></i>
+              <input v-model="registerForm.phone" type="tel" placeholder="Ví dụ: 0901234567" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Tên đăng nhập (Username) *</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user"></i>
+              <input v-model="registerForm.username" type="text" placeholder="VD: namnguyen" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Mật khẩu khởi tạo *</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-lock"></i>
+              <input v-model="registerForm.password" type="text" placeholder="Mặc định: 123456" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Văn phòng *</label>
+              <select v-model="registerForm.officeId" class="admin-select" required>
+                <option value="VP1">VP1 - Đô Thành</option>
+                <option value="VP2">VP2 - Bình Trị Đông</option>
+                <option value="VP3">VP3 - Phú Thọ</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Phòng ban *</label>
+              <select v-model="registerForm.departmentId" class="admin-select" required>
+                <option value="PB01">Phòng KD 1</option>
+                <option value="PB02">Phòng KD 2</option>
+                <option value="PB03">Marketing</option>
+                <option value="PB04">Pháp Lý</option>
+                <option value="PB05">Hành Chính</option>
+                <option value="PB06">Kế Toán</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Thông báo lỗi khi đăng ký -->
+          <div v-if="registerError" style="margin-bottom: 16px; padding: 10px 14px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; color: #dc2626; font-size: 0.82rem; display: flex; align-items: flex-start; gap: 8px; text-align: left;">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 1rem; flex-shrink: 0; margin-top: 2px;"></i>
+            <span>{{ registerError }}</span>
+          </div>
+
+          <button type="submit" class="btn-admin-primary login-btn" style="background: #2563eb;" :disabled="registerLoading">
+            <i class="fa-solid fa-user-plus"></i>
+            {{ registerLoading ? 'Đang tạo tài khoản...' : 'Tạo Tài Khoản & Cấp Mã NV' }}
+          </button>
+        </form>
+
+        <!-- Thẻ hướng dẫn nhanh tài khoản -->
+        <div v-if="authMode === 'login'" style="margin-top: 16px; padding: 12px 14px; background: var(--bg-secondary, #f8fafc); border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0); font-size: 0.78rem; text-align: left;">
+          <strong style="color: var(--text-main, #0f172a); display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+            <i class="fa-solid fa-circle-info" style="color: #2563eb;"></i> Thông tin đăng nhập:
+          </strong>
+          <div style="color: var(--text-muted); line-height: 1.6;">
+            <div>• <strong>Quản trị viên (Admin):</strong> <code>admin</code> (Mật khẩu: <code>Kiet1234@</code>)</div>
+            <div>• <strong>Nhân viên / Sales:</strong> Mã NV (VD: <code>NV001</code>, <code>NV010</code>...) hoặc Username (Pass mặc định: <code>123456</code>)</div>
+          </div>
+        </div>
+
+        <div class="login-footer" style="margin-top: 16px;">
           <NuxtLink to="/" class="back-home-link">
             <i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ khách
           </NuxtLink>
@@ -70,21 +199,25 @@
           </button>
         </div>
 
-        <!-- Trạng thái Admin -->
+        <!-- Trạng thái Admin / User Đang Đăng Nhập -->
         <div class="admin-user-card">
-          <div class="user-avatar">
-            <i class="fa-solid fa-user-gear"></i>
+          <div class="user-avatar" style="overflow: hidden; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.06); flex-shrink: 0;">
+            <img v-if="currentUser?.avatar" :src="currentUser.avatar" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;" />
+            <i v-else class="fa-solid fa-user-gear" style="font-size: 1.2rem; color: var(--gold-primary);"></i>
             <span class="status-dot"></span>
           </div>
-          <div class="user-meta">
-            <strong>Ban Quản Trị Sàn</strong>
-            <small>admin@bdsbenthanh.vn</small>
+          <div class="user-meta" style="min-width: 0;">
+            <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">{{ currentUser?.name || 'Ban Quản Trị Sàn' }}</strong>
+            <small style="color: var(--gold-primary); font-weight: 700; display: block;">
+              {{ currentUser?.role === 'admin' ? '👑 Quản Trị Viên' : currentUser?.role === 'manager' ? '👔 Quản Lý' : '👤 Chuyên Viên Sales' }}
+              <span v-if="currentUser?.code">({{ currentUser.code }})</span>
+            </small>
           </div>
         </div>
 
         <!-- Danh Mục Menu Điều Hướng Dọc -->
         <div class="sidebar-menu-section">
-          <div class="menu-label">DANH MỤC QUẢN LÝ</div>
+          <div class="menu-label">BẤT ĐỘNG SẢN & WEBSITE</div>
           <nav class="sidebar-nav">
             <button 
               class="nav-item" 
@@ -96,33 +229,6 @@
                 <span>Quản Lý BĐS</span>
               </div>
               <span class="nav-badge gold">{{ properties.length }}</span>
-            </button>
-
-            <button 
-              class="nav-item" 
-              :class="{ active: activeTab === 'agents' }"
-              @click="switchTab('agents')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-user-tie"></i>
-                <span>Đội Ngũ Sales</span>
-              </div>
-              <span class="nav-badge blue">{{ agents.length }}</span>
-            </button>
-
-            <button 
-              class="nav-item" 
-              :class="{ active: activeTab === 'articles' }"
-              @click="switchTab('articles')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-newspaper"></i>
-                <span>Tin Tức & Góc Nhìn</span>
-              </div>
-              <span class="nav-badge purple">
-                {{ articles.length }}
-                <span v-if="articles.some(a => !a.isPublished)" class="badge-dot-warn" title="Có bản nháp chờ duyệt"></span>
-              </span>
             </button>
 
             <button 
@@ -147,6 +253,94 @@
                 <span>Quản Lý Banner</span>
               </div>
               <span class="nav-badge gold">{{ banners.length }}</span>
+            </button>
+
+            <button 
+              class="nav-item" 
+              :class="{ active: activeTab === 'articles' }"
+              @click="switchTab('articles')"
+            >
+              <div class="nav-item-left">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>Tin Tức & Góc Nhìn</span>
+              </div>
+              <span class="nav-badge purple">
+                {{ articles.length }}
+                <span v-if="articles.some(a => !a.isPublished)" class="badge-dot-warn" title="Có bản nháp chờ duyệt"></span>
+              </span>
+            </button>
+          </nav>
+
+          <div class="menu-label" style="margin-top: 20px;">CHẤM CÔNG & NHÂN SỰ</div>
+          <nav class="sidebar-nav">
+            <button 
+              class="nav-item" 
+              :class="{ active: activeTab === 'attendance' }"
+              @click="switchTab('attendance')"
+            >
+              <div class="nav-item-left">
+                <i class="fa-solid fa-calendar-check" style="color: #10b981;"></i>
+                <span>Bảng Chấm Công</span>
+              </div>
+            </button>
+
+            <button 
+              v-if="!currentUser || currentUser.role !== 'user'"
+              class="nav-item" 
+              :class="{ active: activeTab === 'agents' }"
+              @click="switchTab('agents')"
+            >
+              <div class="nav-item-left">
+                <i class="fa-solid fa-user-tie" style="color: #60a5fa;"></i>
+                <span>Nhân Viên & User ⭐</span>
+              </div>
+              <span class="nav-badge blue">{{ agents.length }}</span>
+            </button>
+
+            <button 
+              class="nav-item" 
+              :class="{ active: activeTab === 'leaves' }"
+              @click="switchTab('leaves')"
+            >
+              <div class="nav-item-left">
+                <i class="fa-solid fa-file-signature" style="color: #f59e0b;"></i>
+                <span>Đơn Nghỉ / Công Tác</span>
+              </div>
+            </button>
+
+            <button 
+              class="nav-item" 
+              :class="{ active: activeTab === 'payroll' }"
+              @click="switchTab('payroll')"
+            >
+              <div class="nav-item-left">
+                <i class="fa-solid fa-file-invoice-dollar" style="color: var(--gold-primary);"></i>
+                <span>Bảng Lương 4 Khoản</span>
+              </div>
+            </button>
+
+            <button 
+              v-if="!currentUser || currentUser.role === 'admin'"
+              class="nav-item" 
+              :class="{ active: activeTab === 'salary_settings' }"
+              @click="switchTab('salary_settings')"
+            >
+              <div class="nav-item-left">
+                <i class="fa-solid fa-sliders" style="color: #c084fc;"></i>
+                <span>Cài Đặt Lương & Giờ</span>
+              </div>
+            </button>
+
+            <button 
+              v-if="!currentUser || currentUser.role === 'admin'"
+              class="nav-item" 
+              :class="{ active: activeTab === 'offices' }"
+              @click="switchTab('offices')"
+            >
+              <div class="nav-item-left">
+                <i class="fa-solid fa-network-wired" style="color: #38bdf8;"></i>
+                <span>Văn Phòng & WiFi</span>
+              </div>
             </button>
           </nav>
 
@@ -202,20 +396,32 @@
                 <span class="active-crumb">
                   {{ 
                     activeTab === 'properties' ? 'Quản Lý Bất Động Sản' : 
-                    activeTab === 'agents' ? 'Đội Ngũ Chuyên Viên' : 
+                    activeTab === 'agents' ? 'Nhân Viên & Quản Lý User (⭐ Lên Web)' : 
                     activeTab === 'articles' ? 'Tin Tức & Góc Nhìn Đầu Tư' :
                     activeTab === 'banners' ? 'Quản Lý Banner Quảng Cáo' :
-                    'Khách Hàng Leads' 
+                    activeTab === 'leads' ? 'Khách Hàng Leads' :
+                    activeTab === 'attendance' ? 'Bảng Chấm Công Hàng Ngày' :
+                    activeTab === 'leaves' ? 'Duyệt Đơn Nghỉ Phép & Công Tác' :
+                    activeTab === 'payroll' ? 'Bảng Lương Nhân Sự 4 Khoản' :
+                    activeTab === 'salary_settings' ? 'Cài Đặt Định Mức Lương & Khung Giờ' :
+                    activeTab === 'offices' ? 'Cấu Hình Văn Phòng & WiFi Điểm Danh' :
+                    'Bảng Quản Trị' 
                   }}
                 </span>
               </div>
               <h1 class="page-heading">
                 {{ 
                   activeTab === 'properties' ? 'Danh Sách Quỹ Căn BĐS' : 
-                  activeTab === 'agents' ? 'Quản Lý Chuyên Viên & Phân Căn' : 
+                  activeTab === 'agents' ? 'Đội Ngũ Nhân Sự & Đồng Bộ Web BĐS (⭐)' : 
                   activeTab === 'articles' ? 'Quản Lý Bài Viết & Tin Thị Trường' :
                   activeTab === 'banners' ? 'Cấu Hình Banner Quảng Cáo Sàn BĐS' :
-                  'Khách Hàng Đăng Ký & Ký Gửi' 
+                  activeTab === 'leads' ? 'Khách Hàng Đăng Ký & Ký Gửi' :
+                  activeTab === 'attendance' ? 'Chấm Công Điểm Danh & Giờ Làm' :
+                  activeTab === 'leaves' ? 'Quản Lý Đơn Nghỉ & Phê Duyệt' :
+                  activeTab === 'payroll' ? 'Bảng Tổng Hợp Lương & Phụ Cấp 4 Khoản' :
+                  activeTab === 'salary_settings' ? 'Định Mức Lương 4 Khoản & Khung Giờ Ca Làm' :
+                  activeTab === 'offices' ? 'Văn Phòng Trụ Sở & Cấu Hình Mạng WiFi' :
+                  'Bảng Quản Trị'
                 }}
               </h1>
             </div>
@@ -238,7 +444,7 @@
               @click="openNewAgentModal"
             >
               <i class="fa-solid fa-user-plus"></i>
-              <span>Thêm Nhân Viên</span>
+              <span>+ Tạo Tài Khoản / Thêm Nhân Viên</span>
             </button>
 
             <button 
@@ -506,24 +712,67 @@
             </div>
           </div>
 
-          <!-- ==================== TAB 2: QUẢN LÝ NHÂN VIÊN ==================== -->
+          <!-- ==================== TAB 2: QUẢN LÝ NHÂN VIÊN & USER CHẤM CÔNG ==================== -->
           <div v-if="activeTab === 'agents'" class="tab-pane">
+            <!-- Filter Bar for Agents -->
+            <div class="table-filter-bar" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+                <div class="filter-group">
+                  <span class="filter-label"><i class="fa-solid fa-star" style="color: var(--gold-primary);"></i> Lọc hiển thị:</span>
+                  <select v-model="agentFilterStarred" class="admin-select">
+                    <option value="all">Tất cả nhân sự ({{ agents.length }})</option>
+                    <option value="starred">⭐ Chỉ nhân viên đã lên Web ({{ agents.filter((a: any) => a.isStarred).length }})</option>
+                    <option value="unstarred">Chưa lên Web (Chỉ nội bộ) ({{ agents.filter((a: any) => !a.isStarred).length }})</option>
+                  </select>
+                </div>
+
+                <div class="filter-group">
+                  <span class="filter-label"><i class="fa-solid fa-shield-halved"></i> Quyền:</span>
+                  <select v-model="agentFilterRole" class="admin-select">
+                    <option value="all">Tất cả quyền</option>
+                    <option value="admin">👑 Quản trị viên (Admin)</option>
+                    <option value="manager">👔 Quản lý (Leader)</option>
+                    <option value="user">👤 Nhân viên</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="font-size: 0.85rem; color: var(--text-muted);">
+                Tổng cộng: <strong style="color: var(--text-main, #0f172a);">{{ filteredAgents.length }}</strong> tài khoản • 
+                <strong style="color: var(--gold-primary);">{{ agents.filter((a: any) => a.isStarred).length }}</strong> chuyên viên hiển thị web
+              </div>
+            </div>
+
             <div class="admin-table-container">
               <table class="admin-data-table">
                 <thead>
                   <tr>
-                    <th style="width: 70px;">Ảnh</th>
+                    <th style="width: 60px;">Ảnh</th>
+                    <th style="width: 110px;">Mã / User</th>
                     <th>Chuyên Viên Sales</th>
-                    <th style="width: 150px;">Hotline / Zalo</th>
-                    <th>Quỹ Căn Đang Phụ Trách</th>
-                    <th style="width: 110px;">Đã Chốt</th>
-                    <th style="width: 200px; text-align: center;">Hành Động</th>
+                    <th style="width: 125px;">Quyền Hạn</th>
+                    <th style="width: 110px; text-align: center;">Trạng Thái</th>
+                    <th style="width: 145px; text-align: center;">Web BĐS (⭐)</th>
+                    <th style="width: 130px;">Hotline</th>
+                    <th style="width: 90px;">Văn Phòng</th>
+                    <th>Quỹ Căn Phụ Trách</th>
+                    <th style="width: 190px; text-align: center;">Tài Khoản & Hành Động</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="a in agents" :key="a.id">
+                  <tr v-if="filteredAgents.length === 0">
+                    <td colspan="10" class="empty-table">
+                      <i class="fa-solid fa-users"></i>
+                      <p>Không tìm thấy nhân viên nào phù hợp bộ lọc.</p>
+                    </td>
+                  </tr>
+                  <tr v-for="a in filteredAgents" :key="a.id" :style="a.status === 'locked' ? 'opacity: 0.75; background: rgba(239, 68, 68, 0.04);' : ''">
                     <td>
                       <img :src="a.avatar" class="agent-avatar-circle" alt="">
+                    </td>
+                    <td>
+                      <span class="user-code-pill">{{ a.code || a.id }}</span>
+                      <small style="display: block; font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">{{ a.username }}</small>
                     </td>
                     <td>
                       <div class="agent-info-cell">
@@ -533,19 +782,52 @@
                       </div>
                     </td>
                     <td>
+                      <span v-if="a.userRole === 'admin'" class="role-badge-pill admin">
+                        <i class="fa-solid fa-crown"></i> Admin
+                      </span>
+                      <span v-else-if="a.userRole === 'manager'" class="role-badge-pill manager">
+                        <i class="fa-solid fa-user-shield"></i> Quản lý
+                      </span>
+                      <span v-else class="role-badge-pill user">
+                        <i class="fa-solid fa-user"></i> Nhân viên
+                      </span>
+                    </td>
+                    <td style="text-align: center;">
+                      <!-- HUY HIỆU TRẠNG THÁI KHÓA / HOẠT ĐỘNG -->
+                      <span v-if="a.status === 'locked'" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; background: rgba(239, 68, 68, 0.15); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.72rem; font-weight: 700;">
+                        <i class="fa-solid fa-lock"></i> Đã khóa
+                      </span>
+                      <span v-else style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.72rem; font-weight: 700;">
+                        <i class="fa-solid fa-circle-check"></i> Hoạt động
+                      </span>
+                    </td>
+                    <td style="text-align: center;">
+                      <!-- NÚT BẤM TOGGLE NGÔI SAO TỨC THÌ (⭐) -->
+                      <button 
+                        type="button"
+                        class="btn-star-toggle"
+                        :class="{ 'is-starred': a.isStarred }"
+                        @click="toggleStarAgent(a)"
+                        :title="a.isStarred ? 'Đang hiển thị trên Web BĐS (Bấm để gỡ)' : 'Chưa hiển thị trên Web (Bấm để đưa lên)'"
+                      >
+                        <i :class="a.isStarred ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+                        <span>{{ a.isStarred ? '⭐ Đã Lên Web' : 'Chưa Lên' }}</span>
+                      </button>
+                    </td>
+                    <td>
                       <div class="agent-contact-cell">
                         <a :href="`tel:${a.phone}`" class="phone-link">
                           <i class="fa-solid fa-phone"></i> {{ a.phoneDisplay || a.phone }}
                         </a>
-                        <a v-if="a.zalo" :href="a.zalo" target="_blank" class="zalo-link">
-                          <i class="fa-solid fa-comment-dots"></i> Chat Zalo
-                        </a>
                       </div>
+                    </td>
+                    <td>
+                      <span class="office-badge-chip">{{ a.officeId || 'VP1' }}</span>
                     </td>
                     <td>
                       <div class="assigned-props-cell">
                         <div class="assigned-header">
-                          <strong>{{ a.properties?.length || 0 }}</strong> căn được giao
+                          <strong>{{ a.properties?.length || 0 }}</strong> căn
                         </div>
                         <div class="assigned-badges">
                           <span 
@@ -560,12 +842,27 @@
                       </div>
                     </td>
                     <td>
-                      <span class="deals-badge">{{ a.deals }}</span>
-                    </td>
-                    <td>
                       <div class="table-actions">
+                        <!-- NÚT RESET MẬT KHẨU -->
+                        <button 
+                          class="action-btn" 
+                          style="color: #d97706; background: rgba(217, 119, 6, 0.12); border-color: rgba(217, 119, 6, 0.3);" 
+                          @click="openResetPasswordModal(a)" 
+                          title="Khôi phục / Đổi mật khẩu nhân viên"
+                        >
+                          <i class="fa-solid fa-key"></i>
+                        </button>
+                        <!-- NÚT KHÓA / MỞ KHÓA TÀI KHOẢN -->
+                        <button 
+                          class="action-btn" 
+                          :style="a.status === 'locked' ? 'color: #059669; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4);' : 'color: #dc2626; background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.3);'" 
+                          @click="toggleLockAgent(a)" 
+                          :title="a.status === 'locked' ? 'Mở khóa cho nhân viên đăng nhập' : 'Khóa tài khoản nhân viên'"
+                        >
+                          <i :class="a.status === 'locked' ? 'fa-solid fa-lock-open' : 'fa-solid fa-user-lock'"></i>
+                        </button>
                         <button class="action-btn assign-btn" @click="openAssignModal(a)" title="Giao căn phụ trách">
-                          <i class="fa-solid fa-house-chimney-user"></i> Giao Căn
+                          <i class="fa-solid fa-house-chimney-user"></i>
                         </button>
                         <button class="action-btn edit-btn" @click="openEditAgentModal(a)" title="Sửa thông tin">
                           <i class="fa-solid fa-pen"></i>
@@ -771,19 +1068,52 @@
 
           <!-- ==================== TAB 5: QUẢN LÝ BANNER QUẢNG CÁO ==================== -->
           <div v-if="activeTab === 'banners'" class="tab-pane">
-            <div class="table-filter-bar" style="margin-bottom: 24px;">
-              <div class="filter-group">
-                <span class="filter-label"><i class="fa-solid fa-filter"></i> Lọc trang:</span>
-                <select v-model="bannerFilterPage" class="admin-select">
-                  <option value="all">Tất cả banner ({{ banners.length }})</option>
-                  <option value="home">Trang Chủ (/)</option>
-                  <option value="nha-pho">Trang Nhà Phố (/nha-pho)</option>
-                  <option value="du-an">Trang Dự Án (/du-an)</option>
-                </select>
+            <div class="table-filter-bar" style="margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
+              <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+                <div class="filter-group">
+                  <span class="filter-label"><i class="fa-solid fa-filter"></i> Lọc trang:</span>
+                  <select v-model="bannerFilterPage" class="admin-select">
+                    <option value="all">Tất cả trang</option>
+                    <option value="home">Trang Chủ (/)</option>
+                    <option value="nha-pho">Trang Nhà Phố (/nha-pho)</option>
+                    <option value="du-an">Trang Dự Án (/du-an)</option>
+                  </select>
+                </div>
+
+                <div class="filter-group">
+                  <span class="filter-label"><i class="fa-solid fa-arrows-left-right"></i> Vị trí:</span>
+                  <select v-model="bannerFilterPosition" class="admin-select" style="font-weight: 700;">
+                    <option value="all">Tất cả vị trí (Trái & Phải)</option>
+                    <option value="left">👈 Banner Bên Trái</option>
+                    <option value="right">👉 Banner Bên Phải</option>
+                  </select>
+                </div>
+
+                <div class="filter-stats">
+                  Tổng: <strong>{{ filteredBanners.length }}</strong>/{{ banners.length }} banner
+                </div>
               </div>
 
-              <div class="filter-stats">
-                Tổng cộng: <strong>{{ banners.length }}</strong> banner quảng cáo
+              <!-- Nút Thêm Mới Banner Trái / Phải -->
+              <div style="display: flex; gap: 8px;">
+                <button 
+                  type="button" 
+                  class="btn-admin-primary" 
+                  style="font-size: 0.82rem; padding: 8px 14px; background: #2563eb;"
+                  @click="openNewBannerModal('left')"
+                  title="Thêm banner cố định sườn trái"
+                >
+                  <i class="fa-solid fa-plus"></i> + Banner Trái 👈
+                </button>
+                <button 
+                  type="button" 
+                  class="btn-admin-primary" 
+                  style="font-size: 0.82rem; padding: 8px 14px; background: #9333ea;"
+                  @click="openNewBannerModal('right')"
+                  title="Thêm banner cố định sườn phải"
+                >
+                  <i class="fa-solid fa-plus"></i> + Banner Phải 👉
+                </button>
               </div>
             </div>
 
@@ -793,7 +1123,7 @@
                 v-for="b in filteredBanners" 
                 :key="b.id" 
                 class="admin-banner-card"
-                :class="{ 'inactive': !b.isActive }"
+                :class="{ 'inactive': !b.isActive, 'is-right': b.position === 'right' }"
               >
                 <!-- Cột xem trước hình ảnh poster dọc -->
                 <div class="banner-card-preview">
@@ -808,10 +1138,19 @@
                 <div class="banner-card-info">
                   <div class="banner-card-top">
                     <div>
-                      <span class="banner-page-tag">
-                        <i class="fa-solid fa-compass"></i>
-                        {{ b.page === 'home' ? 'Trang Chủ (/)' : (b.page === 'nha-pho' ? 'Trang Nhà Phố (/nha-pho)' : (b.page === 'du-an' ? 'Trang Dự Án (/du-an)' : 'Tất cả trang')) }}
-                      </span>
+                      <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 6px; flex-wrap: wrap;">
+                        <span class="banner-page-tag">
+                          <i class="fa-solid fa-compass"></i>
+                          {{ b.page === 'home' ? 'Trang Chủ (/)' : (b.page === 'nha-pho' ? 'Trang Nhà Phố (/nha-pho)' : (b.page === 'du-an' ? 'Trang Dự Án (/du-an)' : 'Tất cả trang')) }}
+                        </span>
+                        <!-- ĐÁNH DẤU RIÊNG VỊ TRÍ ĐỂ ADMIN DỄ QUẢN LÝ -->
+                        <span 
+                          class="banner-pos-tag" 
+                          :class="b.position === 'right' ? 'pos-right' : 'pos-left'"
+                        >
+                          {{ b.position === 'right' ? '👉 BANNER BÊN PHẢI' : '👈 BANNER BÊN TRÁI' }}
+                        </span>
+                      </div>
                       <h3 class="banner-card-title">{{ b.name }}</h3>
                     </div>
 
@@ -831,6 +1170,12 @@
 
                   <div class="banner-props-list">
                     <div class="bprop-item">
+                      <span class="bprop-label">Vị trí hiển thị:</span>
+                      <strong class="bprop-val" :style="{ color: b.position === 'right' ? '#c084fc' : '#60a5fa' }">
+                        {{ b.position === 'right' ? '👉 Sườn Phải Màn Hình (Kéo dài)' : '👈 Sườn Trái Màn Hình (Kéo dài)' }}
+                      </strong>
+                    </div>
+                    <div class="bprop-item">
                       <span class="bprop-label">Tiêu đề hiển thị:</span>
                       <strong class="bprop-val" style="color: var(--gold-primary);">{{ b.title }}</strong>
                     </div>
@@ -845,10 +1190,6 @@
                     <div class="bprop-item">
                       <span class="bprop-label">Link chuyển hướng:</span>
                       <span class="bprop-val link-val" :title="b.linkUrl">{{ b.linkUrl }}</span>
-                    </div>
-                    <div class="bprop-item">
-                      <span class="bprop-label">Vị trí hiển thị:</span>
-                      <span class="bprop-val">Cố định sườn trái (Cao 620px)</span>
                     </div>
                   </div>
 
@@ -875,6 +1216,31 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- ==================== TAB 6: CHẤM CÔNG HÀNG NGÀY ==================== -->
+          <div v-if="activeTab === 'attendance'" class="tab-pane">
+            <AdminAttendanceTab />
+          </div>
+
+          <!-- ==================== TAB 7: ĐƠN NGHỈ & CÔNG TÁC ==================== -->
+          <div v-if="activeTab === 'leaves'" class="tab-pane">
+            <AdminLeavesTab />
+          </div>
+
+          <!-- ==================== TAB 8: BẢNG LƯƠNG 4 KHOẢN ==================== -->
+          <div v-if="activeTab === 'payroll'" class="tab-pane">
+            <AdminPayrollTab />
+          </div>
+
+          <!-- ==================== TAB 9: CÀI ĐẶT LƯƠNG & KHUNG GIỜ ==================== -->
+          <div v-if="activeTab === 'salary_settings'" class="tab-pane">
+            <AdminSalarySettingsTab />
+          </div>
+
+          <!-- ==================== TAB 10: CẤU HÌNH VĂN PHÒNG & WIFI ==================== -->
+          <div v-if="activeTab === 'offices'" class="tab-pane">
+            <AdminOfficesTab />
           </div>
         </div>
       </main>
@@ -1160,9 +1526,78 @@
 
         <form @submit.prevent="saveAgent" class="modal-form">
           <div class="form-grid">
+            <!-- TÍCH SAO HIỂN THỊ WEB BĐS -->
+            <div class="form-col-full" style="background: rgba(212, 175, 55, 0.1); border: 1.5px dashed var(--border-gold); padding: 12px 16px; border-radius: 8px;">
+              <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin: 0;">
+                <input type="checkbox" v-model="agentForm.isStarred" style="width: 22px; height: 22px; accent-color: var(--gold-primary);">
+                <div>
+                  <strong style="color: var(--gold-primary); font-size: 0.95rem; display: block;">
+                    ⭐ Tích sao để đưa nhân viên này lên hiển thị ngoài Website BĐS
+                  </strong>
+                  <span style="color: var(--text-muted); font-size: 0.75rem;">
+                    Chỉ nhân sự được tích sao mới xuất hiện ở mục "Đội ngũ chuyên viên tư vấn" ngoài trang chủ và trang chi tiết căn.
+                  </span>
+                </div>
+              </label>
+            </div>
+
             <div class="form-col-full">
-              <label>Họ và tên chuyên viên *</label>
+              <label>Họ và tên chuyên viên / Nhân viên *</label>
               <input v-model="agentForm.name" type="text" class="admin-input" placeholder="Ví dụ: Ngô Tuấn Kiệt" required>
+            </div>
+
+            <div>
+              <label>Mã nhân viên</label>
+              <input v-model="agentForm.code" type="text" class="admin-input" placeholder="Tự sinh nếu để trống (VD: NV001)">
+            </div>
+
+            <div>
+              <label>Phân quyền hệ thống *</label>
+              <select v-model="agentForm.userRole" class="admin-select" required>
+                <option value="user">👤 Nhân viên (Chấm công cá nhân)</option>
+                <option value="manager">👔 Quản lý (Duyệt đơn, chấm công nhóm)</option>
+                <option value="admin">👑 Tổng quản trị (Toàn quyền)</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Tài khoản đăng nhập (Username) *</label>
+              <input v-model="agentForm.username" type="text" class="admin-input" placeholder="VD: kiettuan" required>
+            </div>
+
+            <div>
+              <label>Mật khẩu {{ agentForm.isEdit ? '(Để trống nếu không đổi)' : '*' }}</label>
+              <input v-model="agentForm.password" type="text" class="admin-input" :placeholder="agentForm.isEdit ? 'Để trống nếu giữ nguyên...' : 'Mặc định: 123456'" :required="!agentForm.isEdit">
+            </div>
+
+            <div>
+              <label>Trạng thái tài khoản *</label>
+              <select v-model="agentForm.status" class="admin-select" required>
+                <option value="active">🟢 Đang hoạt động (Bình thường)</option>
+                <option value="locked">🔒 Khóa tài khoản (Chặn đăng nhập)</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Văn phòng làm việc *</label>
+              <select v-model="agentForm.officeId" class="admin-select" required>
+                <option value="VP1">VP1 - 12 Đường số 2, Cư Xá Đô Thành</option>
+                <option value="VP2">VP2 - Số 6 Đường 5A, KDC Bình Trị Đông</option>
+                <option value="VP3">VP3 - 70D Phú Thọ</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Phòng ban trực thuộc</label>
+              <select v-model="agentForm.departmentId" class="admin-select">
+                <option value="">-- Chọn phòng ban --</option>
+                <option value="PB01">Phòng Kinh Doanh 1</option>
+                <option value="PB02">Phòng Kinh Doanh 2</option>
+                <option value="PB03">Phòng Marketing & Truyền Thông</option>
+                <option value="PB04">Phòng Pháp Lý & Công Chứng</option>
+                <option value="PB05">Phòng Hành Chính Nhân Sự</option>
+                <option value="PB06">Phòng Kế Toán & Tài Chính</option>
+              </select>
             </div>
 
             <div class="form-col-full">
@@ -1191,7 +1626,7 @@
             </div>
 
             <div class="form-col-full">
-              <label>Ảnh Avatar (URL ảnh chân dung vest)</label>
+              <label>Ảnh Avatar (URL ảnh chân dung)</label>
               <input v-model="agentForm.avatar" type="url" class="admin-input" placeholder="https://images.unsplash.com/...">
             </div>
 
@@ -1209,10 +1644,71 @@
           <div class="modal-actions-footer">
             <button type="button" class="btn-admin-cancel" @click="showAgentModal = false">Hủy</button>
             <button type="submit" class="btn-admin-primary">
-              <i class="fa-solid fa-check"></i> Lưu Nhân Viên
+              <i class="fa-solid fa-check"></i> Lưu Thông Tin Nhân Viên
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- ==================== MODAL KHÔI PHỤC / RESET MẬT KHẨU NHÂN VIÊN ==================== -->
+    <div v-if="showResetPasswordModal" class="modal-overlay" @click.self="showResetPasswordModal = false">
+      <div class="admin-modal-card" style="max-width: 480px;">
+        <div class="modal-header">
+          <h3>
+            <i class="fa-solid fa-key" style="color: #d97706;"></i>
+            Khôi Phục / Reset Mật Khẩu
+          </h3>
+          <button class="modal-close-icon" @click="showResetPasswordModal = false">&times;</button>
+        </div>
+
+        <div style="padding: 18px 20px;">
+          <div v-if="resettingAgent" style="display: flex; align-items: center; gap: 14px; margin-bottom: 18px; padding: 12px 14px; background: var(--bg-secondary, #f8fafc); border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0);">
+            <img :src="resettingAgent.avatar" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold-primary, #dfb76c);" alt="" />
+            <div>
+              <strong style="color: var(--text-main, #0f172a); display: block; font-size: 0.96rem;">{{ resettingAgent.name }}</strong>
+              <div style="color: var(--text-muted); font-size: 0.78rem; margin-top: 2px;">
+                Mã NV: <span class="user-code-pill">{{ resettingAgent.code || resettingAgent.id }}</span> • User: <code>{{ resettingAgent.username }}</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-weight: 700; color: var(--text-main, #0f172a); display: block; margin-bottom: 6px;">
+              Mật khẩu mới cấp lại:
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <input 
+                v-model="newPasswordInput" 
+                type="text" 
+                class="admin-input" 
+                placeholder="Nhập mật khẩu mới..." 
+                required
+                style="flex: 1; font-weight: 700; letter-spacing: 1px; color: #b45309;"
+              />
+              <button 
+                type="button" 
+                class="btn-admin-cancel" 
+                @click="newPasswordInput = '123456'" 
+                title="Đặt về mật khẩu mặc định 123456"
+                style="font-size: 0.8rem; white-space: nowrap; padding: 0 12px;"
+              >
+                Về 123456
+              </button>
+            </div>
+            <small style="color: var(--text-muted); font-size: 0.74rem; display: block; margin-top: 6px;">
+              💡 Nhân viên có thể dùng mật khẩu này kèm Mã NV (hoặc Username) để đăng nhập ngay lập tức.
+            </small>
+          </div>
+        </div>
+
+        <div class="modal-actions-footer" style="padding: 14px 20px; border-top: 1px solid var(--border-color, #e2e8f0); display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn-admin-cancel" @click="showResetPasswordModal = false">Hủy</button>
+          <button type="button" class="btn-admin-primary" @click="executeResetPassword" :disabled="savingResetPassword">
+            <i class="fa-solid fa-check"></i>
+            {{ savingResetPassword ? 'Đang cập nhật...' : 'Xác Nhận Đổi Mật Khẩu' }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1427,7 +1923,42 @@
           <div class="form-grid">
             <div class="form-col-full">
               <label>Tên gợi nhớ (cho quản trị) *</label>
-              <input v-model="bannerForm.name" type="text" class="admin-input" placeholder="VD: Banner Nhà Phố Mới" required>
+              <input v-model="bannerForm.name" type="text" class="admin-input" placeholder="VD: Banner Phải - Trần Văn Giáp" required>
+            </div>
+
+            <!-- CHỌN VỊ TRÍ BANNER: TRÁI HOẶC PHẢI (ĐÁNH DẤU RIÊNG CHO ADMIN DỄ QUẢN LÝ) -->
+            <div class="form-col-full">
+              <label style="font-weight: 700; margin-bottom: 8px; display: block;">
+                <i class="fa-solid fa-arrows-left-right" style="color: var(--gold-primary);"></i>
+                Vị trí hiển thị trên website (Đánh dấu riêng để quản trị) *
+              </label>
+              <div class="pos-selector-grid">
+                <div 
+                  class="pos-card"
+                  :class="{ active: (!bannerForm.position || bannerForm.position === 'left') }"
+                  @click="bannerForm.position = 'left'"
+                >
+                  <span class="pos-card-icon">👈</span>
+                  <div class="pos-card-content">
+                    <strong class="pos-card-title">Banner Bên Trái</strong>
+                    <span class="pos-card-sub">Cố định sườn trái màn hình</span>
+                  </div>
+                  <i v-if="!bannerForm.position || bannerForm.position === 'left'" class="fa-solid fa-circle-check pos-card-check"></i>
+                </div>
+
+                <div 
+                  class="pos-card"
+                  :class="{ active: bannerForm.position === 'right' }"
+                  @click="bannerForm.position = 'right'"
+                >
+                  <span class="pos-card-icon">👉</span>
+                  <div class="pos-card-content">
+                    <strong class="pos-card-title">Banner Bên Phải</strong>
+                    <span class="pos-card-sub">Cố định sườn phải màn hình</span>
+                  </div>
+                  <i v-if="bannerForm.position === 'right'" class="fa-solid fa-circle-check pos-card-check"></i>
+                </div>
+              </div>
             </div>
 
             <div>
@@ -1500,10 +2031,10 @@
               </div>
 
               <!-- Xem trước ảnh banner -->
-              <div v-if="bannerForm.imageUrl" style="margin-top: 12px; display: flex; align-items: center; gap: 14px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+              <div v-if="bannerForm.imageUrl" style="margin-top: 12px; display: flex; align-items: center; gap: 14px; background: rgba(0,0,0,0.06); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color, rgba(0,0,0,0.1));">
                 <img :src="bannerForm.imageUrl" alt="Preview Banner" style="width: 75px; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-gold, #dfb76c);" />
                 <div>
-                  <strong style="color: #fff; font-size: 0.88rem; display: block; margin-bottom: 4px;">Xem Trước Ảnh Poster</strong>
+                  <strong style="color: var(--text-main, #0f172a); font-size: 0.88rem; display: block; margin-bottom: 4px;">Xem Trước Ảnh Poster</strong>
                   <span style="color: var(--text-muted); font-size: 0.76rem; word-break: break-all; display: block;">{{ bannerForm.imageUrl }}</span>
                   <span style="color: #10b981; font-size: 0.76rem; margin-top: 4px; display: inline-block;"><i class="fa-solid fa-circle-check"></i> Ảnh đã sẵn sàng</span>
                 </div>
@@ -1521,10 +2052,10 @@
             </div>
 
             <div class="form-col-full">
-              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; background: var(--bg-card, #ffffff); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0);">
                 <input type="checkbox" v-model="bannerForm.isActive" style="width: 20px; height: 20px; accent-color: #10b981;">
                 <div>
-                  <strong style="color: #fff; font-size: 0.9rem; display: block;">Bật hiển thị banner này</strong>
+                  <strong style="color: var(--text-main, #0f172a); font-size: 0.9rem; display: block;">Bật hiển thị banner này</strong>
                   <span style="color: var(--text-muted); font-size: 0.78rem;">Khi tắt, banner sẽ tự động ẩn đi trên website khách</span>
                 </div>
               </label>
@@ -1553,9 +2084,34 @@ const { showToast, toastMsg } = useToast();
 const { theme, toggleTheme } = useTheme();
 
 const isLoggedIn = ref(false);
+const loginUsername = ref('');
 const password = ref('');
+const showPassword = ref(false);
 const loginLoading = ref(false);
-const activeTab = ref<'properties' | 'agents' | 'articles' | 'leads' | 'banners'>('properties');
+const loginError = ref('');
+const currentUser = ref<any>(null);
+
+// Chế độ đăng nhập hoặc đăng ký tài khoản mới
+const authMode = ref<'login' | 'register'>('login');
+const registerLoading = ref(false);
+const registerError = ref('');
+const registerForm = reactive({
+  name: '',
+  phone: '',
+  username: '',
+  password: '',
+  officeId: 'VP1',
+  departmentId: 'PB01',
+  role: 'Chuyên Viên Tư Vấn BĐS',
+});
+
+// Reset password modal state
+const showResetPasswordModal = ref(false);
+const resettingAgent = ref<any>(null);
+const newPasswordInput = ref('123456');
+const savingResetPassword = ref(false);
+
+const activeTab = ref<'properties' | 'agents' | 'articles' | 'leads' | 'banners' | 'attendance' | 'leaves' | 'payroll' | 'salary_settings' | 'offices'>('properties');
 const mobileSidebarOpen = ref(false);
 
 // Modals State
@@ -1568,12 +2124,14 @@ const showBannerModal = ref(false);
 const savingBanner = ref(false);
 const uploadingBanner = ref(false);
 const bannerFilterPage = ref('all');
+const bannerFilterPosition = ref('all');
 
 const bannerForm = reactive({
   isEdit: false,
   id: '',
   name: '',
-  page: 'nha-pho',
+  page: 'home',
+  position: 'left',
   title: '',
   badge: 'TIÊU BIỂU',
   badgeIcon: 'fa-crown',
@@ -1760,22 +2318,33 @@ const getGalleryCount = (p: any) => {
 const agentForm = reactive({
   isEdit: false,
   id: '',
+  code: '',
+  username: '',
+  password: '',
+  userRole: 'user',
+  officeId: 'VP1',
+  departmentId: '',
+  isStarred: false,
+  status: 'active',
   name: '',
-  role: '',
+  role: 'Chuyên Viên Hỗ Trợ Tư Vấn BĐS',
   phone: '',
   zalo: '',
   exp: '5+ Năm',
   deals: '50+ Căn',
-  avatar: '',
-  slogan: '',
+  avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80',
+  slogan: 'Tận Tâm - Uy Tín - Đầu Tư Hiệu Quả',
   tag: 'Chuyên Viên',
 });
+
+const agentFilterStarred = ref('all');
+const agentFilterRole = ref('all');
 
 const adminTokenCookie = useCookie<string | null>('bds_admin_token');
 
 // Fetch Data từ Backend SQLite
 const { data: propertiesData, refresh: refreshProps } = await useFetch('/api/properties');
-const { data: agentsData, refresh: refreshAgents } = await useFetch('/api/agents');
+const { data: agentsData, refresh: refreshAgents } = await useFetch('/api/agents?all=true');
 const { data: articlesData, refresh: refreshArticles } = await useFetch('/api/articles');
 const { data: leadsData, refresh: refreshLeads } = await useFetch('/api/leads', {
   headers: computed(() => {
@@ -1791,9 +2360,28 @@ const articles = computed(() => articlesData.value || []);
 const leads = computed(() => leadsData.value || []);
 const banners = computed(() => bannersData.value || []);
 
+const filteredAgents = computed(() => {
+  let list = agents.value;
+  if (agentFilterStarred.value === 'starred') {
+    list = list.filter((a: any) => a.isStarred);
+  } else if (agentFilterStarred.value === 'unstarred') {
+    list = list.filter((a: any) => !a.isStarred);
+  }
+  if (agentFilterRole.value !== 'all') {
+    list = list.filter((a: any) => (a.userRole || 'user') === agentFilterRole.value);
+  }
+  return list;
+});
+
 const filteredBanners = computed(() => {
-  if (bannerFilterPage.value === 'all') return banners.value;
-  return banners.value.filter((b: any) => b.page === bannerFilterPage.value || b.page === 'all');
+  let list = banners.value;
+  if (bannerFilterPage.value !== 'all') {
+    list = list.filter((b: any) => b.page === bannerFilterPage.value || b.page === 'all');
+  }
+  if (bannerFilterPosition.value !== 'all') {
+    list = list.filter((b: any) => (b.position || 'left') === bannerFilterPosition.value);
+  }
+  return list;
 });
 
 // Xem ảnh ký gửi
@@ -1884,46 +2472,147 @@ const filteredAdminArticles = computed(() => {
 });
 
 onMounted(() => {
-  const saved = localStorage.getItem('bds_admin_session');
-  if (saved) {
-    isLoggedIn.value = true;
-    if (!adminTokenCookie.value) {
-      adminTokenCookie.value = saved;
+  if (process.client) {
+    const saved = localStorage.getItem('bds_admin_session');
+    const savedUser = localStorage.getItem('bds_user_info');
+    if (saved) {
+      isLoggedIn.value = true;
+      if (savedUser) {
+        try {
+          currentUser.value = JSON.parse(savedUser);
+        } catch (e) {}
+      }
+      if (!adminTokenCookie.value) {
+        adminTokenCookie.value = saved;
+      }
     }
   }
 });
 
-const switchTab = (tab: 'properties' | 'agents' | 'articles' | 'leads' | 'banners') => {
+const switchTab = (tab: 'properties' | 'agents' | 'articles' | 'leads' | 'banners' | 'attendance' | 'leaves' | 'payroll' | 'salary_settings' | 'offices') => {
   activeTab.value = tab;
   mobileSidebarOpen.value = false;
 };
 
 const handleLogin = async () => {
   loginLoading.value = true;
+  loginError.value = '';
   try {
     const res: any = await $fetch('/api/auth/login', {
       method: 'POST',
-      body: { password: password.value },
+      body: { 
+        username: loginUsername.value, 
+        password: password.value 
+      },
     });
     if (res.success) {
       isLoggedIn.value = true;
+      currentUser.value = res.user;
       localStorage.setItem('bds_admin_session', res.token);
+      localStorage.setItem('bds_user_info', JSON.stringify(res.user));
       adminTokenCookie.value = res.token;
-      showToast('Đăng nhập quản trị thành công!');
+      showToast(`Xin chào ${res.user.name || res.user.username}!`);
+      
+      // Nếu là nhân viên thường, đưa vào xem Chấm Công mặc định
+      if (res.user.role === 'user') {
+        activeTab.value = 'attendance';
+      }
+      
       await refreshLeads();
+      await refreshAgents();
     }
   } catch (err: any) {
-    alert(err?.data?.message || 'Mật khẩu không chính xác. Vui lòng thử lại!');
+    loginError.value = err?.data?.message || 'Tài khoản hoặc mật khẩu không chính xác!';
   } finally {
     loginLoading.value = false;
   }
 };
 
+const handleRegister = async () => {
+  registerLoading.value = true;
+  registerError.value = '';
+  try {
+    const res: any = await $fetch('/api/auth/register', {
+      method: 'POST',
+      body: registerForm,
+    });
+    if (res?.success) {
+      showToast(res.message);
+      // Tự động điền thông tin vừa tạo vào ô đăng nhập và chuyển tab Đăng Nhập
+      loginUsername.value = res.agent?.code || registerForm.username || registerForm.phone;
+      password.value = registerForm.password || '123456';
+      authMode.value = 'login';
+      loginError.value = '';
+      await refreshAgents();
+    }
+  } catch (err: any) {
+    registerError.value = err?.data?.statusMessage || err?.data?.message || 'Lỗi khi đăng ký tài khoản!';
+  } finally {
+    registerLoading.value = false;
+  }
+};
+
 const handleLogout = () => {
   isLoggedIn.value = false;
+  currentUser.value = null;
   localStorage.removeItem('bds_admin_session');
+  localStorage.removeItem('bds_user_info');
   adminTokenCookie.value = null;
+  loginUsername.value = '';
+  password.value = '';
+  loginError.value = '';
   showToast('Đã đăng xuất khỏi hệ thống.');
+};
+
+// HÀNH ĐỘNG KHÓA / MỞ KHÓA TÀI KHOẢN NHÂN VIÊN
+const toggleLockAgent = async (agent: any) => {
+  const isLocking = agent.status !== 'locked';
+  const confirmMsg = isLocking
+    ? `Bạn có chắc muốn KHÓA tài khoản của "${agent.name}" (${agent.code || agent.username})?\nNhân viên này sẽ bị chặn không thể đăng nhập vào hệ thống!`
+    : `Mở khóa tài khoản cho "${agent.name}" (${agent.code || agent.username})?`;
+  if (!confirm(confirmMsg)) return;
+
+  try {
+    const res: any = await $fetch(`/api/agents/${agent.id}/toggle-lock`, { method: 'POST' });
+    if (res?.success) {
+      agent.status = res.status;
+      showToast(res.message);
+      await refreshAgents();
+    }
+  } catch (err: any) {
+    alert(err?.data?.message || 'Lỗi khi cập nhật trạng thái khóa tài khoản!');
+  }
+};
+
+// HÀNH ĐỘNG KHÔI PHỤC / RESET MẬT KHẨU NHÂN VIÊN
+const openResetPasswordModal = (agent: any) => {
+  resettingAgent.value = agent;
+  newPasswordInput.value = '123456';
+  showResetPasswordModal.value = true;
+};
+
+const executeResetPassword = async () => {
+  if (!resettingAgent.value) return;
+  if (!newPasswordInput.value.trim()) {
+    alert('Vui lòng nhập mật khẩu mới!');
+    return;
+  }
+  savingResetPassword.value = true;
+  try {
+    const res: any = await $fetch(`/api/agents/${resettingAgent.value.id}/reset-password`, {
+      method: 'POST',
+      body: { password: newPasswordInput.value.trim() },
+    });
+    if (res?.success) {
+      showToast(res.message);
+      showResetPasswordModal.value = false;
+      await refreshAgents();
+    }
+  } catch (err: any) {
+    alert(err?.data?.message || 'Lỗi khi reset mật khẩu!');
+  } finally {
+    savingResetPassword.value = false;
+  }
 };
 
 // CRUD Properties
@@ -2104,10 +2793,18 @@ const toggleFeaturedTownhouse = async (prop: any) => {
   }
 };
 
-// CRUD Agents
+// CRUD Agents & Nhân Sự
 const openNewAgentModal = () => {
   agentForm.isEdit = false;
   agentForm.id = '';
+  agentForm.code = '';
+  agentForm.username = '';
+  agentForm.password = '';
+  agentForm.userRole = 'user';
+  agentForm.officeId = 'VP1';
+  agentForm.departmentId = 'PB01';
+  agentForm.isStarred = true;
+  agentForm.status = 'active';
   agentForm.name = '';
   agentForm.role = 'Chuyên Viên Hỗ Trợ Tư Vấn BĐS';
   agentForm.phone = '';
@@ -2123,6 +2820,14 @@ const openNewAgentModal = () => {
 const openEditAgentModal = (a: any) => {
   agentForm.isEdit = true;
   agentForm.id = a.id;
+  agentForm.code = a.code || '';
+  agentForm.username = a.username || '';
+  agentForm.password = ''; // Để trống nếu không đổi mật khẩu
+  agentForm.userRole = a.userRole || 'user';
+  agentForm.officeId = a.officeId || 'VP1';
+  agentForm.departmentId = a.departmentId || '';
+  agentForm.isStarred = Boolean(a.isStarred);
+  agentForm.status = a.status || 'active';
   agentForm.name = a.name;
   agentForm.role = a.role;
   agentForm.phone = a.phone;
@@ -2133,6 +2838,21 @@ const openEditAgentModal = (a: any) => {
   agentForm.slogan = a.slogan;
   agentForm.tag = a.tag;
   showAgentModal.value = true;
+};
+
+const toggleStarAgent = async (agent: any) => {
+  try {
+    const updatedStarred = !agent.isStarred;
+    await $fetch(`/api/agents/${agent.id}`, {
+      method: 'PUT',
+      body: { isStarred: updatedStarred },
+    });
+    agent.isStarred = updatedStarred;
+    showToast(updatedStarred ? `⭐ Đã đưa "${agent.name}" lên hiển thị ngoài Website BĐS!` : `Đã gỡ "${agent.name}" khỏi web ngoài (vẫn giữ chấm công & nội bộ).`);
+    await refreshAgents();
+  } catch (err: any) {
+    showToast('Lỗi khi đổi trạng thái hiển thị: ' + (err?.data?.message || err?.message || ''));
+  }
 };
 
 const saveAgent = async () => {
@@ -2152,8 +2872,8 @@ const saveAgent = async () => {
     }
     showAgentModal.value = false;
     await refreshAgents();
-  } catch (e) {
-    showToast('Lỗi khi lưu nhân viên!');
+  } catch (e: any) {
+    showToast('Lỗi khi lưu nhân viên: ' + (e?.data?.message || e?.message || ''));
   }
 };
 
@@ -2279,11 +2999,12 @@ const saveAssignment = async () => {
 };
 
 // ==================== QUẢN LÝ BANNER QUẢNG CÁO ====================
-const openNewBannerModal = () => {
+const openNewBannerModal = (pos: 'left' | 'right' = 'left') => {
   bannerForm.isEdit = false;
   bannerForm.id = `banner_${Date.now()}`;
-  bannerForm.name = '';
-  bannerForm.page = 'nha-pho';
+  bannerForm.name = pos === 'right' ? 'Banner Bên Phải Mới' : 'Banner Bên Trái Mới';
+  bannerForm.page = 'home';
+  bannerForm.position = pos;
   bannerForm.title = '';
   bannerForm.badge = 'TIÊU BIỂU';
   bannerForm.badgeIcon = 'fa-crown';
@@ -2298,7 +3019,8 @@ const openEditBannerModal = (b: any) => {
   bannerForm.isEdit = true;
   bannerForm.id = b.id;
   bannerForm.name = b.name || '';
-  bannerForm.page = b.page || 'nha-pho';
+  bannerForm.page = b.page || 'home';
+  bannerForm.position = b.position || 'left';
   bannerForm.title = b.title || '';
   bannerForm.badge = b.badge || 'TIÊU BIỂU';
   bannerForm.badgeIcon = b.badgeIcon || 'fa-crown';
@@ -2346,6 +3068,7 @@ const saveBanner = async () => {
       body: {
         name: bannerForm.name,
         page: bannerForm.page,
+        position: bannerForm.position || 'left',
         title: bannerForm.title,
         badge: bannerForm.badge,
         badgeIcon: bannerForm.badgeIcon,
@@ -4058,13 +4781,100 @@ useHead({
   background: rgba(223, 183, 108, 0.12);
   padding: 3px 8px;
   border-radius: 6px;
-  margin-bottom: 6px;
+}
+
+.banner-pos-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+}
+
+.banner-pos-tag.pos-left {
+  color: #60a5fa;
+  background: rgba(37, 99, 235, 0.18);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.banner-pos-tag.pos-right {
+  color: #c084fc;
+  background: rgba(147, 51, 234, 0.18);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.admin-banner-card.is-right {
+  border-left: 3px solid #a855f7;
+}
+
+.pos-selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.pos-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.pos-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.pos-card.active {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: var(--gold-primary, #dfb76c);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
+}
+
+.pos-card-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.pos-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.pos-card-title {
+  font-size: 0.9rem;
+  color: var(--text-main, #0f172a);
+  font-weight: 700;
+}
+
+.pos-card.active .pos-card-title {
+  color: var(--gold-primary, #dfb76c);
+}
+
+.pos-card-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.pos-card-check {
+  margin-left: auto;
+  color: var(--gold-primary, #dfb76c);
+  font-size: 1.1rem;
 }
 
 .banner-card-title {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-main, #0f172a);
   margin: 0;
 }
 
@@ -4093,7 +4903,7 @@ useHead({
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+  border-bottom: 1px dashed var(--border-color, rgba(0, 0, 0, 0.08));
   padding-bottom: 5px;
 }
 
@@ -4103,7 +4913,7 @@ useHead({
 }
 
 .bprop-val {
-  color: #ffffff;
+  color: var(--text-main, #0f172a);
   font-weight: 600;
   text-align: right;
 }
@@ -4134,9 +4944,9 @@ useHead({
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
-  color: #ffffff;
+  background: var(--bg-secondary, rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.12));
+  color: var(--text-main, #0f172a);
   padding: 7px 12px;
   border-radius: var(--radius-sm, 6px);
   font-size: 0.82rem;
@@ -4146,8 +4956,9 @@ useHead({
 }
 
 .btn-admin-preview:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: #ffffff;
+  background: var(--gold-primary, #dfb76c);
+  color: #fff;
+  border-color: var(--gold-primary, #dfb76c);
 }
 
 /* SWITCH TOGGLE */
@@ -4224,5 +5035,89 @@ input:checked + .slider:before {
   border-color: var(--gold-primary, #d4a359);
   color: #fef08a;
   transform: translateY(-1px);
+}
+
+/* USER & STAR TOGGLE CSS */
+.btn-star-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+}
+
+.btn-star-toggle:hover {
+  transform: translateY(-1px);
+  border-color: var(--gold-primary);
+  color: #fff;
+}
+
+.btn-star-toggle.is-starred {
+  background: rgba(212, 175, 55, 0.18);
+  border-color: var(--border-gold);
+  color: #fef08a;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+}
+
+.btn-star-toggle.is-starred i {
+  color: var(--gold-primary);
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.6));
+}
+
+.user-code-pill {
+  font-family: 'Consolas', monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--gold-primary);
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.role-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.role-badge-pill.admin {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.role-badge-pill.manager {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.role-badge-pill.user {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.office-badge-chip {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
 }
 </style>

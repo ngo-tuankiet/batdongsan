@@ -21,6 +21,7 @@ export default defineEventHandler(async (event) => {
         btnText: body.btnText,
         isActive: body.isActive !== undefined ? Boolean(body.isActive) : true,
         page: body.page || 'nha-pho',
+        position: body.position || 'left',
       },
       create: {
         id,
@@ -33,6 +34,7 @@ export default defineEventHandler(async (event) => {
         btnText: body.btnText || 'Xem Chi Tiết',
         isActive: body.isActive !== undefined ? Boolean(body.isActive) : true,
         page: body.page || 'nha-pho',
+        position: body.position || 'left',
       },
     });
 

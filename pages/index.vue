@@ -2,8 +2,17 @@
   <main>
     <!-- BANNER VÈ BÊN TRÁI CHUYỂN ĐỘNG 2.5S / ẢNH (CHỈ HIỆN KHI CUỘN XUỐNG KHU VỰC BĐS) -->
     <LeftFlyerBanner 
+      position="left"
       :slides="homepageLeftFlyerSlides"
       reopenLabel="Banner Dự Án Hot"
+      :scrollThreshold="320"
+    />
+
+    <!-- BANNER VÈ BÊN PHẢI (Y CHANG BÊN TRÁI, QUẢN LÝ RIÊNG TRONG ADMIN) -->
+    <LeftFlyerBanner 
+      position="right"
+      :slides="homepageRightFlyerSlides"
+      reopenLabel="Banner Khuyến Mãi"
       :scrollThreshold="320"
     />
 
@@ -394,14 +403,31 @@ const startHeroSlideTimer = () => {
 // Load Banners quản lý từ Admin CMS
 const { data: homeBannersData } = useFetch('/api/banners?page=home');
 
-// --- BANNER VÈ BÊN TRÁI TRANG CHỦ (Tự động chuyển slide 2.5s / ảnh & Quản lý qua Admin CMS) ---
-const defaultHomeSlides = [
+// --- BANNER VÈ BÊN TRÁI & PHẢI TRANG CHỦ (Tự động chuyển slide 2.5s / ảnh & Quản lý riêng qua Admin CMS) ---
+const defaultHomeLeftSlides = [
   {
     title: 'VINHOMES HÓC MÔN',
     imageSrc: '/images/hero-vinhome-hocmon.jpg',
     badgeIcon: 'fa-tree-city',
     btnText: 'Dự Án Hóc Môn',
     link: '/du-an'
+  },
+  {
+    title: 'NHÀ PHỐ QUẬN 11',
+    imageSrc: '/images/banner-poster-nhapho.jpg',
+    badgeIcon: 'fa-crown',
+    btnText: 'Giỏ Hàng Q.11',
+    link: '/nha-pho'
+  }
+];
+
+const defaultHomeRightSlides = [
+  {
+    title: 'MẶT TIỀN TRẦN VĂN GIÁP',
+    imageSrc: '/uploads/properties/71-tran-van-giap/1787729929665_2135752137969373260_2135752137969373260_6c9b4b3545f90c61e92ece6bacc7511f.jpg',
+    badgeIcon: 'fa-fire-flame-curved',
+    btnText: 'Xem Chi Tiết',
+    link: '/bat-dong-san/TP-TVG-71'
   },
   {
     title: 'VINHOMES CẦN GIỜ',
@@ -411,14 +437,7 @@ const defaultHomeSlides = [
     link: '/du-an'
   },
   {
-    title: 'NHÀ PHỐ QUẬN 11',
-    imageSrc: '/images/banner-poster-nhapho.jpg',
-    badgeIcon: 'fa-crown',
-    btnText: 'Giỏ Hàng Q.11',
-    link: '/nha-pho'
-  },
-  {
-    title: 'KÝ GỬI NHÀ ĐẤT',
+    title: 'KÝ GỬI NHÀ ĐẤT VIP',
     imageSrc: '/images/banner-du-an.jpg',
     badgeIcon: 'fa-handshake',
     btnText: 'Ký Gửi BĐS VIP',
@@ -428,9 +447,9 @@ const defaultHomeSlides = [
 
 const homepageLeftFlyerSlides = computed(() => {
   const list = homeBannersData.value || [];
-  const activeList = list.filter((b: any) => b.isActive);
-  if (activeList.length > 0) {
-    return activeList.map((b: any) => ({
+  const activeLeft = list.filter((b: any) => b.isActive && (!b.position || b.position === 'left'));
+  if (activeLeft.length > 0) {
+    return activeLeft.map((b: any) => ({
       title: b.title,
       imageSrc: b.imageUrl,
       badgeIcon: b.badgeIcon || 'fa-crown',
@@ -438,7 +457,22 @@ const homepageLeftFlyerSlides = computed(() => {
       link: b.linkUrl || '/du-an'
     }));
   }
-  return defaultHomeSlides;
+  return defaultHomeLeftSlides;
+});
+
+const homepageRightFlyerSlides = computed(() => {
+  const list = homeBannersData.value || [];
+  const activeRight = list.filter((b: any) => b.isActive && b.position === 'right');
+  if (activeRight.length > 0) {
+    return activeRight.map((b: any) => ({
+      title: b.title,
+      imageSrc: b.imageUrl,
+      badgeIcon: b.badgeIcon || 'fa-fire-flame-curved',
+      btnText: b.btnText || 'Xem Chi Tiết',
+      link: b.linkUrl || '/du-an'
+    }));
+  }
+  return defaultHomeRightSlides;
 });
 
 // --- HERO 3D PARALLAX THEO TỌA ĐỘ CHUỘT ---

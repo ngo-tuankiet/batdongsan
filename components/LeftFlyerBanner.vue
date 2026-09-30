@@ -1,10 +1,10 @@
 <template>
-  <div class="left-flyer-wrapper">
-    <!-- BANNER VÈ BÊN TRÁI ĐANG MỞ (CHỈ HIỆN KHI ĐÃ CUỘN XUỐNG NẾU CÓ scrollThreshold) -->
-    <transition name="flyer-fade">
+  <div :class="['flyer-wrapper', position === 'right' ? 'right-flyer-wrapper' : 'left-flyer-wrapper']">
+    <!-- BANNER VÈ (TRÁI HOẶC PHẢI) ĐANG MỞ (CHỈ HIỆN KHI ĐÃ CUỘN XUỐNG NẾU CÓ scrollThreshold) -->
+    <transition :name="position === 'right' ? 'flyer-fade-right' : 'flyer-fade'">
       <aside 
         v-if="isOpen && isScrolledPast" 
-        class="vertical-left-flyer" 
+        :class="['vertical-flyer', position === 'right' ? 'vertical-right-flyer' : 'vertical-left-flyer']" 
         role="complementary" 
         :aria-label="currentSlide.title"
         @mouseenter="pauseRotation"
@@ -83,11 +83,11 @@
     </transition>
 
     <!-- NÚT TAB MỞ LẠI KHI NGƯỜI DÙNG ĐÃ TẮT BANNER -->
-    <transition name="tab-slide-left">
+    <transition :name="position === 'right' ? 'tab-slide-right' : 'tab-slide-left'">
       <button 
         v-if="!isOpen && isScrolledPast" 
         type="button"
-        class="flyer-reopen-tab" 
+        :class="['flyer-reopen-tab', position === 'right' ? 'right' : 'left']" 
         @click="isOpen = true" 
         :title="'Mở lại ' + currentSlide.title"
         aria-label="Mở lại banner"
@@ -116,6 +116,7 @@ export interface FlyerSlide {
 const router = useRouter();
 
 const props = withDefaults(defineProps<{
+  position?: 'left' | 'right';
   title?: string;
   imageSrc?: string;
   badgeIcon?: string;
@@ -127,6 +128,7 @@ const props = withDefaults(defineProps<{
   intervalMs?: number;
   scrollThreshold?: number;
 }>(), {
+  position: 'left',
   title: 'NHÀ PHỐ TIÊU BIỂU',
   imageSrc: '/images/banner-poster-nhapho.jpg',
   badgeIcon: 'fa-crown',
@@ -232,17 +234,17 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.left-flyer-wrapper {
+.left-flyer-wrapper,
+.right-flyer-wrapper {
   position: relative;
   z-index: 99998;
 }
 
-/* KHUNG BANNER VÈ CỐ ĐỊNH BÊN MÉP TRÁI */
-.vertical-left-flyer {
+/* KHUNG BANNER VÈ CHUNG */
+.vertical-flyer {
   position: fixed;
-  left: 16px;
   top: 80px;
-  width: 215px;
+  width: 220px;
   z-index: 99998;
   border-radius: 12px;
   box-shadow: 0 16px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(212, 175, 55, 0.35);
@@ -250,7 +252,18 @@ onUnmounted(() => {
   background: #070e1b;
   overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* VỊ TRÍ CỐ ĐỊNH BÊN MÉP TRÁI */
+.vertical-left-flyer {
+  left: 16px;
   animation: flyerSlideInLeft 0.4s ease-out;
+}
+
+/* VỊ TRÍ CỐ ĐỊNH BÊN MÉP PHẢI (Y CHANG BÊN TRÁI) */
+.vertical-right-flyer {
+  right: 16px;
+  animation: flyerSlideInRight 0.4s ease-out;
 }
 
 @keyframes flyerSlideInLeft {
@@ -264,7 +277,18 @@ onUnmounted(() => {
   }
 }
 
-.vertical-left-flyer:hover {
+@keyframes flyerSlideInRight {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.vertical-flyer:hover {
   transform: translateY(-3px) scale(1.015);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 32px rgba(212, 175, 55, 0.5);
 }
@@ -288,6 +312,10 @@ onUnmounted(() => {
   align-items: center;
   gap: 5px;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
 }
 
 /* NÚT TẮT BANNER (X) */
@@ -305,6 +333,7 @@ onUnmounted(() => {
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .flyer-close-btn:hover {
@@ -326,10 +355,13 @@ onUnmounted(() => {
   background: #070e1b;
 }
 
+/* KÉO DÀI BANNER XUỐNG DƯỚI (~650px hoặc thích ứng màn hình) */
 .flyer-image-stage {
   position: relative;
   width: 100%;
-  height: 520px;
+  height: 650px;
+  max-height: calc(100vh - 170px);
+  min-height: 560px;
   overflow: hidden;
   background: #000;
 }
@@ -422,14 +454,11 @@ onUnmounted(() => {
 /* NÚT TAB MỞ LẠI KHI ĐÃ TẮT BANNER */
 .flyer-reopen-tab {
   position: fixed;
-  left: 0;
   top: 180px;
   z-index: 99998;
   background: linear-gradient(135deg, #d4af37 0%, #aa771c 100%);
   color: #070e1b;
   border: none;
-  padding: 9px 14px 9px 10px;
-  border-radius: 0 10px 10px 0;
   font-weight: 800;
   font-size: 0.78rem;
   box-shadow: 0 4px 18px rgba(212, 175, 55, 0.45);
@@ -440,9 +469,27 @@ onUnmounted(() => {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.flyer-reopen-tab:hover {
+.flyer-reopen-tab.left {
+  left: 0;
+  padding: 9px 14px 9px 10px;
+  border-radius: 0 10px 10px 0;
+}
+
+.flyer-reopen-tab.left:hover {
   padding-left: 14px;
   padding-right: 18px;
+  background: linear-gradient(135deg, #fde68a 0%, #d4af37 100%);
+}
+
+.flyer-reopen-tab.right {
+  right: 0;
+  padding: 9px 10px 9px 14px;
+  border-radius: 10px 0 0 10px;
+}
+
+.flyer-reopen-tab.right:hover {
+  padding-right: 14px;
+  padding-left: 18px;
   background: linear-gradient(135deg, #fde68a 0%, #d4af37 100%);
 }
 
@@ -470,7 +517,7 @@ onUnmounted(() => {
   }
 }
 
-/* HIỆU ỨNG CHUYỂN CẢNH */
+/* HIỆU ỨNG CHUYỂN CẢNH TRÁI */
 .flyer-fade-enter-active,
 .flyer-fade-leave-active {
   transition: opacity 0.25s ease, transform 0.25s ease;
@@ -480,16 +527,6 @@ onUnmounted(() => {
 .flyer-fade-leave-to {
   opacity: 0;
   transform: translateX(-40px);
-}
-
-.flyer-slide-crossfade-enter-active,
-.flyer-slide-crossfade-leave-active {
-  transition: opacity 0.45s ease;
-}
-
-.flyer-slide-crossfade-enter-from,
-.flyer-slide-crossfade-leave-to {
-  opacity: 0;
 }
 
 .tab-slide-left-enter-active,
@@ -503,6 +540,39 @@ onUnmounted(() => {
   opacity: 0;
 }
 
+/* HIỆU ỨNG CHUYỂN CẢNH PHẢI */
+.flyer-fade-right-enter-active,
+.flyer-fade-right-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.flyer-fade-right-enter-from,
+.flyer-fade-right-leave-to {
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+.tab-slide-right-enter-active,
+.tab-slide-right-leave-active {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.tab-slide-right-enter-from,
+.tab-slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.flyer-slide-crossfade-enter-active,
+.flyer-slide-crossfade-leave-active {
+  transition: opacity 0.45s ease;
+}
+
+.flyer-slide-crossfade-enter-from,
+.flyer-slide-crossfade-leave-to {
+  opacity: 0;
+}
+
 /* RESPONSIVE: Ẩn trên màn hình hẹp để không che chữ */
 @media (max-width: 1200px) {
   .vertical-left-flyer {
@@ -510,13 +580,19 @@ onUnmounted(() => {
     top: 90px;
     left: 8px;
   }
+  .vertical-right-flyer {
+    width: 160px;
+    top: 90px;
+    right: 8px;
+  }
   .flyer-image-stage {
-    height: 380px;
+    height: 480px;
+    min-height: 400px;
   }
 }
 
 @media (max-width: 992px) {
-  .vertical-left-flyer,
+  .vertical-flyer,
   .flyer-reopen-tab {
     display: none !important;
   }
