@@ -29,22 +29,40 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  // 4. Calculate for each employee
+  // 4. Get adjustments reported by leaders for this month
+  const adjustments = await prisma.payrollAdjustment.findMany({
+    where: { month },
+  });
+  const adjMap = new Map<string, any>();
+  for (const adj of adjustments) {
+    adjMap.set(adj.userId, adj);
+  }
+
+  // 5. Calculate for each employee
   const payrollList = employees.map((emp) => {
     const userAtts = attendances.filter((a) => a.userId === emp.id);
 
     // Ngày làm việc thực tế (có mặt, đi trễ, hoặc công tác)
     const workDays = userAtts.filter((a) => a.status === 'present' || a.status === 'late' || a.status === 'trip').length;
-    // Số ngày đi công tác
+    // Số ngày đi công tác ghi nhận qua hệ thống điểm danh
     const tripDays = userAtts.filter((a) => a.isTrip || a.status === 'trip').length;
     // Số lần đi trễ
     const lateDays = userAtts.filter((a) => a.isLate || a.status === 'late').length;
 
+    // Khoản điều chỉnh thực tế do Leader báo lại (nếu có)
+    const adj = adjMap.get(emp.id);
+    const hasTripAdjustment = adj && adj.tripAllowance !== null && adj.tripAllowance !== undefined;
+    const hasOtherAdjustment = adj && adj.otherAllowance !== null && adj.otherAllowance !== undefined;
+
     // 4 KHOẢN TÍNH LƯƠNG:
+    // (1) Lương chuẩn ngày văn phòng (50.000 đ/ngày làm việc)
     const baseSalary = workDays * salaryPerDay;
+    // (2) Phụ cấp cố định (nếu có)
     const allowance = workDays * allowancePerDay;
-    const tripPay = tripDays * tripAllowance;
-    const otherPay = workDays > 0 ? otherAllowance : 0;
+    // (3) Chi phí công tác: Nếu Leader đã báo số tiền cụ thể thì lấy số Leader báo; nếu chưa thì tính theo số ngày công tác * định mức ngày
+    const tripPay = hasTripAdjustment ? Number(adj.tripAllowance) : tripDays * tripAllowance;
+    // (4) Chi phí khác: Nếu Leader đã báo số tiền thì lấy số Leader báo; nếu chưa thì lấy định mức mặc định nếu có làm việc
+    const otherPay = hasOtherAdjustment ? Number(adj.otherAllowance) : (workDays > 0 ? otherAllowance : 0);
 
     const totalSalary = baseSalary + allowance + tripPay + otherPay;
 
@@ -70,6 +88,9 @@ export default defineEventHandler(async (event) => {
       tripPay,
       otherPay,
       totalSalary,
+      hasTripAdjustment,
+      hasOtherAdjustment,
+      adjustmentNote: adj?.note || '',
     };
   });
 

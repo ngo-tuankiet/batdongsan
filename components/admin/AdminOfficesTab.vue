@@ -1,6 +1,6 @@
 <template>
   <div class="offices-container">
-    <div class="table-filter-bar" style="margin-bottom: 24px;">
+    <div class="table-filter-bar" style="margin-bottom: 20px;">
       <div>
         <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main, #0f172a); margin: 0 0 4px;">
           <i class="fa-solid fa-wifi" style="color: var(--gold-primary);"></i>
@@ -12,6 +12,57 @@
       </div>
     </div>
 
+    <!-- BANNER NHẬN DIỆN MẠNG WIFI TỰ ĐỘNG -->
+    <div class="auto-wifi-banner">
+      <div class="awb-left">
+        <div class="awb-icon">
+          <i class="fa-solid fa-wifi"></i>
+        </div>
+        <div>
+          <div class="awb-title">
+            <span>Nhận Diện WiFi Văn Phòng Tự Động</span>
+            <span v-if="currentNetwork.matchedOffice" class="badge-matched-ok">
+              <i class="fa-solid fa-circle-check"></i> Đang khớp với: {{ currentNetwork.matchedOffice.name }}
+            </span>
+            <span v-else class="badge-not-matched">
+              <i class="fa-solid fa-triangle-exclamation"></i> Mạng hiện tại chưa gán vào văn phòng
+            </span>
+          </div>
+          <div class="awb-desc">
+            IP thiết bị hiện tại: <strong>{{ currentNetwork.ip || 'Đang nhận diện...' }}</strong>
+            <span style="margin: 0 8px; opacity: 0.4;">|</span>
+            Dải mạng tự động: <strong style="color: #059669;">{{ currentNetwork.subnet || '...' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="awb-actions">
+        <button class="btn-awb-refresh" @click="detectMyNetwork" :disabled="detectingNet" title="Quét lại mạng hiện tại">
+          <i class="fa-solid fa-arrows-rotate" :class="{ 'fa-spin': detectingNet }"></i> Quét Lại
+        </button>
+
+        <div class="dropdown-assign-wrap">
+          <button class="btn-awb-assign" @click="showAssignMenu = !showAssignMenu">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Lấy WiFi Này Gán Cho... <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i>
+          </button>
+          <div v-if="showAssignMenu" class="assign-menu-popover">
+            <div 
+              v-for="o in offices" 
+              :key="o.id" 
+              class="assign-menu-item"
+              @click="assignCurrentNetToOffice(o)"
+            >
+              <i class="fa-solid fa-building" style="color: var(--gold-primary);"></i>
+              <div>
+                <strong>{{ o.name }}</strong>
+                <small style="display: block; font-size: 0.7rem; color: var(--text-muted);">Mã: {{ o.id }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="offices-grid">
       <div v-for="office in offices" :key="office.id" class="office-card">
         <div class="office-head">
@@ -20,9 +71,14 @@
             <h4 class="office-name">{{ office.name }}</h4>
             <span class="office-address"><i class="fa-solid fa-location-dot"></i> {{ office.address }}</span>
           </div>
-          <button class="btn-edit-office" @click="openEditModal(office)">
-            <i class="fa-solid fa-pen"></i> Sửa Cấu Hình
-          </button>
+          <div class="office-head-btns">
+            <button class="btn-quick-wifi" @click="quickAssignMyNetwork(office)" title="Gán dải WiFi/IP hiện tại của máy này vào văn phòng">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Lấy WiFi Máy Này
+            </button>
+            <button class="btn-edit-office" @click="openEditModal(office)">
+              <i class="fa-solid fa-pen"></i> Sửa Cấu Hình
+            </button>
+          </div>
         </div>
 
         <div class="office-body">
@@ -70,7 +126,7 @@
 
     <!-- MODAL SỬA VĂN PHÒNG & WIFI -->
     <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
-      <div class="admin-modal-card" style="max-width: 520px;">
+      <div class="admin-modal-card" style="max-width: 540px;">
         <div class="modal-header">
           <h3>
             <i class="fa-solid fa-wifi" style="color: var(--gold-primary);"></i>
@@ -111,6 +167,26 @@
               <input v-model="editForm.workEnd" type="time" class="admin-input" />
             </div>
 
+            <!-- MỤC LẤY WIFI TỰ ĐỘNG TRONG MODAL -->
+            <div class="form-col-full">
+              <div class="modal-auto-wifi-helper">
+                <div class="mawh-info">
+                  <i class="fa-solid fa-network-wired" style="color: #059669; font-size: 1.1rem;"></i>
+                  <div>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-main, #0f172a); display: block;">
+                      IP mạng máy hiện tại: <code style="color: #059669;">{{ currentNetwork.ip || 'Chưa phát hiện' }}</code>
+                    </span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">
+                      Dải mạng tự động: <code>{{ currentNetwork.subnet || '...' }}</code>
+                    </span>
+                  </div>
+                </div>
+                <button type="button" class="btn-modal-auto-fill" @click="autoFillNetwork">
+                  <i class="fa-solid fa-plus"></i> Thêm Dải Này Vào Cấu Hình
+                </button>
+              </div>
+            </div>
+
             <div class="form-col-full">
               <label>Dải Địa Chỉ IP Mạng Hợp Lệ (Cách nhau bằng dấu phẩy)</label>
               <input 
@@ -147,6 +223,18 @@ const departments = ref<any[]>([]);
 const showModal = ref(false);
 const saving = ref(false);
 const networksInput = ref('');
+const showAssignMenu = ref(false);
+const detectingNet = ref(false);
+
+const currentNetwork = ref<{
+  ip: string;
+  subnet: string;
+  matchedOffice: any;
+}>({
+  ip: '',
+  subnet: '',
+  matchedOffice: null,
+});
 
 const editForm = reactive({
   id: '',
@@ -166,6 +254,84 @@ const parseNetworks = (raw: any): string[] => {
   } catch {
     return [raw];
   }
+};
+
+const detectMyNetwork = async () => {
+  detectingNet.value = true;
+  try {
+    const res: any = await $fetch('/api/cham-cong/my-network');
+    if (res && res.success) {
+      currentNetwork.value = {
+        ip: res.ip || '',
+        subnet: res.subnet || '',
+        matchedOffice: res.matchedOffice || null,
+      };
+    }
+  } catch (err) {
+    console.error('Lỗi nhận diện mạng:', err);
+  } finally {
+    detectingNet.value = false;
+  }
+};
+
+const autoFillNetwork = () => {
+  if (!currentNetwork.value.subnet) {
+    detectMyNetwork();
+    return;
+  }
+  const prefix = currentNetwork.value.subnet;
+  const currentList = networksInput.value
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  if (!currentList.includes(prefix)) {
+    currentList.push(prefix);
+    networksInput.value = currentList.join(', ');
+    showToast(`Đã thêm dải mạng ${prefix} vào ô cấu hình! Nhớ bấm "Lưu Cấu Hình".`);
+  } else {
+    showToast(`Dải mạng ${prefix} đã có trong danh sách!`);
+  }
+};
+
+const assignCurrentNetToOffice = async (office: any) => {
+  showAssignMenu.value = false;
+  if (!currentNetwork.value.subnet) {
+    await detectMyNetwork();
+  }
+  const prefix = currentNetwork.value.subnet;
+  if (!prefix) return;
+
+  const nets = parseNetworks(office.networks);
+  if (!nets.includes(prefix)) {
+    nets.push(prefix);
+    try {
+      await $fetch('/api/cham-cong/offices', {
+        method: 'PUT',
+        body: {
+          id: office.id,
+          name: office.name,
+          address: office.address,
+          ssid: office.ssid,
+          workStart: office.workStart,
+          workEnd: office.workEnd,
+          lateGraceMinutes: office.lateGraceMinutes,
+          networks: nets,
+        },
+      });
+      showToast(`Đã gán dải mạng WiFi [${prefix}] cho văn phòng ${office.name}!`);
+      await loadData();
+      await detectMyNetwork();
+    } catch (err: any) {
+      alert(err?.data?.message || 'Lỗi khi cập nhật văn phòng!');
+    }
+  } else {
+    showToast(`Văn phòng ${office.name} đã chứa dải mạng [${prefix}] rồi.`);
+  }
+};
+
+const quickAssignMyNetwork = async (office: any) => {
+  await assignCurrentNetToOffice(office);
 };
 
 const loadData = async () => {
@@ -211,6 +377,7 @@ const saveOffice = async () => {
     showToast(`Đã lưu cấu hình văn phòng ${editForm.name}!`);
     showModal.value = false;
     await loadData();
+    await detectMyNetwork();
   } catch (err: any) {
     alert(err?.data?.message || 'Lỗi khi lưu văn phòng!');
   } finally {
@@ -220,6 +387,7 @@ const saveOffice = async () => {
 
 onMounted(() => {
   loadData();
+  detectMyNetwork();
 });
 </script>
 
@@ -293,6 +461,230 @@ onMounted(() => {
   background: #d4af37;
   color: #111827;
   border-color: #d4af37;
+}
+
+/* BANNER TỰ ĐỘNG NHẬN DIỆN WIFI */
+.auto-wifi-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%);
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-md, 14px);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.05);
+}
+
+.awb-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.awb-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #10b981;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+  flex-shrink: 0;
+}
+
+.awb-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main, #0f172a);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+}
+
+.badge-matched-ok {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-not-matched {
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.awb-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted, #64748b);
+}
+
+.awb-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-awb-refresh {
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #cbd5e1);
+  color: var(--text-main, #0f172a);
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-awb-refresh:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.dropdown-assign-wrap {
+  position: relative;
+}
+
+.btn-awb-assign {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+  transition: all 0.2s;
+}
+
+.btn-awb-assign:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.assign-menu-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #cbd5e1);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  min-width: 220px;
+  z-index: 100;
+  overflow: hidden;
+  padding: 6px;
+}
+
+.assign-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text-main, #0f172a);
+}
+
+.assign-menu-item:hover {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.office-head-btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-quick-wifi {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.btn-quick-wifi:hover {
+  background: #059669;
+  color: #ffffff;
+  border-color: #059669;
+  transform: translateY(-1px);
+}
+
+.modal-auto-wifi-helper {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mawh-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-modal-auto-fill {
+  background: #059669;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.btn-modal-auto-fill:hover {
+  background: #047857;
 }
 
 .office-body {

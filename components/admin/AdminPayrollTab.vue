@@ -31,30 +31,51 @@
       <div class="rate-card-item">
         <div class="rate-card-icon gold"><i class="fa-solid fa-coins"></i></div>
         <div>
-          <span class="rc-label">① Lương một ngày công chuẩn:</span>
-          <strong class="rc-val">{{ formatVND(rates.salaryPerDay) }}</strong>
+          <span class="rc-label">① Lương ngày công chuẩn:</span>
+          <strong class="rc-val">{{ formatVND(rates.salaryPerDay) }} / ngày</strong>
+          <small style="display:block; font-size: 0.7rem; color: var(--text-muted);">1 ngày làm việc văn phòng</small>
         </div>
       </div>
       <div class="rate-card-item">
         <div class="rate-card-icon blue"><i class="fa-solid fa-utensils"></i></div>
         <div>
           <span class="rc-label">② Phụ cấp cố định:</span>
-          <strong class="rc-val">{{ formatVND(rates.allowancePerDay) }}</strong>
+          <strong class="rc-val">{{ formatVND(rates.allowancePerDay) }} / ngày</strong>
+          <small style="display:block; font-size: 0.7rem; color: var(--text-muted);">Phụ cấp ăn trưa / trách nhiệm</small>
         </div>
       </div>
       <div class="rate-card-item">
         <div class="rate-card-icon green"><i class="fa-solid fa-car-side"></i></div>
         <div>
-          <span class="rc-label">③ Chi phí công tác:</span>
-          <strong class="rc-val green">{{ formatVND(rates.tripAllowance) }}</strong>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="rc-label">③ Chi phí công tác:</span>
+            <span class="badge-adj-mini">Leader báo lại</span>
+          </div>
+          <strong class="rc-val green">{{ formatVND(rates.tripAllowance) }} / ngày</strong>
+          <small style="display:block; font-size: 0.7rem; color: var(--text-muted);">1 ngày công tác = 100k (50k lương + 50k phí)</small>
         </div>
       </div>
       <div class="rate-card-item">
         <div class="rate-card-icon purple"><i class="fa-solid fa-wallet"></i></div>
         <div>
-          <span class="rc-label">④ Chi phí khác (xăng xe...):</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="rc-label">④ Chi phí khác:</span>
+            <span class="badge-adj-mini">Leader báo lại</span>
+          </div>
           <strong class="rc-val purple">{{ formatVND(rates.otherAllowance) }}</strong>
+          <small style="display:block; font-size: 0.7rem; color: var(--text-muted);">Xăng xe, điện thoại... báo theo tháng</small>
         </div>
+      </div>
+    </div>
+
+    <!-- BANNER HƯỚNG DẪN NGHIỆP VỤ LEADER BÁO LẠI -->
+    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 10px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--text-main, #0f172a);">
+        <i class="fa-solid fa-circle-info" style="color: #059669; font-size: 1.05rem;"></i>
+        <span>
+          <strong>Lưu ý nghiệp vụ:</strong> Khoản (3) Chi phí công tác & (4) Chi phí khác không cố định. Sau mỗi chuyến đi hoặc cuối tháng, 
+          Leader sẽ báo lại số tiền phát sinh thực tế. Admin/Leader chỉ cần bấm nút <strong>[<i class="fa-solid fa-pen-to-square"></i> Kê Phí]</strong> ở dòng nhân viên tương ứng để cập nhật trực tiếp vào bảng lương.
+        </span>
       </div>
     </div>
 
@@ -73,16 +94,17 @@
             <th style="text-align: right;">(3) Tiền Công Tác</th>
             <th style="text-align: right;">(4) Chi Phí Khác</th>
             <th style="text-align: right; color: var(--gold-primary);">TỔNG THỰC LĨNH</th>
+            <th style="text-align: center; width: 100px;">Thao Tác</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="loading">
-            <td colspan="10" style="text-align: center; padding: 40px; color: var(--text-muted);">
+            <td colspan="11" style="text-align: center; padding: 40px; color: var(--text-muted);">
               <i class="fa-solid fa-spinner fa-spin"></i> Đang tính toán bảng lương...
             </td>
           </tr>
           <tr v-else-if="payrollList.length === 0">
-            <td colspan="10" class="empty-table">
+            <td colspan="11" class="empty-table">
               <i class="fa-solid fa-file-invoice-dollar"></i>
               <p>Chưa có dữ liệu bảng lương cho tháng này.</p>
             </td>
@@ -118,15 +140,30 @@
               {{ formatVND(item.allowance) }}
             </td>
             <td style="text-align: right; font-weight: 600; color: #059669;">
-              {{ formatVND(item.tripPay) }}
+              <div>{{ formatVND(item.tripPay) }}</div>
+              <span v-if="item.hasTripAdjustment" class="badge-adj green" :title="item.adjustmentNote || 'Leader báo lại'">
+                <i class="fa-solid fa-pen-nib"></i> Leader báo
+              </span>
             </td>
             <td style="text-align: right; font-weight: 600; color: #7c3aed;">
-              {{ formatVND(item.otherPay) }}
+              <div>{{ formatVND(item.otherPay) }}</div>
+              <span v-if="item.hasOtherAdjustment" class="badge-adj purple" :title="item.adjustmentNote || 'Leader báo lại'">
+                <i class="fa-solid fa-pen-nib"></i> Leader báo
+              </span>
             </td>
             <td style="text-align: right;">
               <strong style="font-size: 1.05rem; color: #b8860b; font-weight: 800;">
                 {{ formatVND(item.totalSalary) }}
               </strong>
+            </td>
+            <td style="text-align: center;">
+              <button 
+                class="btn-adjust-row" 
+                @click="openAdjustModal(item)" 
+                title="Nhập chi phí công tác & chi phí khác theo số liệu Leader báo"
+              >
+                <i class="fa-solid fa-pen-to-square"></i> Kê Phí
+              </button>
             </td>
           </tr>
         </tbody>
@@ -142,15 +179,92 @@
             <td style="text-align: right; color: #b8860b; font-size: 1.2rem; font-weight: 900;">
               {{ formatVND(totalGrandSalary) }}
             </td>
+            <td></td>
           </tr>
         </tfoot>
       </table>
+    </div>
+
+    <!-- MODAL KÊ / ĐIỀU CHỈNH CHI PHÍ DO LEADER BÁO LẠI -->
+    <div v-if="showAdjustModal" class="modal-overlay" @click.self="showAdjustModal = false">
+      <div class="admin-modal-card" style="max-width: 500px;">
+        <div class="modal-header">
+          <h3>
+            <i class="fa-solid fa-file-invoice-dollar" style="color: var(--gold-primary);"></i>
+            Kê Phí Lương Tháng {{ selectedMonth }}
+          </h3>
+          <button class="modal-close-icon" @click="showAdjustModal = false">&times;</button>
+        </div>
+
+        <div style="padding: 16px 20px 0; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-color, #e2e8f0); padding-bottom: 14px;">
+          <img :src="adjustItem?.avatar" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--border-gold);" alt="" />
+          <div>
+            <strong style="font-size: 0.95rem; color: var(--text-main, #0f172a); display: block;">{{ adjustItem?.name }} ({{ adjustItem?.userCode }})</strong>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">
+              Số ngày công tác ghi nhận: <strong style="color: #059669;">{{ adjustItem?.tripDays }} ngày</strong> | Tổng ngày làm: {{ adjustItem?.workDays }} ngày
+            </span>
+          </div>
+        </div>
+
+        <form @submit.prevent="saveAdjustment" class="modal-form" style="padding-top: 16px;">
+          <div class="form-grid">
+            <div class="form-col-full">
+              <label style="display: flex; justify-content: space-between; align-items: center;">
+                <span>(3) Chi phí công tác do Leader báo (VNĐ)</span>
+                <small style="color: var(--text-muted);">Định mức gợi ý: {{ formatVND(adjustItem?.tripDays * rates.tripAllowance) }}</small>
+              </label>
+              <input 
+                v-model.number="adjustForm.tripAllowance" 
+                type="number" 
+                step="1000" 
+                min="0"
+                class="admin-input" 
+                placeholder="Nhập số tiền Leader duyệt (VD: 150000) hoặc để trống"
+              />
+              <small style="color: var(--text-muted); font-size: 0.72rem; margin-top: 4px; display: block;">
+                Khoản này không cố định, Leader sẽ báo lại để cộng thẳng vào lương của nhân viên.
+              </small>
+            </div>
+
+            <div class="form-col-full">
+              <label>(4) Chi phí khác (xăng xe, điện thoại...) do Leader báo (VNĐ)</label>
+              <input 
+                v-model.number="adjustForm.otherAllowance" 
+                type="number" 
+                step="1000" 
+                min="0"
+                class="admin-input" 
+                placeholder="Nhập số tiền chi phí khác (VD: 100000)"
+              />
+            </div>
+
+            <div class="form-col-full">
+              <label>Ghi chú chi tiết từ Leader / Quản lý</label>
+              <input 
+                v-model="adjustForm.note" 
+                type="text" 
+                class="admin-input" 
+                placeholder="VD: Đi tiếp khách Long An 2 ngày, phụ cấp xăng xe 100k"
+              />
+            </div>
+          </div>
+
+          <div class="modal-actions-footer" style="margin-top: 20px;">
+            <button type="button" class="btn-admin-cancel" @click="showAdjustModal = false">Hủy</button>
+            <button type="submit" class="btn-admin-primary" :disabled="savingAdjustment">
+              <i class="fa-solid fa-floppy-disk"></i> Lưu Vào Bảng Lương
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
+
+const { showToast } = useToast();
 
 const now = new Date();
 const selectedMonth = ref(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`);
@@ -158,13 +272,24 @@ const loading = ref(false);
 
 const rates = ref({
   salaryPerDay: 50000,
-  allowancePerDay: 50000,
+  allowancePerDay: 0,
   tripAllowance: 50000,
   otherAllowance: 0,
   otherAllowanceNote: '',
 });
 
 const payrollList = ref<any[]>([]);
+
+// Quản lý Modal Kê Phí Leader
+const showAdjustModal = ref(false);
+const savingAdjustment = ref(false);
+const adjustItem = ref<any>(null);
+const adjustForm = reactive({
+  userId: '',
+  tripAllowance: undefined as number | undefined,
+  otherAllowance: undefined as number | undefined,
+  note: '',
+});
 
 const formatVND = (num: number) => {
   return (num || 0).toLocaleString('vi-VN') + ' đ';
@@ -182,6 +307,38 @@ const loadPayroll = async () => {
     console.error('Lỗi tính bảng lương:', err);
   } finally {
     loading.value = false;
+  }
+};
+
+const openAdjustModal = (item: any) => {
+  adjustItem.value = item;
+  adjustForm.userId = item.userId;
+  adjustForm.tripAllowance = item.hasTripAdjustment ? item.tripPay : (item.tripDays > 0 ? item.tripPay : undefined);
+  adjustForm.otherAllowance = item.hasOtherAdjustment ? item.otherPay : (item.otherPay > 0 ? item.otherPay : undefined);
+  adjustForm.note = item.adjustmentNote || '';
+  showAdjustModal.value = true;
+};
+
+const saveAdjustment = async () => {
+  savingAdjustment.value = true;
+  try {
+    await $fetch('/api/cham-cong/payroll/adjust', {
+      method: 'POST',
+      body: {
+        month: selectedMonth.value,
+        userId: adjustForm.userId,
+        tripAllowance: adjustForm.tripAllowance,
+        otherAllowance: adjustForm.otherAllowance,
+        note: adjustForm.note,
+      },
+    });
+    showToast(`Đã cập nhật chi phí cho nhân viên ${adjustItem.value?.name}!`);
+    showAdjustModal.value = false;
+    await loadPayroll();
+  } catch (err: any) {
+    alert(err?.data?.message || 'Lỗi khi lưu chi phí!');
+  } finally {
+    savingAdjustment.value = false;
   }
 };
 
@@ -301,5 +458,60 @@ onMounted(() => {
   border-radius: 4px;
   font-weight: 700;
   font-size: 0.76rem;
+}
+
+.badge-adj-mini {
+  background: rgba(16, 185, 129, 0.14);
+  color: #059669;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-adj {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.badge-adj.green {
+  background: rgba(16, 185, 129, 0.14);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-adj.purple {
+  background: rgba(147, 51, 234, 0.14);
+  color: #7c3aed;
+  border: 1px solid rgba(147, 51, 234, 0.3);
+}
+
+.btn-adjust-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(212, 175, 55, 0.12);
+  color: #b8860b;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-adjust-row:hover {
+  background: var(--gold-primary, #d4af37);
+  color: #ffffff;
+  border-color: var(--gold-primary, #d4af37);
+  transform: translateY(-1px);
 }
 </style>

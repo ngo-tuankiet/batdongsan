@@ -39,7 +39,7 @@
               <span class="step-num">1</span>
               <div>
                 <strong>Lương một ngày công chuẩn (VNĐ) *</strong>
-                <span class="item-hint">Ví dụ: 50.000 đ/ngày (Áp dụng cho mỗi ngày làm việc chuẩn)</span>
+                <span class="item-hint">Mức lương 1 ngày làm việc văn phòng (Ví dụ mức hiện tại: 50.000 đ/ngày)</span>
               </div>
             </label>
             <div class="input-currency-wrap">
@@ -60,8 +60,8 @@
             <label class="item-label">
               <span class="step-num">2</span>
               <div>
-                <strong>Phụ cấp (VNĐ) *</strong>
-                <span class="item-hint">Ví dụ: 50.000 đ (Phụ cấp ăn trưa / trách nhiệm cộng thêm)</span>
+                <strong>Phụ cấp (VNĐ)</strong>
+                <span class="item-hint">Phụ cấp ăn trưa / trách nhiệm nếu có (để 0 đ nếu không áp dụng)</span>
               </div>
             </label>
             <div class="input-currency-wrap">
@@ -71,7 +71,6 @@
                 min="0" 
                 step="1000" 
                 class="admin-input currency-input" 
-                required
               />
               <span class="currency-tag">VNĐ / ngày</span>
             </div>
@@ -82,8 +81,11 @@
             <label class="item-label">
               <span class="step-num">3</span>
               <div>
-                <strong>Chi phí công tác (VNĐ) *</strong>
-                <span class="item-hint">Ví dụ: 50.000 đ/ngày đi công tác (Cộng thêm khi đi thị trường)</span>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <strong>Chi phí công tác (VNĐ)</strong>
+                  <span class="badge-flexible">Leader báo lại</span>
+                </div>
+                <span class="item-hint">Chi phí này không cố định, Leader sẽ báo lại để cộng vào lương. Mức ở đây là mức cơ sở (VD: 50.000 đ để ngày công tác = 100.000 đ).</span>
               </div>
             </label>
             <div class="input-currency-wrap">
@@ -93,7 +95,6 @@
                 min="0" 
                 step="1000" 
                 class="admin-input currency-input" 
-                required
               />
               <span class="currency-tag">VNĐ / ngày</span>
             </div>
@@ -104,8 +105,11 @@
             <label class="item-label">
               <span class="step-num">4</span>
               <div>
-                <strong>Chi phí khác (VNĐ)</strong>
-                <span class="item-hint">Phụ cấp xăng xe, điện thoại, hỗ trợ công việc cố định theo ngày/tháng</span>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <strong>Chi phí khác (VNĐ)</strong>
+                  <span class="badge-flexible">Leader báo lại</span>
+                </div>
+                <span class="item-hint">Cũng giống khoản 3, khoản này không cố định, Leader sẽ báo lại (xăng xe, điện thoại...) để cộng vào lương nhân viên.</span>
               </div>
             </label>
             <div class="input-currency-wrap">
@@ -137,21 +141,22 @@
           <div class="salary-example-box">
             <div class="example-head">
               <i class="fa-solid fa-calculator" style="color: var(--gold-primary);"></i>
-              <strong>Minh Họa Mức Chi Trả Hiện Tại:</strong>
+              <strong>Minh Họa Mức Chi Trả Thực Tế:</strong>
             </div>
             <ul class="example-list">
               <li>
                 <span>• 1 Ngày làm tại văn phòng:</span>
                 <strong>{{ formatVND(form.salaryPerDay + form.allowancePerDay) }}</strong>
-                <small>({{ formatVND(form.salaryPerDay) }} lương + {{ formatVND(form.allowancePerDay) }} phụ cấp)</small>
+                <small v-if="form.allowancePerDay > 0">({{ formatVND(form.salaryPerDay) }} lương + {{ formatVND(form.allowancePerDay) }} phụ cấp)</small>
+                <small v-else>(Theo mức lương chuẩn 1 ngày làm việc)</small>
               </li>
               <li>
                 <span>• 1 Ngày đi công tác thị trường:</span>
                 <strong style="color: #10b981;">{{ formatVND(form.salaryPerDay + form.allowancePerDay + form.tripAllowance) }}</strong>
-                <small>(+ {{ formatVND(form.tripAllowance) }} tiền công tác)</small>
+                <small>(Gồm lương ngày + tiền công tác cơ sở)</small>
               </li>
               <li v-if="form.otherAllowance > 0">
-                <span>• Chi phí khác bổ sung ({{ form.otherAllowanceNote }}):</span>
+                <span>• Chi phí khác mặc định ({{ form.otherAllowanceNote }}):</span>
                 <strong style="color: #a855f7;">+ {{ formatVND(form.otherAllowance) }}</strong>
               </li>
               <li>
@@ -159,6 +164,10 @@
                 <strong style="color: #ef4444;">0 đ</strong>
               </li>
             </ul>
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); font-size: 0.74rem; color: var(--text-muted); line-height: 1.5;">
+              <i class="fa-solid fa-circle-info" style="color: #38bdf8;"></i>
+              <strong>Lưu ý:</strong> Khoản (3) Chi phí công tác và (4) Chi phí khác không cố định. Leader sẽ báo lại chi phí phát sinh thực tế theo từng tháng, Admin/Leader có thể bấm chỉnh sửa trực tiếp cho từng nhân viên trong tab <strong>"Bảng Lương & Chi Trả"</strong>.
+            </div>
           </div>
         </div>
       </div>
@@ -395,7 +404,7 @@ const showShiftModal = ref(false);
 const form = reactive({
   companyName: 'Công Ty Bến Thành',
   salaryPerDay: 50000,
-  allowancePerDay: 50000,
+  allowancePerDay: 0,
   tripAllowance: 50000,
   otherAllowance: 0,
   otherAllowanceNote: 'Phụ cấp xăng xe, điện thoại, hỗ trợ công việc',
@@ -675,6 +684,17 @@ onMounted(() => {
   border-radius: 20px;
   font-size: 0.74rem;
   font-weight: 800;
+}
+
+.badge-flexible {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 2px 7px;
+  border-radius: 12px;
+  font-size: 0.68rem;
+  font-weight: 700;
 }
 
 .card-body {

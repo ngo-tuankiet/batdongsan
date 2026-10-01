@@ -39,6 +39,7 @@ model Agent {
   leads              Lead[]
   attendances        Attendance[]
   leaveRequests      LeaveRequest[]
+  payrollAdjustments PayrollAdjustment[]
 }
 
 model Category {
@@ -184,9 +185,9 @@ model SalarySetting {
   companyName        String     @default("Công Ty Bến Thành")
   // 4 KHOẢN ĐỊNH MỨC LƯƠNG:
   salaryPerDay       Float      @default(50000) // 1. Lương một ngày công chuẩn (VNĐ)
-  allowancePerDay    Float      @default(50000) // 2. Phụ cấp (VNĐ)
-  tripAllowance      Float      @default(50000) // 3. Chi phí công tác (VNĐ/ngày đi công tác)
-  otherAllowance     Float      @default(0)     // 4. Chi phí khác (VNĐ): phụ cấp xăng xe, điện thoại, hỗ trợ công việc
+  allowancePerDay    Float      @default(0)     // 2. Phụ cấp (VNĐ) - mặc định 0 nếu không có phụ cấp riêng
+  tripAllowance      Float      @default(50000) // 3. Chi phí công tác (VNĐ/ngày đi công tác - định mức cơ sở 50k + 50k lương = 100k/ngày)
+  otherAllowance     Float      @default(0)     // 4. Chi phí khác (VNĐ): xăng xe, điện thoại...
   otherAllowanceNote String?    @default("Hỗ trợ xăng xe, điện thoại, chi phí khác")
   
   lateGraceMinutes   Int        @default(15)
@@ -239,4 +240,20 @@ model LeaveRequest {
   updatedAt    DateTime  @updatedAt
 
   agent        Agent?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 7. ĐIỀU CHỈNH / KÊ LƯƠNG HÀNG THÁNG CHO TỪNG NHÂN VIÊN (Leader báo chi phí công tác & chi phí khác)
+model PayrollAdjustment {
+  id             String    @id @default(cuid())
+  month          String    // YYYY-MM (vd: "2026-10")
+  userId         String
+  tripAllowance  Float?    // Chi phí công tác do Leader báo lại
+  otherAllowance Float?    // Chi phí khác do Leader báo lại (xăng xe, điện thoại...)
+  note           String?   // Ghi chú chi phí từ Leader
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  agent          Agent?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([month, userId])
 }
