@@ -14,7 +14,7 @@
             <img src="/images/logo-ben-thanh.png" alt="Bến Thành Land" class="admin-sidebar-logo-img">
           </div>
           <h2>Hệ Thống Bến Thành Land</h2>
-          <p>Đăng nhập Quản Trị CMS & Cổng Chấm Công Nhân Sự</p>
+          <p>Cổng Điều Hành Doanh Nghiệp & Chấm Công Bến Thành Land</p>
         </div>
 
         <!-- NÚT CHUYỂN ĐỔI: ĐĂNG NHẬP / ĐĂNG KÝ TÀI KHOẢN -->
@@ -189,7 +189,7 @@
           </div>
           <div class="brand-info">
             <h3>BẾN THÀNH LAND</h3>
-            <span class="brand-badge"><i class="fa-solid fa-shield-halved"></i> Quản Trị CMS</span>
+            <span class="brand-badge"><i class="fa-solid fa-shield-halved"></i> Trung Tâm Điều Hành</span>
           </div>
           <button class="sidebar-close-btn" @click="mobileSidebarOpen = false">
             <i class="fa-solid fa-xmark"></i>
@@ -204,9 +204,9 @@
             <span class="status-dot"></span>
           </div>
           <div class="user-meta" style="min-width: 0;">
-            <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">{{ currentUser?.name || 'Ban Quản Trị Sàn' }}</strong>
+            <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">{{ currentUser?.name || 'Ban Điều Hành Sàn' }}</strong>
             <small style="color: var(--gold-primary); font-weight: 700; display: block;">
-              {{ currentUser?.role === 'admin' ? '👑 Quản Trị Viên' : currentUser?.role === 'manager' ? '👔 Quản Lý' : '👤 Chuyên Viên Sales' }}
+              {{ currentUser?.role === 'admin' ? '👑 Ban Điều Hành' : currentUser?.role === 'manager' ? '👔 Quản Lý' : '👤 Chuyên Viên Sales' }}
               <span v-if="currentUser?.code">({{ currentUser.code }})</span>
             </small>
           </div>
@@ -373,7 +373,7 @@
         <div class="sidebar-footer">
           <button class="logout-btn" @click="handleLogout">
             <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Đăng Xuất Khỏi CMS</span>
+            <span>Đăng Xuất</span>
           </button>
         </div>
       </aside>
@@ -388,7 +388,7 @@
             </button>
             <div class="page-title-area">
               <div class="breadcrumb">
-                <span>CMS Bến Thành</span>
+                <span>Bến Thành Land</span>
                 <i class="fa-solid fa-chevron-right"></i>
                 <span class="active-crumb">
                   {{ 
@@ -402,7 +402,7 @@
                     activeTab === 'payroll' ? 'Bảng Lương Nhân Sự 4 Khoản' :
                     activeTab === 'salary_settings' ? 'Cài Đặt Định Mức Lương & Khung Giờ' :
                     activeTab === 'offices' ? 'Cấu Hình Văn Phòng & WiFi Điểm Danh' :
-                    'Bảng Quản Trị' 
+                    'Bảng Điều Hành' 
                   }}
                 </span>
               </div>
@@ -418,7 +418,7 @@
                   activeTab === 'payroll' ? 'Bảng Tổng Hợp Lương & Phụ Cấp 4 Khoản' :
                   activeTab === 'salary_settings' ? 'Định Mức Lương 4 Khoản & Khung Giờ Ca Làm' :
                   activeTab === 'offices' ? 'Văn Phòng Trụ Sở & Cấu Hình Mạng WiFi' :
-                  'Bảng Quản Trị'
+                  'Bảng Điều Hành'
                 }}
               </h1>
             </div>
@@ -727,7 +727,7 @@
                   <span class="filter-label"><i class="fa-solid fa-shield-halved"></i> Quyền:</span>
                   <select v-model="agentFilterRole" class="admin-select">
                     <option value="all">Tất cả quyền</option>
-                    <option value="admin">👑 Quản trị viên (Admin)</option>
+                    <option value="admin">👑 Ban Điều Hành (Admin)</option>
                     <option value="manager">👔 Quản lý (Leader)</option>
                     <option value="user">👤 Nhân viên</option>
                   </select>
@@ -1553,7 +1553,7 @@
               <select v-model="agentForm.userRole" class="admin-select" required>
                 <option value="user">👤 Nhân viên (Chấm công cá nhân)</option>
                 <option value="manager">👔 Quản lý (Duyệt đơn, chấm công nhóm)</option>
-                <option value="admin">👑 Tổng quản trị (Toàn quyền)</option>
+                <option value="admin">👑 Ban Điều Hành (Toàn quyền)</option>
               </select>
             </div>
 
@@ -3159,19 +3159,28 @@ const toggleBannerStatus = async (b: any) => {
 };
 
 useHead({
-  title: 'Hệ Thống Quản Trị CMS - Bất Động Sản Bến Thành',
+  title: 'Trung Tâm Điều Hành - Bến Thành Land',
 });
 </script>
 
 <style scoped>
 /* ===================================================================
-   GIAO DIỆN QUẢN TRỊ CMS SIDEBAR DASHBOARD - BẤT ĐỘNG SẢN BẾN THÀNH
+   TRUNG TÂM ĐIỀU HÀNH DOANH NGHIỆP - BẤT ĐỘNG SẢN BẾN THÀNH
    =================================================================== */
+.admin-root,
+.admin-root button,
+.admin-root input,
+.admin-root select,
+.admin-root textarea {
+  font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .admin-root {
   min-height: 100vh;
   background: var(--bg-primary);
   color: var(--text-main);
-  font-family: var(--font-body);
   display: flex;
   flex-direction: column;
 }
