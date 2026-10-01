@@ -125,20 +125,17 @@
             <div>
               <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Văn phòng *</label>
               <select v-model="registerForm.officeId" class="admin-select" required>
-                <option value="VP1">VP1 - Đô Thành</option>
-                <option value="VP2">VP2 - Bình Trị Đông</option>
-                <option value="VP3">VP3 - Phú Thọ</option>
+                <option v-for="o in officesList" :key="o.id" :value="o.id">
+                  {{ o.name }} ({{ o.id }})
+                </option>
               </select>
             </div>
             <div>
               <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Phòng ban *</label>
               <select v-model="registerForm.departmentId" class="admin-select" required>
-                <option value="PB01">Phòng KD 1</option>
-                <option value="PB02">Phòng KD 2</option>
-                <option value="PB03">Marketing</option>
-                <option value="PB04">Pháp Lý</option>
-                <option value="PB05">Hành Chính</option>
-                <option value="PB06">Kế Toán</option>
+                <option v-for="d in filteredDepartmentsForRegister" :key="d.id" :value="d.id">
+                  {{ d.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -1581,22 +1578,19 @@
             <div>
               <label>Văn phòng làm việc *</label>
               <select v-model="agentForm.officeId" class="admin-select" required>
-                <option value="VP1">VP1 - 12 Đường số 2, Cư Xá Đô Thành</option>
-                <option value="VP2">VP2 - Số 6 Đường 5A, KDC Bình Trị Đông</option>
-                <option value="VP3">VP3 - 70D Phú Thọ</option>
+                <option v-for="o in officesList" :key="o.id" :value="o.id">
+                  {{ o.name }} ({{ o.id }})
+                </option>
               </select>
             </div>
 
             <div>
               <label>Phòng ban trực thuộc</label>
               <select v-model="agentForm.departmentId" class="admin-select">
-                <option value="">-- Chọn phòng ban --</option>
-                <option value="PB01">Phòng Kinh Doanh 1</option>
-                <option value="PB02">Phòng Kinh Doanh 2</option>
-                <option value="PB03">Phòng Marketing & Truyền Thông</option>
-                <option value="PB04">Phòng Pháp Lý & Công Chứng</option>
-                <option value="PB05">Phòng Hành Chính Nhân Sự</option>
-                <option value="PB06">Phòng Kế Toán & Tài Chính</option>
+                <option value="">-- Chưa gán phòng ban --</option>
+                <option v-for="d in filteredDepartmentsForAgent" :key="d.id" :value="d.id">
+                  {{ d.name }}
+                </option>
               </select>
             </div>
 
@@ -2353,6 +2347,60 @@ const { data: leadsData, refresh: refreshLeads } = await useFetch('/api/leads', 
   }),
 });
 const { data: bannersData, refresh: refreshBanners } = await useFetch('/api/banners');
+const { data: officesData } = await useFetch<any[]>('/api/cham-cong/offices');
+const { data: departmentsData } = await useFetch<any[]>('/api/cham-cong/departments');
+
+const defaultOffices = [
+  { id: 'VP1', name: 'Văn phòng 12 Đường số 2' },
+  { id: 'VP2', name: 'Văn phòng Số 6 Đường 5A' },
+  { id: 'VP3', name: 'Văn phòng 70D Phú Thọ' },
+];
+
+const defaultDepartments = [
+  { id: 'PB01', name: 'Ban Xây Dựng', officeId: 'VP1' },
+  { id: 'PB02', name: 'Ban Bất Động Sản 1', officeId: 'VP1' },
+  { id: 'PB03', name: 'Ban Chứng Khoán', officeId: 'VP2' },
+  { id: 'PB04', name: 'Ban Bất Động Sản 2', officeId: 'VP2' },
+  { id: 'PB05', name: 'Ban Marketing & Training Chứng Khoán', officeId: 'VP3' },
+  { id: 'PB06', name: 'Ban Quản Lý', officeId: null },
+];
+
+const officesList = computed(() => {
+  if (Array.isArray(officesData.value) && officesData.value.length > 0) {
+    return officesData.value;
+  }
+  return defaultOffices;
+});
+
+const departmentsList = computed(() => {
+  if (Array.isArray(departmentsData.value) && departmentsData.value.length > 0) {
+    return departmentsData.value;
+  }
+  return defaultDepartments;
+});
+
+const filteredDepartmentsForRegister = computed(() => {
+  const offId = registerForm.officeId;
+  if (!offId) return departmentsList.value;
+  return departmentsList.value.filter(
+    (d: any) => !d.officeId || d.officeId === offId
+  );
+});
+
+const filteredDepartmentsForAgent = computed(() => {
+  const offId = agentForm.officeId;
+  if (!offId) return departmentsList.value;
+  return departmentsList.value.filter(
+    (d: any) => !d.officeId || d.officeId === offId
+  );
+});
+
+watch(() => registerForm.officeId, () => {
+  const list = filteredDepartmentsForRegister.value;
+  if (list.length > 0 && !list.some((d: any) => d.id === registerForm.departmentId)) {
+    registerForm.departmentId = list[0].id;
+  }
+});
 
 const properties = computed(() => propertiesData.value || []);
 const agents = computed(() => agentsData.value || []);
