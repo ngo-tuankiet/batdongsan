@@ -4706,17 +4706,39 @@ useHead({
 
 /* RESPONSIVE CHO ĐIỆN THOẠI & TABLET */
 @media (max-width: 992px) {
+  .admin-dashboard {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .admin-main {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   .admin-sidebar {
     position: fixed;
     top: 0;
     left: 0;
+    bottom: 0;
     height: 100vh;
-    transform: translateX(-100%);
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+    max-width: 82vw;
+    width: 270px;
+    transform: translateX(-100%) !important;
+    box-shadow: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+    z-index: 2000;
   }
 
   .admin-sidebar.sidebar-open {
-    transform: translateX(0);
+    transform: translateX(0) !important;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7) !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 
   .admin-sidebar-backdrop {
@@ -4724,7 +4746,7 @@ useHead({
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(2px);
-    z-index: 999;
+    z-index: 1999;
   }
 
   .sidebar-close-btn {
@@ -4736,16 +4758,74 @@ useHead({
   }
 
   .admin-topbar {
-    padding: 14px 18px;
+    padding: 10px 14px;
+    height: auto;
+    min-height: 56px;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .topbar-left {
+    flex: 1;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .page-title-area {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .breadcrumb {
+    display: none !important;
+  }
+
+  .page-heading {
+    font-size: 0.95rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+  }
+
+  .topbar-right {
+    flex-shrink: 0;
+    gap: 6px;
+  }
+
+  .topbar-home-btn {
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .topbar-home-btn span,
+  .topbar-home-btn .external-icon,
+  .topbar-home-btn .fa-arrow-up-right-from-square {
+    display: none !important;
+  }
+
+  .topbar-icon-btn,
+  .topbar-logout-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 0;
   }
 
   .admin-kpi-grid {
-    padding: 16px 18px 0;
+    padding: 14px 14px 0;
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .admin-content-box {
-    padding: 16px 18px 40px;
+    padding: 14px 14px 32px;
   }
 
   .form-grid {

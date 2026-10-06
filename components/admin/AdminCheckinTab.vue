@@ -1353,6 +1353,157 @@ onUnmounted(() => {
 @media (max-width: 1024px) {
   .checkin-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .checkin-container {
+    gap: 16px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .checkin-top-header {
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    border-radius: 12px;
+  }
+
+  .checkin-title-box h2 {
+    font-size: 1.15rem;
+  }
+
+  .checkin-hero-card {
+    padding: 20px 16px;
+    border-radius: 14px;
+  }
+
+  .digital-time {
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+  }
+
+  .digital-date {
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+
+  .wifi-status-box {
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 0.8rem;
+  }
+
+  .action-tiles-grid {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .action-tile {
+    padding: 12px 6px;
+    border-radius: 10px;
+    gap: 4px;
+  }
+
+  .tile-icon-box {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+
+  .tile-title {
+    font-size: 0.8rem;
+    line-height: 1.2;
+  }
+
+  .tile-sub {
+    font-size: 0.65rem;
+    line-height: 1.2;
+    opacity: 0.85;
+  }
+
+  .action-footer-bar {
+    gap: 8px;
+  }
+
+  .btn-hero-action {
+    padding: 10px 12px;
+    font-size: 0.82rem;
+  }
+
+  .info-card {
+    padding: 16px 14px;
+  }
+
+  .time-pills-row {
+    gap: 8px;
+  }
+
+  .time-pill {
+    padding: 10px 8px;
+  }
+
+  .tp-value {
+    font-size: 1.2rem;
+  }
+
+  .monthly-history-section {
+    padding: 16px 12px;
+    border-radius: 12px;
+  }
+
+  .mhs-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .mhs-stats-summary {
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .stat-badge {
+    font-size: 0.72rem;
+    padding: 4px 8px;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .digital-time {
+    font-size: 2.1rem;
+  }
+
+  .action-footer-bar {
+    flex-direction: column;
+  }
+
+  .trip-modal-card {
+    max-width: 95vw;
+    margin: 10px;
+  }
+
+  .trip-leave-redirect-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .btn-tlr-action {
+    width: 100%;
+    text-align: center;
   }
 }
 </style>
