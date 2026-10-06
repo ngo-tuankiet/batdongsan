@@ -301,40 +301,77 @@
 
     <!-- MODAL BÁO ĐI CÔNG TÁC -->
     <div v-if="showTripModal" class="modal-overlay" @click.self="showTripModal = false">
-      <div class="admin-modal-card" style="max-width: 480px;">
+      <div class="admin-modal-card trip-modal-card">
         <div class="modal-header">
-          <h3>
-            <i class="fa-solid fa-car-side" style="color: #8b5cf6;"></i>
-            Báo Đi Công Tác Ngoài Văn Phòng
-          </h3>
+          <div class="modal-title-wrap">
+            <h3>
+              <i class="fa-solid fa-car-side" style="color: #8b5cf6;"></i>
+              Báo Đi Công Tác Nhanh
+            </h3>
+            <span class="modal-sub-badge">Không cần WiFi • Tự tính phụ cấp</span>
+          </div>
           <button class="modal-close-icon" @click="showTripModal = false">&times;</button>
         </div>
 
         <form @submit.prevent="submitTripRecord" class="modal-form" style="padding-top: 14px;">
           <div class="form-grid">
             <div class="form-col-full">
-              <label>Địa điểm / Lý do công tác *</label>
+              <label class="trip-input-label">
+                <span>Địa điểm / Lý do công tác *</span>
+                <span class="trip-chip-hint">Chọn nhanh 1 chạm:</span>
+              </label>
+
+              <!-- Quick chips -->
+              <div class="quick-chips-wrap">
+                <button
+                  type="button"
+                  v-for="r in quickTripReasons"
+                  :key="r"
+                  class="quick-chip-btn"
+                  :class="{ active: tripForm.reason === r }"
+                  @click="selectQuickReason(r)"
+                >
+                  {{ r }}
+                </button>
+              </div>
+
               <input 
                 v-model="tripForm.reason" 
                 type="text" 
                 class="admin-input" 
-                placeholder="VD: Tiếp khách Long An, xem dự án Q.7..." 
+                placeholder="Hoặc tự gõ: VD Tiếp khách Long An, xem dự án Q.7..." 
                 required 
+                style="margin-top: 8px;"
               />
             </div>
 
             <div class="form-col-full">
               <label>Giờ bắt đầu công tác</label>
               <input v-model="tripForm.checkIn" type="time" class="admin-input" />
-              <small style="color: var(--text-muted); font-size: 0.72rem; margin-top: 4px; display: block;">
-                Đi công tác không yêu cầu kết nối mạng WiFi văn phòng và được ghi nhận phụ cấp công tác.
-              </small>
+              <div class="trip-note-callout">
+                <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                <span>Điểm danh công tác hôm nay sẽ tự động cộng phụ cấp công tác <strong>{{ formatVND(rates.tripAllowance) }}</strong> vào phiếu lương.</span>
+              </div>
             </div>
           </div>
 
+          <!-- Lựa chọn làm đơn công tác dài ngày -->
+          <div class="trip-leave-redirect-box">
+            <div class="tlr-info">
+              <i class="fa-solid fa-calendar-days"></i>
+              <div>
+                <strong>Đi công tác dài ngày (nhiều ngày)?</strong>
+                <p>Làm đơn chính thức gửi cấp trên duyệt lịch trình & tạm ứng</p>
+              </div>
+            </div>
+            <button type="button" class="btn-tlr-action" @click="goToLeavesTab">
+              Làm Đơn ➔
+            </button>
+          </div>
+
           <div class="modal-actions-footer" style="margin-top: 20px;">
-            <button type="button" class="btn-admin-cancel" @click="showTripModal = false">Đóng</button>
-            <button type="submit" class="btn-admin-primary" :disabled="actionLoading" style="background: linear-gradient(135deg, #8b5cf6, #6366f1);">
+            <button type="button" class="btn-admin-cancel" @click="showTripModal = false">Hủy</button>
+            <button type="submit" class="btn-admin-primary" :disabled="actionLoading" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); border: none; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);">
               <i class="fa-solid fa-paper-plane"></i> Xác Nhận Đi Công Tác
             </button>
           </div>
@@ -447,6 +484,23 @@ const tripForm = reactive({
   reason: '',
   checkIn: '09:15',
 });
+
+const quickTripReasons = [
+  '🚗 Dẫn khách xem dự án',
+  '📝 Ký hợp đồng / Công chứng',
+  '🔍 Khảo sát đất nền / Nhà phố',
+  '🤝 Gặp gỡ chủ nhà / Đối tác',
+  '🏢 Đi tỉnh công tác trong ngày'
+];
+
+const selectQuickReason = (reason: string) => {
+  tripForm.reason = reason;
+};
+
+const goToLeavesTab = () => {
+  showTripModal.value = false;
+  emit('navigate-tab', 'leaves');
+};
 
 const formatVND = (num: number) => {
   return (num || 0).toLocaleString('vi-VN') + ' đ';
@@ -577,8 +631,8 @@ const handleCheckOut = async () => {
 
 // Mở modal công tác
 const openTripModal = () => {
-  tripForm.reason = '';
-  tripForm.checkIn = new Date().toTimeString().slice(0, 5);
+  tripForm.reason = todayRecord.value?.tripReason || '';
+  tripForm.checkIn = todayRecord.value?.checkIn || new Date().toTimeString().slice(0, 5);
   showTripModal.value = true;
 };
 
@@ -1103,6 +1157,197 @@ onUnmounted(() => {
   background: rgba(245, 158, 11, 0.08);
   border-color: rgba(245, 158, 11, 0.2);
   color: #d97706;
+}
+
+/* QUICK TRIP MODAL STYLES */
+.trip-modal-card {
+  max-width: 520px;
+}
+
+.modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.modal-title-wrap h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.modal-sub-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.12);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.trip-input-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-main, #1e293b);
+}
+
+.trip-chip-hint {
+  font-size: 0.72rem;
+  color: #8b5cf6;
+  font-weight: 600;
+}
+
+.quick-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.quick-chip-btn {
+  background: var(--adm-bg-input, #f8fafc);
+  border: 1px solid var(--adm-border, #e2e8f0);
+  border-radius: 20px;
+  padding: 5px 11px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--text-main, #334155);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.quick-chip-btn:hover {
+  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #7c3aed;
+  transform: translateY(-1px);
+}
+
+.quick-chip-btn.active {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(99, 102, 241, 0.15));
+  border-color: #8b5cf6;
+  color: #6d28d9;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.15);
+}
+
+.trip-note-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  font-size: 0.75rem;
+  color: #065f46;
+  line-height: 1.45;
+}
+
+[data-theme="dark"] .trip-note-callout {
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+}
+
+.trip-leave-redirect-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px dashed rgba(99, 102, 241, 0.35);
+}
+
+.tlr-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tlr-info i {
+  font-size: 1.25rem;
+  color: #6366f1;
+}
+
+.tlr-info strong {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-main, #1e293b);
+}
+
+.tlr-info p {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted, #64748b);
+}
+
+.btn-tlr-action {
+  background: #ffffff;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #4f46e5;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.btn-tlr-action:hover {
+  background: #4f46e5;
+  color: #ffffff;
+  border-color: #4f46e5;
+  box-shadow: 0 3px 8px rgba(79, 70, 229, 0.25);
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .quick-chip-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .quick-chip-btn:hover {
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+}
+
+[data-theme="dark"] .quick-chip-btn.active {
+  background: rgba(139, 92, 246, 0.25);
+  border-color: #a78bfa;
+  color: #e9d5ff;
+}
+
+[data-theme="dark"] .trip-leave-redirect-box {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+[data-theme="dark"] .btn-tlr-action {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #a5b4fc;
+}
+
+[data-theme="dark"] .btn-tlr-action:hover {
+  background: #6366f1;
+  color: #ffffff;
 }
 
 @media (max-width: 1024px) {
