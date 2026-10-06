@@ -355,15 +355,26 @@ onUnmounted(() => {
   background: #070e1b;
 }
 
-/* KÉO DÀI BANNER XUỐNG DƯỚI (~650px hoặc thích ứng màn hình) */
+/* KÉO DÀI BANNER XUỐNG DƯỚI: TÁCH RIÊNG 2 VIỆC THEO YÊU CẦU */
 .flyer-image-stage {
   position: relative;
   width: 100%;
-  height: 650px;
-  max-height: calc(100vh - 170px);
-  min-height: 560px;
   overflow: hidden;
   background: #000;
+}
+
+/* VIỆC 1: BANNER BÊN TRÁI MÀN HÌNH THÌ DÀI THÊM XÍU NỮA */
+.vertical-left-flyer .flyer-image-stage {
+  height: 780px;
+  max-height: calc(100vh - 85px);
+  min-height: 700px;
+}
+
+/* VIỆC 2: BANNER BÊN PHẢI MÀN HÌNH THÌ NGẮN LẠI */
+.vertical-right-flyer .flyer-image-stage {
+  height: 500px;
+  max-height: calc(100vh - 250px);
+  min-height: 420px;
 }
 
 .flyer-img {
@@ -585,9 +596,13 @@ onUnmounted(() => {
     top: 90px;
     right: 8px;
   }
-  .flyer-image-stage {
-    height: 480px;
-    min-height: 400px;
+  .vertical-left-flyer .flyer-image-stage {
+    height: 600px;
+    min-height: 530px;
+  }
+  .vertical-right-flyer .flyer-image-stage {
+    height: 420px;
+    min-height: 360px;
   }
 }
 

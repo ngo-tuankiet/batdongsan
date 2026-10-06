@@ -14,14 +14,17 @@
           />
         </div>
 
-        <div class="filter-stats">
+        <div v-if="isAdminOrManager" class="filter-stats">
           Số nhân sự tính lương: <strong>{{ payrollList.length }}</strong>
+        </div>
+        <div v-else class="filter-stats" style="background: rgba(16, 185, 129, 0.1); color: #059669; border-color: rgba(16, 185, 129, 0.25);">
+          <i class="fa-solid fa-lock"></i> Phiếu Lương Cá Nhân: <strong>{{ localUser?.name }} ({{ localUser?.code }})</strong>
         </div>
       </div>
 
       <div style="display: flex; gap: 10px;">
         <button class="btn-admin-primary" @click="printPayroll" style="font-size: 0.82rem; padding: 8px 16px;">
-          <i class="fa-solid fa-print"></i> In Bảng Lương
+          <i class="fa-solid fa-print"></i> {{ isEmployee ? 'In Phiếu Lương' : 'In Bảng Lương' }}
         </button>
       </div>
     </div>
@@ -94,22 +97,22 @@
             <th style="text-align: right;">(3) Tiền Công Tác</th>
             <th style="text-align: right;">(4) Chi Phí Khác</th>
             <th style="text-align: right; color: var(--gold-primary);">TỔNG THỰC LĨNH</th>
-            <th style="text-align: center; width: 100px;">Thao Tác</th>
+            <th v-if="isAdminOrManager" style="text-align: center; width: 100px;">Thao Tác</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="loading">
-            <td colspan="11" style="text-align: center; padding: 40px; color: var(--text-muted);">
+            <td :colspan="isAdminOrManager ? 11 : 10" style="text-align: center; padding: 40px; color: var(--text-muted);">
               <i class="fa-solid fa-spinner fa-spin"></i> Đang tính toán bảng lương...
             </td>
           </tr>
-          <tr v-else-if="payrollList.length === 0">
-            <td colspan="11" class="empty-table">
+          <tr v-else-if="displayPayrollList.length === 0">
+            <td :colspan="isAdminOrManager ? 11 : 10" class="empty-table">
               <i class="fa-solid fa-file-invoice-dollar"></i>
-              <p>Chưa có dữ liệu bảng lương cho tháng này.</p>
+              <p>{{ isEmployee ? 'Bạn chưa có dữ liệu bảng lương trong tháng này.' : 'Chưa có dữ liệu bảng lương cho tháng này.' }}</p>
             </td>
           </tr>
-          <tr v-for="item in payrollList" :key="item.userId">
+          <tr v-for="item in displayPayrollList" :key="item.userId">
             <td>
               <span class="code-pill">{{ item.userCode }}</span>
             </td>
@@ -156,7 +159,7 @@
                 {{ formatVND(item.totalSalary) }}
               </strong>
             </td>
-            <td style="text-align: center;">
+            <td v-if="isAdminOrManager" style="text-align: center;">
               <button 
                 class="btn-adjust-row" 
                 @click="openAdjustModal(item)" 
@@ -167,7 +170,7 @@
             </td>
           </tr>
         </tbody>
-        <tfoot v-if="payrollList.length > 0">
+        <tfoot v-if="isAdminOrManager && payrollList.length > 0">
           <tr style="background: var(--bg-secondary, #f8fafc); font-weight: 800; border-top: 2px solid var(--border-color, #cbd5e1);">
             <td colspan="5" style="text-align: right; text-transform: uppercase; font-size: 0.85rem; color: var(--text-main, #0f172a);">
               Tổng Chi Lương Toàn Bộ Sàn:
@@ -266,6 +269,29 @@ import { ref, reactive, computed, onMounted } from 'vue';
 
 const { showToast } = useToast();
 
+const props = defineProps<{
+  currentUser?: any;
+}>();
+
+const localUser = computed(() => {
+  if (props.currentUser) return props.currentUser;
+  if (process.client) {
+    try {
+      const u = localStorage.getItem('bds_user_info');
+      if (u) return JSON.parse(u);
+    } catch (e) {}
+  }
+  return null;
+});
+
+const isEmployee = computed(() => {
+  return localUser.value?.role === 'user';
+});
+
+const isAdminOrManager = computed(() => {
+  return !localUser.value || localUser.value.role === 'admin' || localUser.value.role === 'manager';
+});
+
 const now = new Date();
 const selectedMonth = ref(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`);
 const loading = ref(false);
@@ -279,6 +305,24 @@ const rates = ref({
 });
 
 const payrollList = ref<any[]>([]);
+
+const displayPayrollList = computed(() => {
+  if (isAdminOrManager.value) {
+    return payrollList.value;
+  }
+  // Nếu là Nhân viên: CHỈ xem dòng bảng lương của chính mình!
+  const myId = localUser.value?.id;
+  const myCode = localUser.value?.code;
+  const myUsername = localUser.value?.username;
+  const myName = localUser.value?.name;
+
+  return payrollList.value.filter(item => 
+    (myId && item.userId === myId) || 
+    (myCode && item.userCode === myCode) ||
+    (myUsername && item.username === myUsername) ||
+    (myName && item.name?.toLowerCase() === myName?.toLowerCase())
+  );
+});
 
 // Quản lý Modal Kê Phí Leader
 const showAdjustModal = ref(false);

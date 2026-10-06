@@ -18,18 +18,20 @@
         </div>
 
         <!-- NÚT CHUYỂN ĐỔI: ĐĂNG NHẬP / ĐĂNG KÝ TÀI KHOẢN -->
-        <div style="display: flex; background: var(--bg-secondary, #f1f5f9); padding: 4px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color, #e2e8f0);">
+        <div class="auth-mode-switch">
           <button 
             type="button" 
+            class="auth-switch-btn"
+            :class="{ active: authMode === 'login' }"
             @click="authMode = 'login'" 
-            :style="authMode === 'login' ? 'flex: 1; padding: 9px; border-radius: 6px; border: none; font-weight: 700; font-size: 0.85rem; background: var(--bg-card, #fff); color: var(--gold-primary, #b8860b); box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;' : 'flex: 1; padding: 9px; border-radius: 6px; border: none; font-weight: 600; font-size: 0.85rem; background: transparent; color: var(--text-muted); cursor: pointer;'"
           >
             <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
           </button>
           <button 
             type="button" 
+            class="auth-switch-btn"
+            :class="{ active: authMode === 'register' }"
             @click="authMode = 'register'" 
-            :style="authMode === 'register' ? 'flex: 1; padding: 9px; border-radius: 6px; border: none; font-weight: 700; font-size: 0.85rem; background: var(--bg-card, #fff); color: #2563eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;' : 'flex: 1; padding: 9px; border-radius: 6px; border: none; font-weight: 600; font-size: 0.85rem; background: transparent; color: var(--text-muted); cursor: pointer;'"
           >
             <i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản
           </button>
@@ -146,18 +148,18 @@
             <span>{{ registerError }}</span>
           </div>
 
-          <button type="submit" class="btn-admin-primary login-btn" style="background: #2563eb;" :disabled="registerLoading">
+          <button type="submit" class="btn-admin-primary login-btn btn-register-submit" :disabled="registerLoading">
             <i class="fa-solid fa-user-plus"></i>
             {{ registerLoading ? 'Đang tạo tài khoản...' : 'Tạo Tài Khoản & Cấp Mã NV' }}
           </button>
         </form>
 
         <!-- Thẻ hướng dẫn nhanh tài khoản -->
-        <div v-if="authMode === 'login'" style="margin-top: 16px; padding: 12px 14px; background: var(--bg-secondary, #f8fafc); border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0); font-size: 0.78rem; text-align: left;">
-          <strong style="color: var(--text-main, #0f172a); display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-            <i class="fa-solid fa-circle-info" style="color: #2563eb;"></i> Thông tin đăng nhập:
+        <div v-if="authMode === 'login'" class="auth-credential-guide">
+          <strong style="color: var(--adm-text-main); display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+            <i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i> Thông tin đăng nhập hệ thống:
           </strong>
-          <div style="color: var(--text-muted); line-height: 1.6;">
+          <div style="color: var(--adm-text-muted); line-height: 1.6;">
             <div>• <strong>Quản trị viên (Admin):</strong> <code>admin</code> (Mật khẩu: <code>Kiet1234@</code>)</div>
             <div>• <strong>Nhân viên / Sales:</strong> Mã NV (VD: <code>NV001</code>, <code>NV010</code>...) hoặc Username (Pass mặc định: <code>123456</code>)</div>
           </div>
@@ -180,200 +182,237 @@
         @click="mobileSidebarOpen = false"
       ></div>
 
-      <!-- THANH BÊN BÊN TRÁI (LEFT SIDEBAR) -->
-      <aside class="admin-sidebar" :class="{ 'sidebar-open': mobileSidebarOpen }">
-        <!-- Logo & Brand -->
+      <!-- THANH BÊN BÊN TRÁI (EXECUTIVE SLATE & GOLD SIDEBAR) -->
+      <aside class="admin-sidebar" :class="{ 'sidebar-open': mobileSidebarOpen, 'sidebar-collapsed': isSidebarCollapsed }">
+        <!-- Brand Header -->
         <div class="sidebar-brand">
-          <div class="admin-brand-logo-wrap">
+          <div class="admin-brand-logo-wrap" @click="toggleSidebar" :title="isSidebarCollapsed ? 'Bấm để mở rộng sidebar (Ctrl+B)' : 'Thu gọn sidebar (Ctrl+B)'" style="cursor: pointer;">
             <img src="/images/logo-ben-thanh.png" alt="Bến Thành Land" class="admin-sidebar-logo-img">
           </div>
           <div class="brand-info">
-            <h3>BẾN THÀNH LAND</h3>
+            <h3 class="brand-title">BẾN THÀNH LAND</h3>
             <span class="brand-badge"><i class="fa-solid fa-shield-halved"></i> Trung Tâm Điều Hành</span>
           </div>
-          <button class="sidebar-close-btn" @click="mobileSidebarOpen = false">
+          <button class="sidebar-collapse-btn" @click="toggleSidebar" :title="isSidebarCollapsed ? 'Mở rộng sidebar (Ctrl+B)' : 'Thu gọn sidebar (Ctrl+B)'">
+            <i :class="isSidebarCollapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left'"></i>
+          </button>
+          <button class="sidebar-close-btn" @click="mobileSidebarOpen = false" aria-label="Đóng menu">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
 
-        <!-- Trạng thái Admin / User Đang Đăng Nhập -->
-        <div class="admin-user-card">
-          <div class="user-avatar" style="overflow: hidden; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.06); flex-shrink: 0;">
-            <img v-if="currentUser?.avatar" :src="currentUser.avatar" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;" />
-            <i v-else class="fa-solid fa-user-gear" style="font-size: 1.2rem; color: var(--gold-primary);"></i>
-            <span class="status-dot"></span>
+        <!-- Trạng thái Tài Khoản Đang Đăng Nhập -->
+        <div class="admin-user-card" :title="isSidebarCollapsed ? (currentUser?.name || 'Tài khoản điều hành') : ''">
+          <div class="user-avatar-wrap">
+            <img v-if="currentUser?.avatar" :src="currentUser.avatar" alt="Avatar" class="user-avatar-img" />
+            <div v-else class="user-avatar-placeholder">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <span class="user-online-dot" title="Đang trực tuyến"></span>
           </div>
-          <div class="user-meta" style="min-width: 0;">
-            <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">{{ currentUser?.name || 'Ban Điều Hành Sàn' }}</strong>
-            <small style="color: var(--gold-primary); font-weight: 700; display: block;">
-              {{ currentUser?.role === 'admin' ? '👑 Ban Điều Hành' : currentUser?.role === 'manager' ? '👔 Quản Lý' : '👤 Chuyên Viên Sales' }}
-              <span v-if="currentUser?.code">({{ currentUser.code }})</span>
-            </small>
-          </div>
-        </div>
-
-        <!-- Danh Mục Menu Điều Hướng Dọc -->
-        <div class="sidebar-menu-section">
-          <div class="menu-label">BẤT ĐỘNG SẢN & WEBSITE</div>
-          <nav class="sidebar-nav">
-            <button 
-              class="nav-item" 
-              :class="{ active: activeTab === 'properties' }"
-              @click="switchTab('properties')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-building"></i>
-                <span>Quản Lý BĐS</span>
-              </div>
-              <span class="nav-badge gold">{{ properties.length }}</span>
-            </button>
-
-            <button 
-              class="nav-item" 
-              :class="{ active: activeTab === 'leads' }"
-              @click="switchTab('leads')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-envelope-open-text"></i>
-                <span>Khách Hàng Leads</span>
-              </div>
-              <span class="nav-badge green">{{ leads.length }}</span>
-            </button>
-
-            <button 
-              class="nav-item" 
-              :class="{ active: activeTab === 'banners' }"
-              @click="switchTab('banners')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-rectangle-ad"></i>
-                <span>Quản Lý Banner</span>
-              </div>
-              <span class="nav-badge gold">{{ banners.length }}</span>
-            </button>
-
-            <button 
-              class="nav-item" 
-              :class="{ active: activeTab === 'articles' }"
-              @click="switchTab('articles')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-newspaper"></i>
-                <span>Tin Tức & Góc Nhìn</span>
-              </div>
-              <span class="nav-badge purple">
-                {{ articles.length }}
-                <span v-if="articles.some(a => !a.isPublished)" class="badge-dot-warn" title="Có bản nháp chờ duyệt"></span>
+          <div class="user-meta-info">
+            <strong class="user-display-name" :title="currentUser?.name">{{ currentUser?.name || 'Ban Điều Hành Sàn' }}</strong>
+            <div class="user-role-line">
+              <span class="user-role-badge" :class="currentUser?.role || 'user'">
+                {{ currentUser?.role === 'admin' ? '👑 Admin' : currentUser?.role === 'manager' ? '👔 Quản Lý' : '👤 Nhân Viên' }}
               </span>
-            </button>
-          </nav>
-
-          <div class="menu-label" style="margin-top: 20px;">CHẤM CÔNG & NHÂN SỰ</div>
-          <nav class="sidebar-nav">
-            <button 
-              class="nav-item" 
-              :class="{ active: activeTab === 'attendance' }"
-              @click="switchTab('attendance')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-calendar-check" style="color: #10b981;"></i>
-                <span>Bảng Chấm Công</span>
-              </div>
-            </button>
-
-            <button 
-              v-if="!currentUser || currentUser.role !== 'user'"
-              class="nav-item" 
-              :class="{ active: activeTab === 'agents' }"
-              @click="switchTab('agents')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-user-tie" style="color: #60a5fa;"></i>
-                <span>Nhân Viên & User ⭐</span>
-              </div>
-              <span class="nav-badge blue">{{ agents.length }}</span>
-            </button>
-
-            <button 
-              class="nav-item" 
-              :class="{ active: activeTab === 'leaves' }"
-              @click="switchTab('leaves')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-file-signature" style="color: #f59e0b;"></i>
-                <span>Đơn Nghỉ / Công Tác</span>
-              </div>
-            </button>
-
-            <button 
-              class="nav-item" 
-              :class="{ active: activeTab === 'payroll' }"
-              @click="switchTab('payroll')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-file-invoice-dollar" style="color: var(--gold-primary);"></i>
-                <span>Bảng Lương 4 Khoản</span>
-              </div>
-            </button>
-
-            <button 
-              v-if="!currentUser || currentUser.role === 'admin'"
-              class="nav-item" 
-              :class="{ active: activeTab === 'salary_settings' }"
-              @click="switchTab('salary_settings')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-sliders" style="color: #c084fc;"></i>
-                <span>Cài Đặt Lương & Giờ</span>
-              </div>
-            </button>
-
-            <button 
-              v-if="!currentUser || currentUser.role === 'admin'"
-              class="nav-item" 
-              :class="{ active: activeTab === 'offices' }"
-              @click="switchTab('offices')"
-            >
-              <div class="nav-item-left">
-                <i class="fa-solid fa-network-wired" style="color: #38bdf8;"></i>
-                <span>Văn Phòng & WiFi</span>
-              </div>
-            </button>
-          </nav>
-
-          <div class="menu-label" style="margin-top: 24px;">TIỆN ÍCH HỆ THỐNG</div>
-          <nav class="sidebar-nav">
-            <NuxtLink to="/" target="_blank" class="nav-item link-item">
-              <div class="nav-item-left">
-                <i class="fa-solid fa-globe"></i>
-                <span>Xem Trang Chủ Web</span>
-              </div>
-              <i class="fa-solid fa-arrow-up-right-from-square small-icon"></i>
-            </NuxtLink>
-
-            <NuxtLink to="/tin-tuc" target="_blank" class="nav-item link-item">
-              <div class="nav-item-left">
-                <i class="fa-solid fa-book-open"></i>
-                <span>Xem Trang Tin Tức</span>
-              </div>
-              <i class="fa-solid fa-arrow-up-right-from-square small-icon"></i>
-            </NuxtLink>
-
-            <button class="nav-item" @click="toggleTheme">
-              <div class="nav-item-left">
-                <i :class="theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
-                <span>Giao Diện {{ theme === 'dark' ? 'Sáng' : 'Tối' }}</span>
-              </div>
-              <span class="theme-pill">{{ theme === 'dark' ? 'Tối' : 'Sáng' }}</span>
-            </button>
-          </nav>
+              <span v-if="currentUser?.code" class="user-code-pill">{{ currentUser.code }}</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Chân Sidebar: Nút Đăng Xuất -->
+        <!-- Menu Điều Hướng Phân Hệ -->
+        <div class="sidebar-scrollable-menu">
+          <!-- NHÓM 1: BẤT ĐỘNG SẢN & KINH DOANH -->
+          <div class="menu-group">
+            <div class="menu-group-title">
+              <span>KINH DOANH & BĐS</span>
+            </div>
+            <nav class="sidebar-nav">
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'properties' }"
+                @click="switchTab('properties')"
+                :title="isSidebarCollapsed ? `Quỹ Căn BĐS (${properties.length})` : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon gold"><i class="fa-solid fa-building"></i></div>
+                  <span class="nav-label">Quỹ Căn BĐS</span>
+                </div>
+                <span class="nav-count-badge gold">{{ properties.length }}</span>
+              </button>
+
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'leads' }"
+                @click="switchTab('leads')"
+                :title="isSidebarCollapsed ? `Khách Hàng Leads (${leads.length})` : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon green"><i class="fa-solid fa-envelope-open-text"></i></div>
+                  <span class="nav-label">Khách Hàng Leads</span>
+                </div>
+                <span class="nav-count-badge green">{{ leads.length }}</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- NHÓM: TRUYỀN THÔNG & WEBSITE (ĐĂNG TIN & BANNER) -->
+          <div class="menu-group">
+            <div class="menu-group-title">
+              <span>TRUYỀN THÔNG & WEBSITE</span>
+            </div>
+            <nav class="sidebar-nav">
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'articles' }"
+                @click="switchTab('articles')"
+                :title="isSidebarCollapsed ? `Đăng Tin & Tin Tức (${articles.length})` : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon purple"><i class="fa-solid fa-newspaper"></i></div>
+                  <span class="nav-label">Đăng Tin & Tin Tức</span>
+                </div>
+                <span class="nav-count-badge purple">
+                  {{ articles.length }}
+                  <span v-if="articles.some(a => !a.isPublished)" class="badge-dot-warn" title="Có bản nháp"></span>
+                </span>
+              </button>
+
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'banners' }"
+                @click="switchTab('banners')"
+                :title="isSidebarCollapsed ? `Banner Quảng Cáo (${banners.length})` : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon amber"><i class="fa-solid fa-rectangle-ad"></i></div>
+                  <span class="nav-label">Banner Quảng Cáo</span>
+                </div>
+                <span class="nav-count-badge amber">{{ banners.length }}</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- NHÓM 2: CHẤM CÔNG & NHÂN SỰ -->
+          <div class="menu-group">
+            <div class="menu-group-title">
+              <span>CHẤM CÔNG & NHÂN SỰ</span>
+            </div>
+            <nav class="sidebar-nav">
+              <!-- Mục 1: Chấm công WiFi cá nhân (Tách riêng biệt) -->
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'checkin' }"
+                @click="switchTab('checkin')"
+                :title="isSidebarCollapsed ? 'Chấm Công WiFi' : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon purple"><i class="fa-solid fa-wifi"></i></div>
+                  <span class="nav-label">Chấm Công WiFi</span>
+                </div>
+              </button>
+
+              <!-- Mục 2: Thống kê điểm danh (Tách riêng cho theo dõi & xem báo cáo) -->
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'attendance' }"
+                @click="switchTab('attendance')"
+                :title="isSidebarCollapsed ? 'Thống Kê Điểm Danh' : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon emerald"><i class="fa-solid fa-chart-pie"></i></div>
+                  <span class="nav-label">Thống Kê Điểm Danh</span>
+                </div>
+              </button>
+
+              <button 
+                v-if="!currentUser || currentUser.role !== 'user'"
+                class="nav-item" 
+                :class="{ active: activeTab === 'agents' }"
+                @click="switchTab('agents')"
+                :title="isSidebarCollapsed ? `Đội Ngũ Nhân Sự (${agents.length})` : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon blue"><i class="fa-solid fa-user-tie"></i></div>
+                  <span class="nav-label">Đội Ngũ Nhân Sự ⭐</span>
+                </div>
+                <span class="nav-count-badge blue">{{ agents.length }}</span>
+              </button>
+
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'leaves' }"
+                @click="switchTab('leaves')"
+                :title="isSidebarCollapsed ? 'Đơn Nghỉ / Công Tác' : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon orange"><i class="fa-solid fa-file-signature"></i></div>
+                  <span class="nav-label">Đơn Nghỉ / Công Tác</span>
+                </div>
+              </button>
+
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'payroll' }"
+                @click="switchTab('payroll')"
+                :title="isSidebarCollapsed ? (currentUser?.role === 'user' ? 'Phiếu Lương Của Tôi' : 'Bảng Lương 4 Khoản') : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon gold"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                  <span class="nav-label">{{ currentUser?.role === 'user' ? 'Phiếu Lương Của Tôi' : 'Bảng Lương 4 Khoản' }}</span>
+                </div>
+              </button>
+            </nav>
+          </div>
+
+          <!-- NHÓM 3: HỆ THỐNG & CẤU HÌNH (ADMIN ONLY) -->
+          <div v-if="!currentUser || currentUser.role === 'admin'" class="menu-group">
+            <div class="menu-group-title">
+              <span>HỆ THỐNG ĐIỀU HÀNH</span>
+            </div>
+            <nav class="sidebar-nav">
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'salary_settings' }"
+                @click="switchTab('salary_settings')"
+                :title="isSidebarCollapsed ? 'Cài Đặt Lương & Giờ' : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon purple"><i class="fa-solid fa-sliders"></i></div>
+                  <span class="nav-label">Cài Đặt Lương & Giờ</span>
+                </div>
+              </button>
+
+              <button 
+                class="nav-item" 
+                :class="{ active: activeTab === 'offices' }"
+                @click="switchTab('offices')"
+                :title="isSidebarCollapsed ? 'Văn Phòng & WiFi' : ''"
+              >
+                <div class="nav-item-left">
+                  <div class="nav-icon cyan"><i class="fa-solid fa-network-wired"></i></div>
+                  <span class="nav-label">Văn Phòng & WiFi</span>
+                </div>
+              </button>
+            </nav>
+          </div>
+
+        </div>
+
+        <!-- Chân Sidebar: Nút Về Trang Chủ & Đăng Xuất -->
         <div class="sidebar-footer">
-          <button class="logout-btn" @click="handleLogout">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Đăng Xuất</span>
+          <NuxtLink to="/" target="_blank" class="sidebar-home-btn" :title="isSidebarCollapsed ? 'Về Trang Chủ Web' : 'Mở trang chủ website khách'">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-house" style="color: var(--adm-gold);"></i>
+              <span>Về Trang Chủ Web</span>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square external-icon"></i>
+          </NuxtLink>
+
+          <button class="logout-btn" @click="handleLogout" :title="isSidebarCollapsed ? 'Đăng Xuất Hệ Thống' : ''">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Đăng Xuất Hệ Thống</span>
           </button>
         </div>
       </aside>
@@ -383,8 +422,9 @@
         <!-- Topbar Điều Khiển Trên Cùng -->
         <header class="admin-topbar">
           <div class="topbar-left">
-            <button class="mobile-toggle-btn" @click="mobileSidebarOpen = true" title="Mở Menu">
-              <i class="fa-solid fa-bars"></i>
+            <!-- Nút Bật/Tắt Thu Gọn Menu (Co hẹp & Mở rộng ra vào) -->
+            <button class="topbar-toggle-sidebar-btn" @click="toggleSidebar" :title="isSidebarCollapsed ? 'Mở rộng menu (Ctrl+B)' : 'Thu gọn menu (Ctrl+B)'">
+              <i :class="isSidebarCollapsed ? 'fa-solid fa-bars' : 'fa-solid fa-bars-staggered'"></i>
             </button>
             <div class="page-title-area">
               <div class="breadcrumb">
@@ -397,9 +437,10 @@
                     activeTab === 'articles' ? 'Tin Tức & Góc Nhìn Đầu Tư' :
                     activeTab === 'banners' ? 'Quản Lý Banner Quảng Cáo' :
                     activeTab === 'leads' ? 'Khách Hàng Leads' :
-                    activeTab === 'attendance' ? 'Bảng Chấm Công Hàng Ngày' :
+                    activeTab === 'checkin' ? 'Chấm Công WiFi' :
+                    activeTab === 'attendance' ? 'Thống Kê Điểm Danh' :
                     activeTab === 'leaves' ? 'Duyệt Đơn Nghỉ Phép & Công Tác' :
-                    activeTab === 'payroll' ? 'Bảng Lương Nhân Sự 4 Khoản' :
+                    activeTab === 'payroll' ? (currentUser?.role === 'user' ? 'Phiếu Lương Cá Nhân' : 'Bảng Lương Nhân Sự 4 Khoản') :
                     activeTab === 'salary_settings' ? 'Cài Đặt Định Mức Lương & Khung Giờ' :
                     activeTab === 'offices' ? 'Cấu Hình Văn Phòng & WiFi Điểm Danh' :
                     'Bảng Điều Hành' 
@@ -413,9 +454,10 @@
                   activeTab === 'articles' ? 'Quản Lý Bài Viết & Tin Thị Trường' :
                   activeTab === 'banners' ? 'Cấu Hình Banner Quảng Cáo Sàn BĐS' :
                   activeTab === 'leads' ? 'Khách Hàng Đăng Ký & Ký Gửi' :
-                  activeTab === 'attendance' ? 'Chấm Công Điểm Danh & Giờ Làm' :
+                  activeTab === 'checkin' ? 'Chấm Công WiFi Điểm Danh & Giờ Làm' :
+                  activeTab === 'attendance' ? 'Thống Kê Điểm Danh & Báo Cáo Toàn Sàn' :
                   activeTab === 'leaves' ? 'Quản Lý Đơn Nghỉ & Phê Duyệt' :
-                  activeTab === 'payroll' ? 'Bảng Tổng Hợp Lương & Phụ Cấp 4 Khoản' :
+                  activeTab === 'payroll' ? (currentUser?.role === 'user' ? 'Phiếu Lương Cá Nhân 4 Khoản' : 'Bảng Tổng Hợp Lương & Phụ Cấp 4 Khoản') :
                   activeTab === 'salary_settings' ? 'Định Mức Lương 4 Khoản & Khung Giờ Ca Làm' :
                   activeTab === 'offices' ? 'Văn Phòng Trụ Sở & Cấu Hình Mạng WiFi' :
                   'Bảng Điều Hành'
@@ -462,7 +504,7 @@
                 title="Kéo các tin thị trường BĐS mới nhất từ CafeLand.vn về làm bản nháp"
               >
                 <i class="fa-solid fa-bolt" :class="{ 'fa-spin': crawlingNews }"></i>
-                <span>{{ crawlingNews ? 'Đang Lấy Tin CafeLand...' : '⚡ Cào Tin Mới (CafeLand.vn)' }}</span>
+                <span>{{ crawlingNews ? 'Đang Lấy Tin...' : '⚡ Cào Tin Mới' }}</span>
               </button>
 
               <button 
@@ -473,6 +515,13 @@
                 <span>Viết Bài Mới</span>
               </button>
             </template>
+
+            <!-- Nút Xem Website Trang Chủ -->
+            <NuxtLink to="/" target="_blank" class="topbar-home-btn" title="Mở trang chủ website khách ngoài tab mới">
+              <i class="fa-solid fa-house" style="color: var(--adm-gold);"></i>
+              <span>Trang Chủ Web</span>
+              <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.68rem; opacity: 0.7;"></i>
+            </NuxtLink>
 
             <!-- Quick Theme Switch -->
             <button class="topbar-icon-btn" @click="toggleTheme" :title="`Chuyển sang nền ${theme === 'dark' ? 'sáng' : 'tối'}`">
@@ -485,72 +534,59 @@
           </div>
         </header>
 
-        <!-- Thống Kê Tổng Quan KPI Nhanh (4 Cards) -->
-        <section class="admin-kpi-grid">
-          <div class="kpi-card" @click="switchTab('properties')">
-            <div class="kpi-icon gold">
+        <!-- Thống Kê Tổng Quan KPI Tinh Gọn (Quỹ Căn BĐS, Leads, Banner, Đăng Tin) -->
+        <section v-if="['properties', 'leads', 'banners', 'articles'].includes(activeTab)" class="admin-kpi-grid">
+          <div class="kpi-card" :class="{ 'kpi-card-active': activeTab === 'properties' }" @click="switchTab('properties')">
+            <div class="kpi-icon-wrap gold">
               <i class="fa-solid fa-building"></i>
             </div>
-            <div class="kpi-data">
+            <div class="kpi-data-body">
               <div class="kpi-num">{{ properties.length }}</div>
-              <div class="kpi-label">Tổng Quỹ Căn BĐS</div>
-              <div class="kpi-sub">
+              <div class="kpi-label">Quỹ Căn BĐS</div>
+              <div class="kpi-sub-line">
                 <span>{{ properties.filter(p => p.categoryId === 'nha-pho').length }} Nhà Phố</span> • 
                 <span>{{ properties.filter(p => p.categoryId === 'du-an').length }} Dự Án</span>
               </div>
             </div>
           </div>
 
-          <div class="kpi-card" @click="switchTab('agents')">
-            <div class="kpi-icon blue">
-              <i class="fa-solid fa-users"></i>
-            </div>
-            <div class="kpi-data">
-              <div class="kpi-num">{{ agents.length }}</div>
-              <div class="kpi-label">Chuyên Viên Tư Vấn</div>
-              <div class="kpi-sub">
-                <span>{{ properties.filter(p => p.agentId).length }} Căn đã giao phụ trách</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="kpi-card" @click="switchTab('articles')">
-            <div class="kpi-icon purple">
-              <i class="fa-solid fa-newspaper"></i>
-            </div>
-            <div class="kpi-data">
-              <div class="kpi-num">{{ articles.length }}</div>
-              <div class="kpi-label">Bài Viết & Góc Nhìn</div>
-              <div class="kpi-sub">
-                <span style="color:#10b981;">{{ articles.filter(a => a.isPublished).length }} Đã xuất bản</span> • 
-                <span style="color:#f59e0b;">{{ articles.filter(a => !a.isPublished).length }} Bản nháp</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="kpi-card" @click="switchTab('leads')">
-            <div class="kpi-icon green">
+          <div class="kpi-card" :class="{ 'kpi-card-active': activeTab === 'leads' }" @click="switchTab('leads')">
+            <div class="kpi-icon-wrap green">
               <i class="fa-solid fa-envelope-open-text"></i>
             </div>
-            <div class="kpi-data">
+            <div class="kpi-data-body">
               <div class="kpi-num">{{ leads.length }}</div>
               <div class="kpi-label">Khách Hàng Leads</div>
-              <div class="kpi-sub">
-                <span>Đăng ký xem nhà & ký gửi</span>
+              <div class="kpi-sub-line">
+                <span style="color: #10b981;">Đăng ký xem & ký gửi</span>
               </div>
             </div>
           </div>
 
-          <div class="kpi-card" @click="switchTab('banners')">
-            <div class="kpi-icon gold">
+          <div class="kpi-card" :class="{ 'kpi-card-active': activeTab === 'banners' }" @click="switchTab('banners')">
+            <div class="kpi-icon-wrap amber">
               <i class="fa-solid fa-rectangle-ad"></i>
             </div>
-            <div class="kpi-data">
+            <div class="kpi-data-body">
               <div class="kpi-num">{{ banners.length }}</div>
               <div class="kpi-label">Banner Quảng Cáo</div>
-              <div class="kpi-sub">
-                <span style="color:#10b981;">{{ banners.filter(b => b.isActive).length }} Đang bật</span> • 
-                <span>{{ banners.filter(b => !b.isActive).length }} Đã tắt</span>
+              <div class="kpi-sub-line">
+                <span style="color:#10b981;">{{ banners.filter(b => b.isActive).length }} Bật</span> • 
+                <span>{{ banners.filter(b => !b.isActive).length }} Tắt</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-card" :class="{ 'kpi-card-active': activeTab === 'articles' }" @click="switchTab('articles')">
+            <div class="kpi-icon-wrap purple">
+              <i class="fa-solid fa-newspaper"></i>
+            </div>
+            <div class="kpi-data-body">
+              <div class="kpi-num">{{ articles.length }}</div>
+              <div class="kpi-label">Đăng Tin & Tin Tức</div>
+              <div class="kpi-sub-line">
+                <span style="color:#10b981;">{{ articles.filter(a => a.isPublished).length }} Xuất bản</span> • 
+                <span style="color:#f59e0b;">{{ articles.filter(a => !a.isPublished).length }} Bản nháp</span>
               </div>
             </div>
           </div>
@@ -562,29 +598,31 @@
           <div v-if="activeTab === 'properties'" class="tab-pane">
             <!-- Thanh Bộ Lọc -->
             <div class="table-filter-bar">
-              <div class="filter-group">
-                <span class="filter-label"><i class="fa-solid fa-filter"></i> Phân loại:</span>
-                <select v-model="adminPropFilter.category" class="admin-select">
-                  <option value="all">Tất cả loại ({{ properties.length }})</option>
-                  <option value="nha-pho">Nhà Phố ({{ properties.filter(p => p.categoryId === 'nha-pho').length }})</option>
-                  <option value="du-an">Dự Án ({{ properties.filter(p => p.categoryId === 'du-an').length }})</option>
-                </select>
-              </div>
+              <div class="filter-left-group">
+                <div class="filter-group">
+                  <span class="filter-label"><i class="fa-solid fa-filter"></i> Phân loại:</span>
+                  <select v-model="adminPropFilter.category" class="admin-select">
+                    <option value="all">Tất cả loại ({{ properties.length }})</option>
+                    <option value="nha-pho">Nhà Phố ({{ properties.filter(p => p.categoryId === 'nha-pho').length }})</option>
+                    <option value="du-an">Dự Án ({{ properties.filter(p => p.categoryId === 'du-an').length }})</option>
+                  </select>
+                </div>
 
-              <div class="filter-group">
-                <span class="filter-label"><i class="fa-solid fa-earth-asia"></i> Tỉnh thành:</span>
-                <select v-model="adminPropFilter.province" class="admin-select">
-                  <option value="all">Tất cả Tỉnh Thành ({{ distinctProvinces.length }})</option>
-                  <option v-for="prov in distinctProvinces" :key="prov" :value="prov">{{ prov }}</option>
-                </select>
-              </div>
+                <div class="filter-group">
+                  <span class="filter-label"><i class="fa-solid fa-earth-asia"></i> Tỉnh thành:</span>
+                  <select v-model="adminPropFilter.province" class="admin-select">
+                    <option value="all">Tất cả Tỉnh Thành ({{ distinctProvinces.length }})</option>
+                    <option v-for="prov in distinctProvinces" :key="prov" :value="prov">{{ prov }}</option>
+                  </select>
+                </div>
 
-              <div class="filter-group">
-                <span class="filter-label"><i class="fa-solid fa-map-pin"></i> Quận / Huyện / Phường:</span>
-                <select v-model="adminPropFilter.ward" class="admin-select">
-                  <option value="all">Tất cả Quận / Phường ({{ distinctFilteredWards.length }})</option>
-                  <option v-for="w in distinctFilteredWards" :key="w" :value="w">{{ w }}</option>
-                </select>
+                <div class="filter-group">
+                  <span class="filter-label"><i class="fa-solid fa-map-pin"></i> Quận / Phường:</span>
+                  <select v-model="adminPropFilter.ward" class="admin-select">
+                    <option value="all">Tất cả Quận / Phường ({{ distinctFilteredWards.length }})</option>
+                    <option v-for="w in distinctFilteredWards" :key="w" :value="w">{{ w }}</option>
+                  </select>
+                </div>
               </div>
 
               <div class="filter-stats">
@@ -712,10 +750,10 @@
           <!-- ==================== TAB 2: QUẢN LÝ NHÂN VIÊN & USER CHẤM CÔNG ==================== -->
           <div v-if="activeTab === 'agents'" class="tab-pane">
             <!-- Filter Bar for Agents -->
-            <div class="table-filter-bar" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+            <div class="table-filter-bar">
+              <div class="filter-left-group">
                 <div class="filter-group">
-                  <span class="filter-label"><i class="fa-solid fa-star" style="color: var(--gold-primary);"></i> Lọc hiển thị:</span>
+                  <span class="filter-label"><i class="fa-solid fa-star" style="color: var(--adm-gold);"></i> Lọc hiển thị:</span>
                   <select v-model="agentFilterStarred" class="admin-select">
                     <option value="all">Tất cả nhân sự ({{ agents.length }})</option>
                     <option value="starred">⭐ Chỉ nhân viên đã lên Web ({{ agents.filter((a: any) => a.isStarred).length }})</option>
@@ -734,9 +772,9 @@
                 </div>
               </div>
 
-              <div style="font-size: 0.85rem; color: var(--text-muted);">
-                Tổng cộng: <strong style="color: var(--text-main, #0f172a);">{{ filteredAgents.length }}</strong> tài khoản • 
-                <strong style="color: var(--gold-primary);">{{ agents.filter((a: any) => a.isStarred).length }}</strong> chuyên viên hiển thị web
+              <div class="filter-stats">
+                Tổng: <strong>{{ filteredAgents.length }}</strong> tài khoản • 
+                <strong style="color: var(--adm-gold);">{{ agents.filter((a: any) => a.isStarred).length }}</strong> lên web ⭐
               </div>
             </div>
 
@@ -791,10 +829,10 @@
                     </td>
                     <td style="text-align: center;">
                       <!-- HUY HIỆU TRẠNG THÁI KHÓA / HOẠT ĐỘNG -->
-                      <span v-if="a.status === 'locked'" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; background: rgba(239, 68, 68, 0.15); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.72rem; font-weight: 700;">
+                      <span v-if="a.status === 'locked'" class="status-pill-locked">
                         <i class="fa-solid fa-lock"></i> Đã khóa
                       </span>
-                      <span v-else style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.72rem; font-weight: 700;">
+                      <span v-else class="status-pill-active">
                         <i class="fa-solid fa-circle-check"></i> Hoạt động
                       </span>
                     </td>
@@ -842,8 +880,7 @@
                       <div class="table-actions">
                         <!-- NÚT RESET MẬT KHẨU -->
                         <button 
-                          class="action-btn" 
-                          style="color: #d97706; background: rgba(217, 119, 6, 0.12); border-color: rgba(217, 119, 6, 0.3);" 
+                          class="action-btn key-btn" 
                           @click="openResetPasswordModal(a)" 
                           title="Khôi phục / Đổi mật khẩu nhân viên"
                         >
@@ -852,7 +889,7 @@
                         <!-- NÚT KHÓA / MỞ KHÓA TÀI KHOẢN -->
                         <button 
                           class="action-btn" 
-                          :style="a.status === 'locked' ? 'color: #059669; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4);' : 'color: #dc2626; background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.3);'" 
+                          :class="a.status === 'locked' ? 'unlock-btn' : 'lock-btn'" 
                           @click="toggleLockAgent(a)" 
                           :title="a.status === 'locked' ? 'Mở khóa cho nhân viên đăng nhập' : 'Khóa tài khoản nhân viên'"
                         >
@@ -1065,8 +1102,8 @@
 
           <!-- ==================== TAB 5: QUẢN LÝ BANNER QUẢNG CÁO ==================== -->
           <div v-if="activeTab === 'banners'" class="tab-pane">
-            <div class="table-filter-bar" style="margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
-              <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+            <div class="table-filter-bar">
+              <div class="filter-left-group">
                 <div class="filter-group">
                   <span class="filter-label"><i class="fa-solid fa-filter"></i> Lọc trang:</span>
                   <select v-model="bannerFilterPage" class="admin-select">
@@ -1095,8 +1132,7 @@
               <div style="display: flex; gap: 8px;">
                 <button 
                   type="button" 
-                  class="btn-admin-primary" 
-                  style="font-size: 0.82rem; padding: 8px 14px; background: #2563eb;"
+                  class="btn-admin-action btn-banner-left"
                   @click="openNewBannerModal('left')"
                   title="Thêm banner cố định sườn trái"
                 >
@@ -1104,8 +1140,7 @@
                 </button>
                 <button 
                   type="button" 
-                  class="btn-admin-primary" 
-                  style="font-size: 0.82rem; padding: 8px 14px; background: #9333ea;"
+                  class="btn-admin-action btn-banner-right"
                   @click="openNewBannerModal('right')"
                   title="Thêm banner cố định sườn phải"
                 >
@@ -1193,29 +1228,24 @@
                   <div class="banner-card-actions">
                     <button 
                       class="btn-admin-primary" 
-                      style="font-size: 0.82rem; padding: 7px 14px;"
+                      style="font-size: 0.82rem; padding: 7px 14px; width: 100%; justify-content: center;"
                       @click="openEditBannerModal(b)"
                     >
                       <i class="fa-solid fa-pen-to-square"></i>
                       <span>Chỉnh Sửa Banner & Thay Ảnh</span>
                     </button>
-
-                    <a 
-                      :href="b.page === 'du-an' ? '/du-an' : '/nha-pho'" 
-                      target="_blank" 
-                      class="btn-admin-preview"
-                      title="Xem banner trực tiếp trên website"
-                    >
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                      <span>Xem Trên Web</span>
-                    </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- ==================== TAB 6: CHẤM CÔNG HÀNG NGÀY ==================== -->
+          <!-- ==================== TAB CHẤM CÔNG WIFI CÁ NHÂN ==================== -->
+          <div v-if="activeTab === 'checkin'" class="tab-pane">
+            <AdminCheckinTab :current-user="currentUser" @navigate-tab="switchTab" />
+          </div>
+
+          <!-- ==================== TAB THỐNG KÊ ĐIỂM DANH (TÁCH RIÊNG) ==================== -->
           <div v-if="activeTab === 'attendance'" class="tab-pane">
             <AdminAttendanceTab />
           </div>
@@ -1227,7 +1257,7 @@
 
           <!-- ==================== TAB 8: BẢNG LƯƠNG 4 KHOẢN ==================== -->
           <div v-if="activeTab === 'payroll'" class="tab-pane">
-            <AdminPayrollTab />
+            <AdminPayrollTab :current-user="currentUser" />
           </div>
 
           <!-- ==================== TAB 9: CÀI ĐẶT LƯƠNG & KHUNG GIỜ ==================== -->
@@ -2105,8 +2135,20 @@ const resettingAgent = ref<any>(null);
 const newPasswordInput = ref('123456');
 const savingResetPassword = ref(false);
 
-const activeTab = ref<'properties' | 'agents' | 'articles' | 'leads' | 'banners' | 'attendance' | 'leaves' | 'payroll' | 'salary_settings' | 'offices'>('properties');
+const activeTab = ref<'properties' | 'agents' | 'articles' | 'leads' | 'banners' | 'checkin' | 'attendance' | 'leaves' | 'payroll' | 'salary_settings' | 'offices'>('properties');
 const mobileSidebarOpen = ref(false);
+const isSidebarCollapsed = ref(false);
+
+const toggleSidebar = () => {
+  if (process.client && window.innerWidth <= 900) {
+    mobileSidebarOpen.value = !mobileSidebarOpen.value;
+  } else {
+    isSidebarCollapsed.value = !isSidebarCollapsed.value;
+    if (process.client) {
+      localStorage.setItem('bds_admin_sidebar_collapsed', isSidebarCollapsed.value ? 'true' : 'false');
+    }
+  }
+};
 
 // Modals State
 const showPropModal = ref(false);
@@ -2521,6 +2563,19 @@ const filteredAdminArticles = computed(() => {
 
 onMounted(() => {
   if (process.client) {
+    const savedCollapsed = localStorage.getItem('bds_admin_sidebar_collapsed');
+    if (savedCollapsed === 'true' && window.innerWidth > 900) {
+      isSidebarCollapsed.value = true;
+    }
+
+    // Phím tắt Ctrl+B / Cmd+B để co hẹp / mở rộng sidebar
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    });
+
     const saved = localStorage.getItem('bds_admin_session');
     const savedUser = localStorage.getItem('bds_user_info');
     if (saved) {
@@ -2537,7 +2592,7 @@ onMounted(() => {
   }
 });
 
-const switchTab = (tab: 'properties' | 'agents' | 'articles' | 'leads' | 'banners' | 'attendance' | 'leaves' | 'payroll' | 'salary_settings' | 'offices') => {
+const switchTab = (tab: 'properties' | 'agents' | 'articles' | 'leads' | 'banners' | 'checkin' | 'attendance' | 'leaves' | 'payroll' | 'salary_settings' | 'offices') => {
   activeTab.value = tab;
   mobileSidebarOpen.value = false;
 };
@@ -2561,9 +2616,9 @@ const handleLogin = async () => {
       adminTokenCookie.value = res.token;
       showToast(`Xin chào ${res.user.name || res.user.username}!`);
       
-      // Nếu là nhân viên thường, đưa vào xem Chấm Công mặc định
+      // Nếu là nhân viên thường, đưa vào Chấm Công WiFi mặc định
       if (res.user.role === 'user') {
-        activeTab.value = 'attendance';
+        activeTab.value = 'checkin';
       }
       
       await refreshLeads();
@@ -3332,11 +3387,21 @@ useHead({
   color: var(--gold-primary);
 }
 
-/* 2. DASHBOARD BỐ CỤC SIDEBAR */
+/* 2. DASHBOARD BỐ CỤC EXECUTIVE LUXURY TEMPLATE */
 .admin-dashboard {
   display: flex;
   min-height: 100vh;
   position: relative;
+  background: var(--bg-primary);
+}
+
+/* BACKDROP CHO MOBILE KHI MỞ MENU */
+.admin-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 999;
 }
 
 /* THANH BÊN BÊN TRÁI (LEFT SIDEBAR) */
@@ -3350,12 +3415,28 @@ useHead({
   top: 0;
   height: 100vh;
   z-index: 1000;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow-y: auto;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.04);
 }
 
+.admin-sidebar.sidebar-collapsed {
+  width: 74px !important;
+}
+
+.admin-sidebar.sidebar-collapsed .brand-info,
+.admin-sidebar.sidebar-collapsed .user-meta-info,
+.admin-sidebar.sidebar-collapsed .nav-label,
+.admin-sidebar.sidebar-collapsed .nav-count-badge,
+.admin-sidebar.sidebar-collapsed .menu-group-title,
+.admin-sidebar.sidebar-collapsed .sidebar-home-btn span,
+.admin-sidebar.sidebar-collapsed .sidebar-home-btn .external-icon,
+.admin-sidebar.sidebar-collapsed .logout-btn span {
+  display: none !important;
+}
+
+/* Header Brand */
 .sidebar-brand {
-  padding: 22px 20px;
+  padding: 18px 18px 16px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -3363,36 +3444,50 @@ useHead({
   position: relative;
 }
 
-.brand-logo {
-  width: 42px;
-  height: 42px;
-  background: var(--gold-gradient);
-  color: #000;
-  border-radius: var(--radius-sm);
+.admin-brand-logo-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid var(--border-gold);
+  background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
-  font-size: 1.25rem;
-  box-shadow: var(--shadow-gold);
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
 }
 
-.brand-info h3 {
-  font-size: 0.95rem;
+.admin-sidebar-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.brand-title {
+  font-size: 0.92rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   margin: 0;
   color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .brand-badge {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--gold-primary);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   font-weight: 600;
+  margin-top: 2px;
 }
 
 .sidebar-close-btn {
@@ -3400,76 +3495,143 @@ useHead({
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 1.2rem;
-  margin-left: auto;
+  font-size: 1.1rem;
   cursor: pointer;
+  padding: 4px;
 }
 
+/* Thẻ Thông Tin User Đang Đăng Nhập */
 .admin-user-card {
-  margin: 16px 16px 8px;
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.03);
+  margin: 12px 14px 6px;
+  padding: 10px 12px;
+  background: var(--bg-secondary, rgba(0, 0, 0, 0.02));
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.user-avatar {
+.user-avatar-wrap {
   position: relative;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-gold);
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border-gold);
+  background: rgba(212, 175, 55, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-avatar-placeholder {
   color: var(--gold-primary);
   font-size: 1rem;
 }
 
-.status-dot {
+.user-online-dot {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 10px;
-  height: 10px;
+  bottom: 1px;
+  right: 1px;
+  width: 9px;
+  height: 9px;
   background: #10b981;
   border-radius: 50%;
   border: 2px solid var(--bg-card);
 }
 
-.user-meta strong {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--text-main);
-}
-
-.user-meta small {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.sidebar-menu-section {
-  padding: 12px 16px;
+.user-meta-info {
+  min-width: 0;
   flex: 1;
 }
 
-.menu-label {
-  font-size: 0.72rem;
+.user-display-name {
+  display: block;
+  font-size: 0.84rem;
   font-weight: 700;
-  letter-spacing: 1px;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.user-role-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.user-role-badge.admin {
+  background: rgba(212, 175, 55, 0.18);
+  color: var(--gold-primary);
+}
+
+.user-role-badge.manager {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.user-role-badge.user {
+  background: rgba(148, 163, 184, 0.15);
   color: var(--text-muted);
-  margin-bottom: 8px;
-  padding-left: 8px;
+}
+
+.user-code-pill {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Danh Sách Menu Cuộn Được */
+.sidebar-scrollable-menu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 12px 16px;
+}
+
+.sidebar-scrollable-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scrollable-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.menu-group {
+  margin-bottom: 16px;
+}
+
+.menu-group-title {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  padding: 4px 8px 6px;
+  text-transform: uppercase;
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
 .nav-item {
@@ -3477,95 +3639,165 @@ useHead({
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 11px 14px;
-  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-muted);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: var(--transition);
+  transition: all 0.18s ease;
   text-align: left;
 }
 
 .nav-item-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  min-width: 0;
 }
 
-.nav-item-left i {
-  font-size: 1.05rem;
-  width: 20px;
-  text-align: center;
+.nav-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.nav-icon.gold {
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--gold-primary);
+}
+
+.nav-icon.green {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+
+.nav-icon.amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.nav-icon.purple {
+  background: rgba(168, 85, 247, 0.12);
+  color: #a855f7;
+}
+
+.nav-icon.emerald {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.nav-icon.blue {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+}
+
+.nav-icon.orange {
+  background: rgba(249, 115, 22, 0.12);
+  color: #ea580c;
+}
+
+.nav-icon.cyan {
+  background: rgba(6, 182, 212, 0.12);
+  color: #0891b2;
+}
+
+.nav-icon.gray {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-muted);
+}
+
+.nav-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nav-item:hover {
   background: rgba(212, 175, 55, 0.08);
-  color: var(--gold-primary);
+  color: var(--text-main);
+}
+
+.nav-item:hover .nav-icon {
+  transform: scale(1.08);
 }
 
 .nav-item.active {
-  background: rgba(212, 175, 55, 0.15);
-  border-color: var(--border-gold);
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.16) 0%, rgba(212, 175, 55, 0.04) 100%);
+  border-color: rgba(212, 175, 55, 0.4);
   color: var(--gold-primary);
   font-weight: 700;
 }
 
-.nav-badge {
-  padding: 2px 8px;
+.nav-item.active .nav-icon {
+  background: var(--gold-gradient);
+  color: #000;
+  box-shadow: 0 2px 6px rgba(212, 175, 55, 0.3);
+}
+
+.nav-count-badge {
+  padding: 2px 7px;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 
-.nav-badge.gold {
-  background: rgba(212, 175, 55, 0.2);
+.nav-count-badge.gold {
+  background: rgba(212, 175, 55, 0.18);
   color: var(--gold-primary);
 }
 
-.nav-badge.blue {
-  background: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
+.nav-count-badge.green {
+  background: rgba(16, 185, 129, 0.18);
+  color: #10b981;
 }
 
-.nav-badge.purple {
-  background: rgba(168, 85, 247, 0.2);
-  color: #c084fc;
+.nav-count-badge.amber {
+  background: rgba(245, 158, 11, 0.18);
+  color: #f59e0b;
 }
 
-.nav-badge.green {
-  background: rgba(16, 185, 129, 0.2);
-  color: #34d399;
+.nav-count-badge.purple {
+  background: rgba(168, 85, 247, 0.18);
+  color: #a855f7;
 }
 
-.badge-dot-warn {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #f59e0b;
+.nav-count-badge.blue {
+  background: rgba(59, 130, 246, 0.18);
+  color: #3b82f6;
 }
 
-.theme-pill {
-  font-size: 0.72rem;
+.theme-toggle-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
   background: rgba(255, 255, 255, 0.08);
-  padding: 2px 7px;
-  border-radius: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: var(--text-muted);
 }
 
-.small-icon {
+.external-link-icon {
   font-size: 0.75rem;
   opacity: 0.6;
 }
 
+/* Chân Sidebar: Đăng Xuất */
 .sidebar-footer {
-  padding: 16px;
+  padding: 12px 14px;
   border-top: 1px solid var(--border-color);
+  background: var(--bg-card);
 }
 
 .logout-btn {
@@ -3573,24 +3805,26 @@ useHead({
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 11px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  gap: 8px;
+  padding: 9px 12px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   color: #ef4444;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.2s ease;
 }
 
 .logout-btn:hover {
   background: #ef4444;
   color: #fff;
+  border-color: #ef4444;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
-/* KHU VỰC NỘI DUNG CHÍNH (MAIN AREA) */
+/* KHU VỰC NỘI DUNG CHÍNH (MAIN BODY) */
 .admin-main {
   flex: 1;
   min-width: 0;
@@ -3600,24 +3834,26 @@ useHead({
   overflow-x: hidden;
 }
 
-/* TOPBAR */
+/* TOPBAR ĐIỀU KHIỂN */
 .admin-topbar {
-  padding: 18px 30px;
+  padding: 14px 28px;
   background: var(--bg-card);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   position: sticky;
   top: 0;
   z-index: 900;
+  backdrop-filter: blur(12px);
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+  min-width: 0;
 }
 
 .mobile-toggle-btn {
@@ -3625,14 +3861,14 @@ useHead({
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-main);
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 1.1rem;
+  padding: 7px 11px;
+  border-radius: 8px;
+  font-size: 1rem;
   cursor: pointer;
 }
 
 .breadcrumb {
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
   display: flex;
   align-items: center;
@@ -3641,7 +3877,7 @@ useHead({
 }
 
 .breadcrumb i {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
 }
 
 .breadcrumb .active-crumb {
@@ -3650,218 +3886,22 @@ useHead({
 }
 
 .page-heading {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-family: var(--font-heading);
   color: var(--text-main);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.btn-admin-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
-  background: var(--gold-gradient);
-  color: #000;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
-  font-size: 0.88rem;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-admin-primary:hover {
-  filter: brightness(1.1);
-  box-shadow: var(--shadow-gold);
-}
-
-.btn-admin-crawl {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 16px;
-  background: rgba(168, 85, 247, 0.15);
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  color: #c084fc;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn-admin-crawl:hover {
-  background: #a855f7;
-  color: #fff;
-}
-
-.btn-admin-cancel {
-  padding: 9px 18px;
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 0.88rem;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn-admin-cancel:hover {
-  border-color: var(--text-main);
-  color: var(--text-main);
-}
-
-.topbar-icon-btn,
-.topbar-logout-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-color);
-  background: var(--bg-secondary);
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 0.95rem;
-  transition: var(--transition);
-}
-
-.topbar-icon-btn:hover {
-  color: var(--gold-primary);
-  border-color: var(--border-gold);
-}
-
-.topbar-logout-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: #ef4444;
-  color: #ef4444;
-}
-
-/* KPI OVERVIEW CARDS */
-.admin-kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
-  padding: 24px 30px 0;
-}
-
-.kpi-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.kpi-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--border-gold);
-  box-shadow: var(--shadow-sm);
-}
-
-.kpi-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
+  gap: 10px;
   flex-shrink: 0;
 }
 
-.kpi-icon.gold {
-  background: rgba(212, 175, 55, 0.15);
-  color: var(--gold-primary);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-}
-
-.kpi-icon.blue {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-.kpi-icon.purple {
-  background: rgba(168, 85, 247, 0.15);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.3);
-}
-
-.kpi-icon.green {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.kpi-num {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: var(--text-main);
-  line-height: 1.1;
-}
-
-.kpi-label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.kpi-sub {
-  font-size: 0.72rem;
-  color: var(--gold-primary);
-  margin-top: 4px;
-}
-
-/* NỘI DUNG CHÍNH (CONTENT BOX) */
-.admin-content-box {
-  padding: 24px 30px 40px;
-  flex: 1;
-}
-
-.table-filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  padding: 14px 18px;
-  margin-bottom: 20px;
-}
-
-.filter-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filter-label {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.filter-stats {
-  margin-left: auto;
-  font-size: 0.85rem;
-  color: var(--gold-primary);
-}
 
 .admin-select,
 .admin-input,
