@@ -1525,16 +1525,8 @@ img {
     display: none;
   }
 
-  .floating-contact-bar {
-    bottom: 20px;
-    right: 18px;
-    gap: 10px;
-  }
-
-  .float-circle-btn {
-    width: 48px;
-    height: 48px;
-    font-size: 1.2rem;
+  body {
+    padding-bottom: calc(65px + env(safe-area-inset-bottom, 0px));
   }
 }
 

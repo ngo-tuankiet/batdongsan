@@ -94,18 +94,53 @@
       </div>
     </transition>
 
-    <!-- NÚT GỌI & BẬT CHAT NỔI (FLOATING BAR) -->
+    <!-- 1. THANH HÀNH ĐỘNG CỐ ĐỊNH Ở ĐÁY MÀN HÌNH DI ĐỘNG (MOBILE STICKY ACTION BAR) -->
+    <div class="mobile-sticky-cta-bar">
+      <!-- Nút 1: Gọi Hotline Ngay -->
+      <a href="tel:0901355446" class="mobile-cta-btn cta-call">
+        <span class="cta-pulse-ring"></span>
+        <span class="cta-icon-box">
+          <i class="fa-solid fa-phone-volume"></i>
+        </span>
+        <span class="cta-label-wrap">
+          <span class="cta-sub">HOTLINE 24/7</span>
+          <span class="cta-main">0901.355.446</span>
+        </span>
+      </a>
+
+      <!-- Nút 2: Chat Zalo Trực Tiếp -->
+      <a href="https://zalo.me/0901355446" target="_blank" rel="noopener noreferrer" class="mobile-cta-btn cta-zalo">
+        <span class="cta-pulse-ring zalo"></span>
+        <span class="cta-icon-box zalo">
+          <i class="fa-solid fa-comment-dots"></i>
+        </span>
+        <span class="cta-label-wrap">
+          <span class="cta-sub">CHAT TRỰC TIẾP</span>
+          <span class="cta-main">Nhắn Zalo</span>
+        </span>
+      </a>
+    </div>
+
+    <!-- 2. NÚT NỔI DESKTOP & NÚT CHAT TRỰC TUYẾN -->
     <div class="floating-contact-bar">
-      <!-- Nút Gọi Hotline Trực Tiếp -->
-      <a href="tel:0901355446" class="float-circle-btn call" title="Gọi Hotline 0901.355.446">
+      <!-- Nút Gọi Hotline Trực Tiếp (Desktop) -->
+      <a href="tel:0901355446" class="float-circle-btn call desktop-only" title="Gọi Hotline: 0901.355.446">
         <i class="fa-solid fa-phone"></i>
+        <span class="float-btn-tooltip">Gọi: 0901.355.446</span>
+      </a>
+
+      <!-- Nút Chat Zalo (Desktop) -->
+      <a href="https://zalo.me/0901355446" target="_blank" rel="noopener noreferrer" class="float-circle-btn zalo desktop-only" title="Chat Zalo: 0901.355.446">
+        <i class="fa-solid fa-comment-dots"></i>
+        <span class="float-btn-tooltip">Chat Zalo 24/7</span>
       </a>
 
       <!-- Nút Mở Live Chatbox -->
-      <button class="float-circle-btn chat" @click="toggleChat" title="Chat tư vấn trực tuyến">
-        <i v-if="!isChatOpen" class="fa-solid fa-comment-dots"></i>
+      <button class="float-circle-btn chat" @click="toggleChat" title="Chat tư vấn Bến Thành Land">
+        <i v-if="!isChatOpen" class="fa-solid fa-comments"></i>
         <i v-else class="fa-solid fa-xmark"></i>
         <span v-if="!isChatOpen" class="chat-unread-badge">1</span>
+        <span class="float-btn-tooltip">Tư vấn BĐS</span>
       </button>
     </div>
 
@@ -291,6 +326,12 @@ const sendMessage = async (userText: string) => {
   animation: pulse-green 2s infinite;
 }
 
+.float-circle-btn.zalo {
+  background: #0068ff;
+  box-shadow: 0 8px 24px rgba(0, 104, 255, 0.45);
+  animation: pulse-zalo 2s infinite;
+}
+
 .float-circle-btn.chat {
   background: var(--gold-gradient);
   color: #000;
@@ -299,6 +340,30 @@ const sendMessage = async (userText: string) => {
 
 .float-circle-btn:hover {
   transform: scale(1.1);
+}
+
+.float-btn-tooltip {
+  position: absolute;
+  right: 64px;
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.float-circle-btn:hover .float-btn-tooltip {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .chat-unread-badge {
@@ -322,6 +387,134 @@ const sendMessage = async (userText: string) => {
   0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
   70% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); }
   100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes pulse-zalo {
+  0% { box-shadow: 0 0 0 0 rgba(0, 104, 255, 0.7); }
+  70% { box-shadow: 0 0 0 14px rgba(0, 104, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 104, 255, 0); }
+}
+
+/* MOBILE STICKY CTA BAR */
+.mobile-sticky-cta-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 998;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+  gap: 10px;
+}
+
+.mobile-cta-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.mobile-cta-btn:active {
+  transform: scale(0.97);
+}
+
+.mobile-cta-btn.cta-call {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-cta-btn.cta-zalo {
+  background: linear-gradient(135deg, #0068ff 0%, #0052cc 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cta-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  animation: phoneShake 2.5s infinite ease-in-out;
+}
+
+.cta-icon-box.zalo {
+  animation: zaloPulse 2s infinite ease-in-out;
+}
+
+.cta-label-wrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.cta-sub {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+  text-transform: uppercase;
+}
+
+.cta-main {
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+@keyframes phoneShake {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(-15deg); }
+  20%, 40% { transform: rotate(15deg); }
+  50% { transform: rotate(0deg); }
+}
+
+@keyframes zaloPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+@media (max-width: 768px) {
+  .mobile-sticky-cta-bar {
+    display: flex;
+    align-items: center;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .floating-contact-bar {
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 14px !important;
+    gap: 8px !important;
+  }
+
+  .float-circle-btn.chat {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  }
 }
 
 /* LIVE CHAT WINDOW */
