@@ -154,16 +154,6 @@
           </button>
         </form>
 
-        <!-- Thẻ hướng dẫn nhanh tài khoản -->
-        <div v-if="authMode === 'login'" class="auth-credential-guide">
-          <strong style="color: var(--adm-text-main); display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-            <i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i> Thông tin đăng nhập hệ thống:
-          </strong>
-          <div style="color: var(--adm-text-muted); line-height: 1.6;">
-            <div>• <strong>Quản trị viên (Admin):</strong> <code>admin</code> (Mật khẩu: <code>Kiet1234@</code>)</div>
-            <div>• <strong>Nhân viên / Sales:</strong> Mã NV (VD: <code>NV001</code>, <code>NV010</code>...) hoặc Username (Pass mặc định: <code>123456</code>)</div>
-          </div>
-        </div>
 
         <div class="login-footer" style="margin-top: 16px;">
           <NuxtLink to="/" class="back-home-link">
@@ -470,49 +460,58 @@
             <!-- Nút Tạo Mới Tương Ứng Từng Phân Hệ -->
             <button 
               v-if="activeTab === 'properties'" 
-              class="btn-admin-primary" 
+              class="btn-admin-primary topbar-action-btn" 
               @click="openNewPropertyModal"
+              title="Đăng Tin BĐS Mới"
             >
               <i class="fa-solid fa-plus"></i>
-              <span>Đăng Tin BĐS Mới</span>
+              <span class="btn-text-full">Đăng Tin BĐS Mới</span>
+              <span class="btn-text-mobile">Đăng Tin</span>
             </button>
 
             <button 
               v-if="activeTab === 'agents'" 
-              class="btn-admin-primary" 
+              class="btn-admin-primary topbar-action-btn" 
               @click="openNewAgentModal"
+              title="Tạo Tài Khoản / Thêm Nhân Viên"
             >
               <i class="fa-solid fa-user-plus"></i>
-              <span>+ Tạo Tài Khoản / Thêm Nhân Viên</span>
+              <span class="btn-text-full">+ Tạo Tài Khoản / Thêm Nhân Viên</span>
+              <span class="btn-text-mobile">Thêm NV</span>
             </button>
 
             <button 
               v-if="activeTab === 'banners'" 
-              class="btn-admin-primary" 
+              class="btn-admin-primary topbar-action-btn" 
               @click="openNewBannerModal"
+              title="Thêm Banner Mới"
             >
               <i class="fa-solid fa-plus"></i>
-              <span>Thêm Banner Mới</span>
+              <span class="btn-text-full">Thêm Banner Mới</span>
+              <span class="btn-text-mobile">Banner</span>
             </button>
 
             <!-- Nút Hành Động Cho Tab Tin Tức (Cào tin + Viết bài) -->
             <template v-if="activeTab === 'articles'">
               <button 
-                class="btn-admin-crawl" 
+                class="btn-admin-crawl topbar-action-btn" 
                 :disabled="crawlingNews"
                 @click="handleCrawlNews"
                 title="Kéo các tin thị trường BĐS mới nhất từ CafeLand.vn về làm bản nháp"
               >
                 <i class="fa-solid fa-bolt" :class="{ 'fa-spin': crawlingNews }"></i>
-                <span>{{ crawlingNews ? 'Đang Lấy Tin...' : '⚡ Cào Tin Mới' }}</span>
+                <span class="btn-text-full">{{ crawlingNews ? 'Đang Lấy Tin...' : '⚡ Cào Tin Mới' }}</span>
+                <span class="btn-text-mobile">Cào Tin</span>
               </button>
 
               <button 
-                class="btn-admin-primary" 
+                class="btn-admin-primary topbar-action-btn" 
                 @click="openNewArticleModal"
+                title="Viết Bài Mới"
               >
                 <i class="fa-solid fa-pen-to-square"></i>
-                <span>Viết Bài Mới</span>
+                <span class="btn-text-full">Viết Bài Mới</span>
+                <span class="btn-text-mobile">Viết Bài</span>
               </button>
             </template>
 
@@ -1341,7 +1340,7 @@
                   class="admin-select"
                   style="font-weight: 600;"
                 >
-                  <option value="">-- Bấm để SỔ XUỐNG CHỌN Phường/Xã ({{ currentDistricts.length }} đơn vị) --</option>
+                  <option value="">-- Chọn Phường / Xã ({{ currentDistricts.length }} đơn vị) --</option>
                   <option v-for="w in currentDistricts" :key="w" :value="w">{{ w }}</option>
                 </select>
               </div>
@@ -1352,7 +1351,7 @@
                   v-model="propForm.ward" 
                   list="districtSuggestions" 
                   class="admin-input" 
-                  placeholder="Hoặc gõ tìm kiếm / nhập tay tự do (VD: P. Bến Thành, Xã An Thạnh...)" 
+                  placeholder="Gõ tìm kiếm / nhập tay Phường, Xã..." 
                   required
                 >
                 <datalist id="districtSuggestions">
@@ -3238,6 +3237,10 @@ useHead({
   color: var(--text-main);
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Toast Thông Báo Góc Phải */
@@ -4406,11 +4409,19 @@ useHead({
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(4px);
-  z-index: 2000;
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  box-sizing: border-box;
+}
+
+.btn-text-full {
+  display: inline;
+}
+.btn-text-mobile {
+  display: none;
 }
 
 .admin-modal-card {
@@ -4758,19 +4769,20 @@ useHead({
   }
 
   .admin-topbar {
-    padding: 10px 14px;
+    padding: 8px 10px;
     height: auto;
-    min-height: 56px;
-    gap: 8px;
-    box-sizing: border-box;
+    min-height: 52px;
+    gap: 6px;
     width: 100%;
     max-width: 100vw;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .topbar-left {
     flex: 1;
     min-width: 0;
-    gap: 8px;
+    gap: 6px;
   }
 
   .page-title-area {
@@ -4784,22 +4796,45 @@ useHead({
   }
 
   .page-heading {
-    font-size: 0.95rem !important;
+    font-size: 0.88rem !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.3;
+    line-height: 1.2;
   }
 
   .topbar-right {
     flex-shrink: 0;
-    gap: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .topbar-action-btn,
+  .topbar-right .btn-admin-primary,
+  .topbar-right .btn-admin-crawl {
+    padding: 0 8px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    font-size: 0.78rem !important;
+    gap: 4px !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+  }
+
+  .btn-text-full {
+    display: none !important;
+  }
+
+  .btn-text-mobile {
+    display: inline !important;
   }
 
   .topbar-home-btn {
     padding: 0;
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     justify-content: center;
     border-radius: 8px;
   }
@@ -4812,28 +4847,195 @@ useHead({
 
   .topbar-icon-btn,
   .topbar-logout-btn {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
     padding: 0;
+    border-radius: 8px;
   }
 
   .admin-kpi-grid {
-    padding: 14px 14px 0;
+    padding: 12px 10px 0;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 
   .admin-content-box {
-    padding: 14px 14px 32px;
+    padding: 12px 10px 32px;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  /* MODAL OVERLAY & CARD FIT MOBILE VIEWPORT 100% */
+  .modal-overlay {
+    padding: 10px 8px !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    align-items: center !important;
+    z-index: 99999 !important;
+  }
+
+  .admin-modal-card {
+    width: 100% !important;
+    max-width: calc(100vw - 16px) !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    border-radius: 14px !important;
+    max-height: 92vh !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .modal-header {
+    padding: 12px 14px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .modal-header h3 {
+    font-size: 1rem !important;
+    line-height: 1.3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: calc(100% - 32px) !important;
+  }
+
+  .modal-form,
+  .modal-body-padded {
+    padding: 14px 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   .form-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .form-grid > * {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .form-col-full {
-    grid-column: span 1;
+    grid-column: span 1 !important;
+  }
+
+  .modal-form label {
+    white-space: normal !important;
+    word-break: break-word !important;
+    font-size: 0.8rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  .admin-input,
+  .admin-select,
+  .admin-textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    font-size: 0.86rem !important;
+    padding: 8px 10px !important;
+  }
+
+  .admin-select {
+    padding-right: 28px !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+
+  .quick-ward-pills {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .quick-pill-label {
+    font-size: 0.72rem !important;
+    width: 100% !important;
+    display: block !important;
+    margin-bottom: 2px !important;
+  }
+
+  .quick-pill {
+    padding: 3px 8px !important;
+    font-size: 0.72rem !important;
+    white-space: normal !important;
+    max-width: 100% !important;
+    text-align: left !important;
+  }
+
+  .modal-footer,
+  .modal-actions-footer {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 12px 14px !important;
+  }
+
+  .modal-footer .btn-admin-cancel,
+  .modal-footer .btn-admin-primary,
+  .modal-actions-footer .btn-admin-cancel,
+  .modal-actions-footer .btn-admin-primary {
+    flex: 1 !important;
+    min-width: 105px !important;
+    padding: 9px 12px !important;
+    font-size: 0.82rem !important;
+    justify-content: center !important;
+  }
+
+  .admin-table-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 440px) {
+  .btn-text-mobile {
+    display: none !important;
+  }
+
+  .topbar-action-btn,
+  .topbar-right .btn-admin-primary,
+  .topbar-right .btn-admin-crawl {
+    width: 34px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+  }
+
+  .topbar-action-btn i,
+  .topbar-right .btn-admin-primary i,
+  .topbar-right .btn-admin-crawl i {
+    margin: 0 !important;
+    font-size: 0.92rem !important;
   }
 }
 

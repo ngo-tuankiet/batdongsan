@@ -1733,4 +1733,21 @@ img {
   }
 }
 
+/* Ẩn hoàn toàn banner vè và nút mở lại trên thiết bị di động (<= 1024px), giữ hiển thị trên PC */
+@media (max-width: 1024px) {
+  .flyer-wrapper,
+  .left-flyer-wrapper,
+  .right-flyer-wrapper,
+  .vertical-flyer,
+  .vertical-left-flyer,
+  .vertical-right-flyer,
+  .flyer-reopen-tab,
+  .flyer-reopen-left,
+  .flyer-reopen-right {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
 

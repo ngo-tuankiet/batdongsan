@@ -606,10 +606,20 @@ onUnmounted(() => {
   }
 }
 
-@media (max-width: 992px) {
+/* RESPONSIVE: Ẩn hoàn toàn trên màn hình di động & máy tính bảng (<= 1024px), chỉ giữ lại trên PC */
+@media (max-width: 1024px) {
+  .flyer-wrapper,
+  .left-flyer-wrapper,
+  .right-flyer-wrapper,
   .vertical-flyer,
-  .flyer-reopen-tab {
+  .vertical-left-flyer,
+  .vertical-right-flyer,
+  .flyer-reopen-tab,
+  .flyer-reopen-left,
+  .flyer-reopen-right {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 }
 </style>

@@ -748,10 +748,14 @@ const cleanPhone = (phone: string = '') => {
   }
 }
 
-@media (max-width: 992px) {
+/* RESPONSIVE: Ẩn hoàn toàn trên di động & máy tính bảng (<= 1024px), giữ trên PC */
+@media (max-width: 1024px) {
   .vertical-right-flyer,
-  .flyer-reopen-tab-right {
+  .flyer-reopen-tab-right,
+  .right-flyer-wrapper {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 }
 </style>
