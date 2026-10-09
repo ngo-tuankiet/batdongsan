@@ -17,28 +17,8 @@
           <p>Cổng Điều Hành Doanh Nghiệp & Chấm Công Bến Thành Land</p>
         </div>
 
-        <!-- NÚT CHUYỂN ĐỔI: ĐĂNG NHẬP / ĐĂNG KÝ TÀI KHOẢN -->
-        <div class="auth-mode-switch">
-          <button 
-            type="button" 
-            class="auth-switch-btn"
-            :class="{ active: authMode === 'login' }"
-            @click="authMode = 'login'" 
-          >
-            <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
-          </button>
-          <button 
-            type="button" 
-            class="auth-switch-btn"
-            :class="{ active: authMode === 'register' }"
-            @click="authMode = 'register'" 
-          >
-            <i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản
-          </button>
-        </div>
-
-        <!-- FORM 1: ĐĂNG NHẬP -->
-        <form v-if="authMode === 'login'" @submit.prevent="handleLogin" class="login-form">
+        <!-- FORM ĐĂNG NHẬP HỆ THỐNG -->
+        <form @submit.prevent="handleLogin" class="login-form">
           <div class="form-group">
             <label>Tài khoản / Mã nhân viên *</label>
             <div class="input-with-icon">
@@ -46,7 +26,7 @@
               <input 
                 v-model="loginUsername" 
                 type="text" 
-                placeholder="Mã NV (VD: NV001), username hoặc admin..." 
+                placeholder="Nhập tên đăng nhập hoặc mã nhân viên..." 
                 required
                 autocomplete="username"
               >
@@ -60,7 +40,7 @@
               <input 
                 v-model="password" 
                 :type="showPassword ? 'text' : 'password'" 
-                placeholder="Nhập mật khẩu (Mặc định: 123456)..." 
+                placeholder="Nhập mật khẩu..." 
                 required
                 autocomplete="current-password"
                 style="padding-right: 40px;"
@@ -86,71 +66,6 @@
           <button type="submit" class="btn-admin-primary login-btn" :disabled="loginLoading">
             <i class="fa-solid fa-right-to-bracket"></i>
             {{ loginLoading ? 'Đang xác thực...' : 'Đăng Nhập Vào Hệ Thống' }}
-          </button>
-        </form>
-
-        <!-- FORM 2: ĐĂNG KÝ TÀI KHOẢN NHÂN VIÊN MỚI -->
-        <form v-else @submit.prevent="handleRegister" class="login-form">
-          <div class="form-group">
-            <label>Họ và tên nhân viên *</label>
-            <div class="input-with-icon">
-              <i class="fa-solid fa-id-card"></i>
-              <input v-model="registerForm.name" type="text" placeholder="Ví dụ: Nguyễn Văn Nam" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Số điện thoại (Hotline) *</label>
-            <div class="input-with-icon">
-              <i class="fa-solid fa-phone"></i>
-              <input v-model="registerForm.phone" type="tel" placeholder="Ví dụ: 0901234567" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Tên đăng nhập (Username) *</label>
-            <div class="input-with-icon">
-              <i class="fa-solid fa-user"></i>
-              <input v-model="registerForm.username" type="text" placeholder="VD: namnguyen" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Mật khẩu khởi tạo *</label>
-            <div class="input-with-icon">
-              <i class="fa-solid fa-lock"></i>
-              <input v-model="registerForm.password" type="text" placeholder="Mặc định: 123456" required>
-            </div>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
-            <div>
-              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Văn phòng *</label>
-              <select v-model="registerForm.officeId" class="admin-select" required>
-                <option v-for="o in officesList" :key="o.id" :value="o.id">
-                  {{ o.name }} ({{ o.id }})
-                </option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Phòng ban *</label>
-              <select v-model="registerForm.departmentId" class="admin-select" required>
-                <option v-for="d in filteredDepartmentsForRegister" :key="d.id" :value="d.id">
-                  {{ d.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Thông báo lỗi khi đăng ký -->
-          <div v-if="registerError" style="margin-bottom: 16px; padding: 10px 14px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; color: #dc2626; font-size: 0.82rem; display: flex; align-items: flex-start; gap: 8px; text-align: left;">
-            <i class="fa-solid fa-triangle-exclamation" style="font-size: 1rem; flex-shrink: 0; margin-top: 2px;"></i>
-            <span>{{ registerError }}</span>
-          </div>
-
-          <button type="submit" class="btn-admin-primary login-btn btn-register-submit" :disabled="registerLoading">
-            <i class="fa-solid fa-user-plus"></i>
-            {{ registerLoading ? 'Đang tạo tài khoản...' : 'Tạo Tài Khoản & Cấp Mã NV' }}
           </button>
         </form>
 
@@ -2114,19 +2029,6 @@ const loginLoading = ref(false);
 const loginError = ref('');
 const currentUser = ref<any>(null);
 
-// Chế độ đăng nhập hoặc đăng ký tài khoản mới
-const authMode = ref<'login' | 'register'>('login');
-const registerLoading = ref(false);
-const registerError = ref('');
-const registerForm = reactive({
-  name: '',
-  phone: '',
-  username: '',
-  password: '',
-  officeId: 'VP1',
-  departmentId: 'PB01',
-  role: 'Chuyên Viên Tư Vấn BĐS',
-});
 
 // Reset password modal state
 const showResetPasswordModal = ref(false);
@@ -2630,29 +2532,6 @@ const handleLogin = async () => {
   }
 };
 
-const handleRegister = async () => {
-  registerLoading.value = true;
-  registerError.value = '';
-  try {
-    const res: any = await $fetch('/api/auth/register', {
-      method: 'POST',
-      body: registerForm,
-    });
-    if (res?.success) {
-      showToast(res.message);
-      // Tự động điền thông tin vừa tạo vào ô đăng nhập và chuyển tab Đăng Nhập
-      loginUsername.value = res.agent?.code || registerForm.username || registerForm.phone;
-      password.value = registerForm.password || '123456';
-      authMode.value = 'login';
-      loginError.value = '';
-      await refreshAgents();
-    }
-  } catch (err: any) {
-    registerError.value = err?.data?.statusMessage || err?.data?.message || 'Lỗi khi đăng ký tài khoản!';
-  } finally {
-    registerLoading.value = false;
-  }
-};
 
 const handleLogout = () => {
   isLoggedIn.value = false;
