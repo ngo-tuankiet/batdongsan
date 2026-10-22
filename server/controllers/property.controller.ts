@@ -41,7 +41,22 @@ export const PropertyController = {
     return await prisma.property.findMany({
       where,
       include: {
-        agent: true,
+        agent: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            role: true,
+            phone: true,
+            phoneDisplay: true,
+            zalo: true,
+            avatar: true,
+            exp: true,
+            deals: true,
+            slogan: true,
+            tag: true,
+          },
+        },
         category: true,
       },
       orderBy: { createdAt: 'desc' },
@@ -53,7 +68,22 @@ export const PropertyController = {
     return await prisma.property.findUnique({
       where: { id },
       include: {
-        agent: true,
+        agent: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            role: true,
+            phone: true,
+            phoneDisplay: true,
+            zalo: true,
+            avatar: true,
+            exp: true,
+            deals: true,
+            slogan: true,
+            tag: true,
+          },
+        },
         category: true,
       },
     });
@@ -135,7 +165,7 @@ export const PropertyController = {
     } catch (err: any) {
       throw createError({
         statusCode: 500,
-        statusMessage: 'Lỗi khi xóa bất động sản: ' + (err.message || 'Lỗi server'),
+        statusMessage: 'Không thể xóa bất động sản này. Vui lòng kiểm tra lại dữ liệu.',
       });
     }
   },

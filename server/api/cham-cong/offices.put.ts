@@ -1,6 +1,8 @@
 import { prisma } from '../../utils/prisma';
+import { requireAdminAuth } from '../../utils/auth';
 
 export default defineEventHandler(async (event) => {
+  requireAdminAuth(event);
   const body = await readBody(event);
 
   if (!body.id || !body.name) {

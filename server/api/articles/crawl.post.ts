@@ -1,4 +1,8 @@
+import { requireAdminAuth } from '../../utils/auth';
+
 export default defineEventHandler(async (event) => {
+  requireAdminAuth(event);
+
   let createdCount = 0;
   const addedArticles: any[] = [];
 

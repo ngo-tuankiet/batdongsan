@@ -1,11 +1,16 @@
 import { prisma } from '../../../utils/prisma';
+import { requireAdminAuth } from '../../../utils/auth';
+import { hashPassword } from '../../../controllers/auth.controller';
+import { PUBLIC_AGENT_SELECT } from '../../../controllers/agent.controller';
 
 export default defineEventHandler(async (event) => {
+  requireAdminAuth(event);
+
   const id = getRouterParam(event, 'id');
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Thiếu ID nhân viên.' });
 
   const body = await readBody(event).catch(() => ({}));
-  const newPassword = body.password || '123456';
+  const newPassword = body.password && body.password.trim() ? body.password.trim() : '123456';
 
   const decodedId = decodeURIComponent(id);
   const agent = await prisma.agent.findFirst({
@@ -21,8 +26,9 @@ export default defineEventHandler(async (event) => {
   const updated = await prisma.agent.update({
     where: { id: agent.id },
     data: {
-      password: newPassword,
+      password: hashPassword(newPassword),
     },
+    select: PUBLIC_AGENT_SELECT,
   });
 
   return {

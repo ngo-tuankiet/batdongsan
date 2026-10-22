@@ -1,6 +1,10 @@
 import { prisma } from '../../../utils/prisma';
+import { requireAdminAuth } from '../../../utils/auth';
+import { PUBLIC_AGENT_SELECT } from '../../../controllers/agent.controller';
 
 export default defineEventHandler(async (event) => {
+  requireAdminAuth(event);
+
   const id = getRouterParam(event, 'id');
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Thiếu ID nhân viên.' });
 
@@ -23,6 +27,7 @@ export default defineEventHandler(async (event) => {
     data: {
       status: newStatus,
     },
+    select: PUBLIC_AGENT_SELECT,
   });
 
   const actionText = newStatus === 'locked' ? 'Đã KHÓA tài khoản' : 'Đã MỞ KHÓA tài khoản';

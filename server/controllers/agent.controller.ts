@@ -1,4 +1,30 @@
 import { prisma } from '../utils/prisma';
+import { hashPassword } from './auth.controller';
+
+// Các trường an toàn cho phép trả về công khai (LOẠI TRỪ: password, salaryRate, allowanceRate)
+export const PUBLIC_AGENT_SELECT = {
+  id: true,
+  code: true,
+  username: true,
+  name: true,
+  role: true,
+  userRole: true,
+  officeId: true,
+  departmentId: true,
+  status: true,
+  isStarred: true,
+  phone: true,
+  phoneDisplay: true,
+  zalo: true,
+  avatar: true,
+  exp: true,
+  deals: true,
+  slogan: true,
+  bio: true,
+  tag: true,
+  createdAt: true,
+  updatedAt: true,
+};
 
 export const AgentController = {
   // GET /api/agents
@@ -11,7 +37,8 @@ export const AgentController = {
     }
     return await prisma.agent.findMany({
       where,
-      include: {
+      select: {
+        ...PUBLIC_AGENT_SELECT,
         properties: {
           select: { id: true, title: true, price: true, location: true },
         },
@@ -24,7 +51,8 @@ export const AgentController = {
   async getAgentById(id: string) {
     return await prisma.agent.findUnique({
       where: { id },
-      include: {
+      select: {
+        ...PUBLIC_AGENT_SELECT,
         properties: {
           include: { category: true },
         },
@@ -45,12 +73,15 @@ export const AgentController = {
       code = 'NV' + String(count + 1).padStart(3, '0');
     }
 
+    const rawPassword = data.password && data.password.trim() ? data.password.trim() : '123456';
+    const hashedPassword = hashPassword(rawPassword);
+
     return await prisma.agent.create({
       data: {
         id,
         code,
         username: data.username || `user_${Date.now()}`,
-        password: data.password || 'password123',
+        password: hashedPassword,
         userRole: data.userRole || 'user',
         officeId: data.officeId || 'VP1',
         departmentId: data.departmentId || null,
@@ -68,6 +99,7 @@ export const AgentController = {
         bio: data.bio,
         tag: data.tag || 'Chuyên Viên',
       },
+      select: PUBLIC_AGENT_SELECT,
     });
   },
 
@@ -81,7 +113,9 @@ export const AgentController = {
     if (data.role !== undefined) updateData.role = data.role;
     if (data.code !== undefined) updateData.code = data.code;
     if (data.username !== undefined) updateData.username = data.username;
-    if (data.password !== undefined && data.password.trim()) updateData.password = data.password;
+    if (data.password !== undefined && data.password.trim()) {
+      updateData.password = hashPassword(data.password.trim());
+    }
     if (data.userRole !== undefined) updateData.userRole = data.userRole;
     if (data.officeId !== undefined) updateData.officeId = data.officeId;
     if (data.departmentId !== undefined) updateData.departmentId = data.departmentId;
@@ -100,6 +134,7 @@ export const AgentController = {
     return await prisma.agent.update({
       where: { id },
       data: updateData,
+      select: PUBLIC_AGENT_SELECT,
     });
   },
 
@@ -125,7 +160,7 @@ export const AgentController = {
     } catch (err: any) {
       throw createError({
         statusCode: 500,
-        statusMessage: 'Lỗi khi xóa nhân viên: ' + (err.message || 'Lỗi server'),
+        statusMessage: 'Không thể xóa nhân viên này. Vui lòng kiểm tra lại liên kết dữ liệu.',
       });
     }
   },

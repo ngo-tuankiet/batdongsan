@@ -47,7 +47,8 @@
 
             <div class="msg-bubble-wrap">
               <div class="msg-bubble">
-                <p v-html="msg.text"></p>
+                <p v-if="msg.sender === 'bot'" v-html="msg.text"></p>
+                <p v-else>{{ msg.text }}</p>
               </div>
               <span class="msg-time">{{ msg.time }}</span>
 

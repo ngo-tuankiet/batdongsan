@@ -1,6 +1,9 @@
 import { prisma } from '../../utils/prisma';
+import { requireAdminAuth } from '../../utils/auth';
 
 export default defineEventHandler(async (event) => {
+  requireAdminAuth(event);
+
   const id = getRouterParam(event, 'id');
   if (!id) {
     throw createError({ statusCode: 400, statusMessage: 'Thiếu ID banner.' });
@@ -47,7 +50,7 @@ export default defineEventHandler(async (event) => {
     console.error('Lỗi cập nhật banner:', err);
     throw createError({
       statusCode: 500,
-      statusMessage: 'Không thể cập nhật banner: ' + err.message,
+      statusMessage: 'Không thể cập nhật banner. Vui lòng thử lại sau.',
     });
   }
 });

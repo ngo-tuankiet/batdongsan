@@ -1,4 +1,8 @@
+import { requireAdminAuth } from '../../utils/auth';
+
 export default defineEventHandler(async (event) => {
+  requireAdminAuth(event);
+
   const body = await readBody(event);
 
   if (!body.title) {
