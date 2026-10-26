@@ -17,8 +17,28 @@
           <p>Cổng Điều Hành Doanh Nghiệp & Chấm Công Bến Thành Land</p>
         </div>
 
-        <!-- FORM ĐĂNG NHẬP HỆ THỐNG -->
-        <form @submit.prevent="handleLogin" class="login-form">
+        <!-- NÚT CHUYỂN ĐỔI: ĐĂNG NHẬP / ĐĂNG KÝ TÀI KHOẢN -->
+        <div class="auth-mode-switch">
+          <button 
+            type="button" 
+            class="auth-switch-btn"
+            :class="{ active: authMode === 'login' }"
+            @click="authMode = 'login'" 
+          >
+            <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+          </button>
+          <button 
+            type="button" 
+            class="auth-switch-btn"
+            :class="{ active: authMode === 'register' }"
+            @click="authMode = 'register'" 
+          >
+            <i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản
+          </button>
+        </div>
+
+        <!-- FORM 1: ĐĂNG NHẬP HỆ THỐNG -->
+        <form v-if="authMode === 'login'" @submit.prevent="handleLogin" class="login-form">
           <div class="form-group">
             <label>Tài khoản / Mã nhân viên *</label>
             <div class="input-with-icon">
@@ -66,6 +86,71 @@
           <button type="submit" class="btn-admin-primary login-btn" :disabled="loginLoading">
             <i class="fa-solid fa-right-to-bracket"></i>
             {{ loginLoading ? 'Đang xác thực...' : 'Đăng Nhập Vào Hệ Thống' }}
+          </button>
+        </form>
+
+        <!-- FORM 2: ĐĂNG KÝ TÀI KHOẢN NHÂN VIÊN MỚI -->
+        <form v-else @submit.prevent="handleRegister" class="login-form">
+          <div class="form-group">
+            <label>Họ và tên nhân viên *</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-id-card"></i>
+              <input v-model="registerForm.name" type="text" placeholder="Ví dụ: Nguyễn Văn Nam" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Số điện thoại (Hotline) *</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-phone"></i>
+              <input v-model="registerForm.phone" type="tel" placeholder="Ví dụ: 0901234567" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Tên đăng nhập (Username) *</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user"></i>
+              <input v-model="registerForm.username" type="text" placeholder="VD: namnguyen" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Mật khẩu khởi tạo *</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-lock"></i>
+              <input v-model="registerForm.password" type="text" placeholder="Mặc định: 123456" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Văn phòng *</label>
+              <select v-model="registerForm.officeId" class="admin-select" required>
+                <option v-for="o in officesList" :key="o.id" :value="o.id">
+                  {{ o.name }} ({{ o.id }})
+                </option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Phòng ban *</label>
+              <select v-model="registerForm.departmentId" class="admin-select" required>
+                <option v-for="d in filteredDepartmentsForRegister" :key="d.id" :value="d.id">
+                  {{ d.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Thông báo lỗi khi đăng ký -->
+          <div v-if="registerError" style="margin-bottom: 16px; padding: 10px 14px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; color: #dc2626; font-size: 0.82rem; display: flex; align-items: flex-start; gap: 8px; text-align: left;">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 1rem; flex-shrink: 0; margin-top: 2px;"></i>
+            <span>{{ registerError }}</span>
+          </div>
+
+          <button type="submit" class="btn-admin-primary login-btn btn-register-submit" :disabled="registerLoading">
+            <i class="fa-solid fa-user-plus"></i>
+            {{ registerLoading ? 'Đang tạo tài khoản...' : 'Tạo Tài Khoản & Cấp Mã NV' }}
           </button>
         </form>
 
@@ -2029,6 +2114,20 @@ const loginLoading = ref(false);
 const loginError = ref('');
 const currentUser = ref<any>(null);
 
+// Chế độ đăng nhập hoặc đăng ký tài khoản mới
+const authMode = ref<'login' | 'register'>('login');
+const registerLoading = ref(false);
+const registerError = ref('');
+const registerForm = reactive({
+  name: '',
+  phone: '',
+  username: '',
+  password: '',
+  officeId: 'VP1',
+  departmentId: 'PB01',
+  role: 'Chuyên Viên Tư Vấn BĐS',
+});
+
 
 // Reset password modal state
 const showResetPasswordModal = ref(false);
@@ -2036,7 +2135,17 @@ const resettingAgent = ref<any>(null);
 const newPasswordInput = ref('123456');
 const savingResetPassword = ref(false);
 
-const activeTab = ref<'properties' | 'agents' | 'articles' | 'leads' | 'banners' | 'checkin' | 'attendance' | 'leaves' | 'payroll' | 'salary_settings' | 'offices'>('properties');
+const route = useRoute();
+const router = useRouter();
+
+const VALID_ADMIN_TABS = ['properties', 'agents', 'articles', 'leads', 'banners', 'checkin', 'attendance', 'leaves', 'payroll', 'salary_settings', 'offices'] as const;
+type AdminTabType = typeof VALID_ADMIN_TABS[number];
+
+const initialTab = (route.query.tab as AdminTabType) && VALID_ADMIN_TABS.includes(route.query.tab as AdminTabType)
+  ? (route.query.tab as AdminTabType)
+  : 'properties';
+
+const activeTab = ref<AdminTabType>(initialTab);
 const mobileSidebarOpen = ref(false);
 const isSidebarCollapsed = ref(false);
 
@@ -2477,6 +2586,18 @@ onMounted(() => {
       }
     });
 
+    // Khôi phục tab đang làm việc dở dang từ URL hoặc localStorage
+    const queryTab = route.query.tab as AdminTabType;
+    if (queryTab && VALID_ADMIN_TABS.includes(queryTab)) {
+      activeTab.value = queryTab;
+    } else {
+      const savedTab = localStorage.getItem('bds_admin_active_tab') as AdminTabType;
+      if (savedTab && VALID_ADMIN_TABS.includes(savedTab)) {
+        activeTab.value = savedTab;
+        router.replace({ query: { ...route.query, tab: savedTab } }).catch(() => {});
+      }
+    }
+
     const saved = localStorage.getItem('bds_admin_session');
     const savedUser = localStorage.getItem('bds_user_info');
     if (saved) {
@@ -2493,9 +2614,13 @@ onMounted(() => {
   }
 });
 
-const switchTab = (tab: 'properties' | 'agents' | 'articles' | 'leads' | 'banners' | 'checkin' | 'attendance' | 'leaves' | 'payroll' | 'salary_settings' | 'offices') => {
+const switchTab = (tab: AdminTabType) => {
   activeTab.value = tab;
   mobileSidebarOpen.value = false;
+  if (process.client) {
+    localStorage.setItem('bds_admin_active_tab', tab);
+    router.replace({ query: { ...route.query, tab } }).catch(() => {});
+  }
 };
 
 const handleLogin = async () => {
@@ -2529,6 +2654,30 @@ const handleLogin = async () => {
     loginError.value = err?.data?.message || 'Tài khoản hoặc mật khẩu không chính xác!';
   } finally {
     loginLoading.value = false;
+  }
+};
+
+const handleRegister = async () => {
+  registerLoading.value = true;
+  registerError.value = '';
+  try {
+    const res: any = await $fetch('/api/auth/register', {
+      method: 'POST',
+      body: registerForm,
+    });
+    if (res?.success) {
+      showToast(res.message);
+      // Tự động điền thông tin vừa tạo vào ô đăng nhập và chuyển tab Đăng Nhập
+      loginUsername.value = res.agent?.code || registerForm.username || registerForm.phone;
+      password.value = registerForm.password || '123456';
+      authMode.value = 'login';
+      loginError.value = '';
+      await refreshAgents();
+    }
+  } catch (err: any) {
+    registerError.value = err?.data?.statusMessage || err?.data?.message || 'Lỗi khi đăng ký tài khoản!';
+  } finally {
+    registerLoading.value = false;
   }
 };
 

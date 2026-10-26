@@ -203,11 +203,11 @@
                   <span v-if="shift.isDefault" class="badge-default-shift">Mặc định</span>
                 </div>
                 <div class="shift-actions">
-                  <button class="btn-icon-sub" @click="openEditShiftModal(shift)" title="Sửa khung giờ">
-                    <i class="fa-solid fa-pen"></i>
+                  <button type="button" class="btn-icon-sub" @click.stop="openEditShiftModal(shift)" title="Sửa khung giờ">
+                    <i class="fa-solid fa-pen" style="pointer-events: none;"></i>
                   </button>
-                  <button class="btn-icon-sub del" @click="deleteShift(shift)" title="Xóa khung giờ">
-                    <i class="fa-solid fa-trash"></i>
+                  <button type="button" class="btn-icon-sub del" @click.stop="deleteShift(shift)" title="Xóa khung giờ">
+                    <i class="fa-solid fa-trash" style="pointer-events: none;"></i>
                   </button>
                 </div>
               </div>
@@ -389,6 +389,31 @@
         </form>
       </div>
     </div>
+
+    <!-- MODAL XÁC NHẬN XÓA KHUNG GIỜ LÀM VIỆC (IN-APP DIALOG) -->
+    <div v-if="showDeleteShiftModal" class="modal-overlay" @click.self="showDeleteShiftModal = false" style="z-index: 99999;">
+      <div class="admin-modal-card" style="max-width: 440px; text-align: center; padding: 28px;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 16px;">
+          <i class="fa-solid fa-trash-can"></i>
+        </div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-main, #0f172a); margin-bottom: 8px;">
+          Xác Nhận Xóa Khung Giờ?
+        </h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted, #64748b); line-height: 1.5; margin-bottom: 22px;">
+          Bạn có chắc chắn muốn xóa khung giờ: <br>
+          <strong style="color: #b8860b; font-size: 0.95rem; word-break: break-word;">"{{ shiftToDelete?.name }}"</strong>?
+          <br><span style="font-size: 0.78rem; color: #ef4444; margin-top: 6px; display: inline-block;">⚠️ Các thiết lập liên quan đến ca này sẽ bị gỡ bỏ.</span>
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <button type="button" class="btn-admin-cancel" style="flex: 1; padding: 10px; font-weight: 600;" @click="showDeleteShiftModal = false" :disabled="deletingShift">
+            Hủy Bỏ
+          </button>
+          <button type="button" style="flex: 1; padding: 10px; background: #ef4444; color: #fff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);" @click="executeDeleteShift" :disabled="deletingShift">
+            <i class="fa-solid fa-trash"></i> {{ deletingShift ? 'Đang Xóa...' : 'Xóa Ngay' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -400,6 +425,10 @@ const { showToast } = useToast();
 const saving = ref(false);
 const savingShift = ref(false);
 const showShiftModal = ref(false);
+
+const showDeleteShiftModal = ref(false);
+const shiftToDelete = ref<any>(null);
+const deletingShift = ref(false);
 
 const form = reactive({
   companyName: 'Công Ty Bến Thành',
@@ -569,14 +598,25 @@ const saveShift = async () => {
   }
 };
 
-const deleteShift = async (shift: any) => {
-  if (!confirm(`Bạn có chắc muốn xóa khung giờ "${shift.name}"?`)) return;
+const deleteShift = (shift: any) => {
+  shiftToDelete.value = shift;
+  showDeleteShiftModal.value = true;
+};
+
+const executeDeleteShift = async () => {
+  if (!shiftToDelete.value) return;
+  deletingShift.value = true;
+  const shift = shiftToDelete.value;
   try {
     await $fetch(`/api/cham-cong/shifts/${shift.id}`, { method: 'DELETE' });
     showToast(`Đã xóa khung giờ "${shift.name}"!`);
+    showDeleteShiftModal.value = false;
+    shiftToDelete.value = null;
     await loadShifts();
   } catch (err: any) {
-    alert(err?.data?.message || 'Lỗi khi xóa khung giờ!');
+    showToast('Lỗi khi xóa khung giờ: ' + (err?.data?.message || err?.message || 'Thất bại'));
+  } finally {
+    deletingShift.value = false;
   }
 };
 
