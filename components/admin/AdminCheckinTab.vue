@@ -382,7 +382,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue';
 
 const { showToast } = useToast();
 
@@ -585,9 +585,10 @@ const handleCheckIn = async () => {
       },
     });
 
-    todayRecord.value = res;
-    if (res.isLate) {
-      showToast(`Chấm công vào thành công lúc ${timeNow}! (Ghi nhận đi muộn ${res.lateMinutes} phút)`);
+    todayRecord.value = res.record || res;
+    const rec = res.record || res;
+    if (rec.isLate) {
+      showToast(`Chấm công vào thành công lúc ${timeNow}! (Ghi nhận đi muộn ${rec.lateMinutes} phút)`);
     } else {
       showToast(`Chấm công vào thành công lúc ${timeNow}! Chúc bạn ngày làm việc hiệu quả.`);
     }
@@ -619,7 +620,7 @@ const handleCheckOut = async () => {
       },
     });
 
-    todayRecord.value = res;
+    todayRecord.value = res.record || res;
     showToast(`Chấm công ra thành công lúc ${timeNow}!`);
     await loadMonthlyHistory();
   } catch (err: any) {
@@ -656,7 +657,7 @@ const submitTripRecord = async () => {
       },
     });
 
-    todayRecord.value = res;
+    todayRecord.value = res.record || res;
     showToast('Đã ghi nhận báo đi công tác hôm nay!');
     showTripModal.value = false;
     await loadMonthlyHistory();
@@ -672,6 +673,17 @@ const openLeaveModal = () => {
   emit('navigate-tab', 'leaves');
   showToast('Chuyển sang phân hệ Đơn Nghỉ / Công Tác để gửi đơn lên cấp trên.');
 };
+
+// Tự động tải lại khi currentUser thay đổi / được nạp từ localStorage
+watch(() => props.currentUser?.id, (newId) => {
+  if (newId) {
+    if (props.currentUser?.officeId) {
+      selectedOfficeId.value = props.currentUser.officeId;
+    }
+    loadTodayRecord();
+    loadMonthlyHistory();
+  }
+});
 
 onMounted(() => {
   timerInterval = setInterval(() => {
