@@ -2141,9 +2141,12 @@ const router = useRouter();
 const VALID_ADMIN_TABS = ['properties', 'agents', 'articles', 'leads', 'banners', 'checkin', 'attendance', 'leaves', 'payroll', 'salary_settings', 'offices'] as const;
 type AdminTabType = typeof VALID_ADMIN_TABS[number];
 
-const initialTab = (route.query.tab as AdminTabType) && VALID_ADMIN_TABS.includes(route.query.tab as AdminTabType)
-  ? (route.query.tab as AdminTabType)
-  : 'properties';
+const getTabFromQuery = (): AdminTabType | null => {
+  const q = (route.query.tab || route.query.currentTab) as AdminTabType;
+  return q && VALID_ADMIN_TABS.includes(q) ? q : null;
+};
+
+const initialTab = getTabFromQuery() || 'properties';
 
 const activeTab = ref<AdminTabType>(initialTab);
 const mobileSidebarOpen = ref(false);
@@ -2586,15 +2589,15 @@ onMounted(() => {
       }
     });
 
-    // Khôi phục tab đang làm việc dở dang từ URL hoặc localStorage
-    const queryTab = route.query.tab as AdminTabType;
-    if (queryTab && VALID_ADMIN_TABS.includes(queryTab)) {
+    // Khôi phục tab đang làm việc dở dang từ URL (cả tab và currentTab) hoặc localStorage
+    const queryTab = getTabFromQuery();
+    if (queryTab) {
       activeTab.value = queryTab;
     } else {
-      const savedTab = localStorage.getItem('bds_admin_active_tab') as AdminTabType;
+      const savedTab = (localStorage.getItem('bds_admin_active_tab') || localStorage.getItem('bds_admin_current_tab')) as AdminTabType;
       if (savedTab && VALID_ADMIN_TABS.includes(savedTab)) {
         activeTab.value = savedTab;
-        router.replace({ query: { ...route.query, tab: savedTab } }).catch(() => {});
+        router.replace({ query: { ...route.query, tab: savedTab, currentTab: savedTab } }).catch(() => {});
       }
     }
 
@@ -2619,9 +2622,20 @@ const switchTab = (tab: AdminTabType) => {
   mobileSidebarOpen.value = false;
   if (process.client) {
     localStorage.setItem('bds_admin_active_tab', tab);
-    router.replace({ query: { ...route.query, tab } }).catch(() => {});
+    localStorage.setItem('bds_admin_current_tab', tab);
+    // Cập nhật cả 2 query param tab & currentTab để tương thích mọi nơi
+    const newQuery = { ...route.query, tab, currentTab: tab };
+    router.replace({ query: newQuery }).catch(() => {});
   }
 };
+
+// Theo dõi nếu URL thay đổi query từ bên ngoài hoặc nút Back/Forward
+watch(() => [route.query.tab, route.query.currentTab], () => {
+  const q = getTabFromQuery();
+  if (q && q !== activeTab.value) {
+    activeTab.value = q;
+  }
+});
 
 const handleLogin = async () => {
   loginLoading.value = true;

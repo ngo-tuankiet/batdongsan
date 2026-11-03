@@ -22,9 +22,13 @@
         </div>
       </div>
 
-      <div style="display: flex; gap: 10px;">
+      <div style="display: flex; gap: 10px; align-items: center;">
         <button class="btn-admin-primary" @click="printPayroll" style="font-size: 0.82rem; padding: 8px 16px;">
           <i class="fa-solid fa-print"></i> {{ isEmployee ? 'In Phiếu Lương' : 'In Bảng Lương' }}
+        </button>
+
+        <button class="btn-excel-export" @click="openExcelModal" style="font-size: 0.82rem; padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);">
+          <i class="fa-solid fa-file-excel"></i> Xuất Excel (Tùy Chọn Ngày)
         </button>
       </div>
     </div>
@@ -261,6 +265,124 @@
         </form>
       </div>
     </div>
+
+    <!-- MODAL TÙY CHỌN XUẤT FILE EXCEL (HỖ TRỢ CHỌN KỲ NGÀY 10 HOẶC KHOẢNG NGÀY BẤT KỲ) -->
+    <div v-if="showExcelModal" class="modal-overlay" @click.self="showExcelModal = false">
+      <div class="admin-modal-card" style="max-width: 530px;">
+        <div class="modal-header">
+          <h3 style="display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-file-excel" style="color: #10b981;"></i>
+            Xuất File Excel Chấm Công & Lương
+          </h3>
+          <button class="modal-close-icon" @click="showExcelModal = false">&times;</button>
+        </div>
+
+        <div style="padding: 20px;">
+          <!-- CHỌN CHU KỲ TÍNH CÔNG -->
+          <div style="margin-bottom: 18px;">
+            <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-main, #0f172a); display: block; margin-bottom: 8px;">
+              <i class="fa-solid fa-calendar-days" style="color: var(--gold-primary);"></i> 1. Chọn chu kỳ tính chấm công:
+            </label>
+            
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Kỳ cty ngày 11 -> ngày 10 -->
+              <label class="export-radio-box" :class="{ active: excelCycleType === 'company_10' }">
+                <input type="radio" v-model="excelCycleType" value="company_10" @change="updateExcelDates" />
+                <div style="flex: 1;">
+                  <strong style="color: #0f172a; font-size: 0.85rem;">Kỳ theo Cty: Ngày 11 tháng trước → Ngày 10 tháng này</strong>
+                  <small style="display: block; color: var(--text-muted); font-size: 0.74rem;">Chuẩn theo kỳ tính công & trả lương ngày 10 của công ty</small>
+                </div>
+              </label>
+
+              <!-- Trọn vẹn tháng 1 -> cuối tháng -->
+              <label class="export-radio-box" :class="{ active: excelCycleType === 'full_month' }">
+                <input type="radio" v-model="excelCycleType" value="full_month" @change="updateExcelDates" />
+                <div style="flex: 1;">
+                  <strong style="color: #0f172a; font-size: 0.85rem;">Trọn vẹn 1 tháng: Ngày 1 → Ngày cuối tháng (30/31)</strong>
+                  <small style="display: block; color: var(--text-muted); font-size: 0.74rem;">Theo tháng dương lịch chuẩn</small>
+                </div>
+              </label>
+
+              <!-- Tùy chỉnh ngày bất kỳ -->
+              <label class="export-radio-box" :class="{ active: excelCycleType === 'custom' }">
+                <input type="radio" v-model="excelCycleType" value="custom" />
+                <div style="flex: 1;">
+                  <strong style="color: #0f172a; font-size: 0.85rem;">Tự chọn khoảng ngày bất kỳ (Tùy chỉnh)</strong>
+                  <small style="display: block; color: var(--text-muted); font-size: 0.74rem;">Tự nhập ngày bắt đầu và kết thúc theo yêu cầu</small>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- BỘ CHỌN THỜI GIAN CỤ THỂ -->
+          <div style="background: rgba(241, 245, 249, 0.7); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 12px 14px; margin-bottom: 18px;">
+            <div v-if="excelCycleType !== 'custom'" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+              <span style="font-size: 0.82rem; font-weight: 600; color: #475569;">Chọn tháng chốt lương:</span>
+              <input type="month" v-model="excelMonth" class="admin-input" style="width: 155px; font-weight: 700; color: var(--gold-primary);" @change="updateExcelDates" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div>
+                <label style="font-size: 0.75rem; color: #64748b; font-weight: 600; display: block; margin-bottom: 4px;">Từ ngày:</label>
+                <input type="date" v-model="excelFromDate" class="admin-input" style="width: 100%; font-size: 0.82rem;" :disabled="excelCycleType !== 'custom'" />
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; color: #64748b; font-weight: 600; display: block; margin-bottom: 4px;">Đến ngày:</label>
+                <input type="date" v-model="excelToDate" class="admin-input" style="width: 100%; font-size: 0.82rem;" :disabled="excelCycleType !== 'custom'" />
+              </div>
+            </div>
+
+            <div style="margin-top: 10px; font-size: 0.76rem; color: #059669; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-circle-check"></i> Khoảng thời gian: Từ {{ formatDisplayDate(excelFromDate) }} đến {{ formatDisplayDate(excelToDate) }} ({{ calculateDaysCount }} ngày)
+            </div>
+          </div>
+
+          <!-- CHỌN LOẠI BẢNG XUẤT -->
+          <div style="margin-bottom: 20px;">
+            <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-main, #0f172a); display: block; margin-bottom: 8px;">
+              <i class="fa-solid fa-table" style="color: #3b82f6;"></i> 2. Chọn loại bảng xuất:
+            </label>
+            
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label class="export-type-row" :class="{ selected: excelExportType === 'all' }">
+                <input type="radio" v-model="excelExportType" value="all" />
+                <i class="fa-solid fa-layer-group" style="color: #8b5cf6; font-size: 1.1rem;"></i>
+                <div>
+                  <strong style="display: block; font-size: 0.85rem; color: #0f172a;">Xuất Trọn Bộ (Gồm cả 2 Sheet)</strong>
+                  <small style="color: var(--text-muted); font-size: 0.74rem;">Sheet 1: Tổng Hợp Gọn + Sheet 2: Chi Tiết Các Ngày (Khuyên dùng)</small>
+                </div>
+              </label>
+
+              <label class="export-type-row" :class="{ selected: excelExportType === 'summary' }">
+                <input type="radio" v-model="excelExportType" value="summary" />
+                <i class="fa-solid fa-table-list" style="color: #10b981; font-size: 1.1rem;"></i>
+                <div>
+                  <strong style="display: block; font-size: 0.85rem; color: #0f172a;">Chỉ xuất Bảng Tổng Hợp</strong>
+                  <small style="color: var(--text-muted); font-size: 0.74rem;">Lược bỏ ngày chi tiết, chỉ gồm số công, tiền lương, phụ cấp xăng xe</small>
+                </div>
+              </label>
+
+              <label class="export-type-row" :class="{ selected: excelExportType === 'detail' }">
+                <input type="radio" v-model="excelExportType" value="detail" />
+                <i class="fa-solid fa-calendar-days" style="color: #3b82f6; font-size: 1.1rem;"></i>
+                <div>
+                  <strong style="display: block; font-size: 0.85rem; color: #0f172a;">Chỉ xuất Bảng Chi Tiết</strong>
+                  <small style="color: var(--text-muted); font-size: 0.74rem;">Chi tiết từng ngày (1, 0.5, 1.5), tô màu T7 & CN y hệt mẫu công ty</small>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- FOOTER ACTIONS -->
+          <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 14px;">
+            <button type="button" class="btn-admin-cancel" @click="showExcelModal = false">Hủy</button>
+            <button type="button" class="btn-admin-primary" style="background: #10b981; border-color: #10b981; font-size: 0.85rem; padding: 8px 18px;" @click="downloadExcel">
+              <i class="fa-solid fa-file-excel"></i> Tải File Excel Xuống
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -391,6 +513,71 @@ const sumAllowance = computed(() => payrollList.value.reduce((acc, cur) => acc +
 const sumTripPay = computed(() => payrollList.value.reduce((acc, cur) => acc + (cur.tripPay || 0), 0));
 const sumOtherPay = computed(() => payrollList.value.reduce((acc, cur) => acc + (cur.otherPay || 0), 0));
 const totalGrandSalary = computed(() => payrollList.value.reduce((acc, cur) => acc + (cur.totalSalary || 0), 0));
+
+const showExcelModal = ref(false);
+const excelCycleType = ref<'company_10' | 'full_month' | 'custom'>('company_10');
+const excelMonth = ref(selectedMonth.value || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`);
+const excelFromDate = ref('');
+const excelToDate = ref('');
+const excelExportType = ref<'all' | 'summary' | 'detail'>('all');
+
+const updateExcelDates = () => {
+  const [yStr, mStr] = excelMonth.value.split('-');
+  let y = parseInt(yStr, 10);
+  let m = parseInt(mStr, 10);
+
+  if (excelCycleType.value === 'company_10') {
+    let prevY = y;
+    let prevM = m - 1;
+    if (prevM === 0) {
+      prevM = 12;
+      prevY = y - 1;
+    }
+    excelFromDate.value = `${prevY}-${String(prevM).padStart(2, '0')}-11`;
+    excelToDate.value = `${y}-${String(m).padStart(2, '0')}-10`;
+  } else if (excelCycleType.value === 'full_month') {
+    const lastDay = new Date(y, m, 0).getDate();
+    excelFromDate.value = `${y}-${String(m).padStart(2, '0')}-01`;
+    excelToDate.value = `${y}-${String(m).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+  }
+};
+
+const calculateDaysCount = computed(() => {
+  if (!excelFromDate.value || !excelToDate.value) return 0;
+  const d1 = new Date(excelFromDate.value);
+  const d2 = new Date(excelToDate.value);
+  const diffTime = d2.getTime() - d1.getTime();
+  if (diffTime < 0) return 0;
+  return Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+});
+
+const formatDisplayDate = (dStr: string) => {
+  if (!dStr) return '';
+  const parts = dStr.split('-');
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return dStr;
+};
+
+const openExcelModal = () => {
+  excelMonth.value = selectedMonth.value || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  updateExcelDates();
+  showExcelModal.value = true;
+};
+
+const downloadExcel = () => {
+  if (!excelFromDate.value || !excelToDate.value) {
+    alert('Vui lòng chọn đầy đủ ngày bắt đầu và kết thúc!');
+    return;
+  }
+  showExcelModal.value = false;
+  const link = document.createElement('a');
+  link.href = `/api/cham-cong/export-excel?fromDate=${excelFromDate.value}&toDate=${excelToDate.value}&type=${excelExportType.value}`;
+  link.download = '';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast('Đang tạo và tải file Excel xuống...');
+};
 
 const printPayroll = () => {
   if (typeof window !== 'undefined') window.print();
@@ -557,5 +744,58 @@ onMounted(() => {
   color: #ffffff;
   border-color: var(--gold-primary, #d4af37);
   transform: translateY(-1px);
+}
+
+.export-radio-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.export-radio-box:hover {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.02);
+}
+
+.export-radio-box.active {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.export-radio-box input {
+  margin-top: 3px;
+  accent-color: #10b981;
+}
+
+.export-type-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.export-type-row:hover {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.02);
+}
+
+.export-type-row.selected {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.export-type-row input {
+  accent-color: #3b82f6;
 }
 </style>
