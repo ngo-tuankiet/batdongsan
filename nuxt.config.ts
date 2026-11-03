@@ -1,9 +1,30 @@
+import fs from 'fs';
+import path from 'path';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: false },
   telemetry: false,
   ssr: false,
+
+  nitro: {
+    hooks: {
+      compiled(nitro) {
+        try {
+          const target = path.resolve(nitro.options.output.serverDir, 'node_modules');
+          const rootModules = path.resolve(nitro.options.rootDir, 'node_modules');
+          if (process.platform !== 'win32' && fs.existsSync(rootModules)) {
+            fs.rmSync(target, { recursive: true, force: true });
+            fs.symlinkSync(rootModules, target, 'dir');
+            console.log('[Nitro Hook] Linked root node_modules to .output/server/node_modules');
+          }
+        } catch (e) {
+          console.error('[Nitro Hook] Failed to link node_modules in nitro output:', e);
+        }
+      }
+    }
+  },
 
   app: {
     head: {
